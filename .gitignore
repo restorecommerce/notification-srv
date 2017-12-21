@@ -1,0 +1,17 @@
+node_modules/
+npm-debug.log
+
+coverage/
+scripts/bin/
+
+.vscode
+.project
+.settings
+
+*.log
+*~
+*.d.ts
+lib/*.d.ts
+lib/*.js
+*.js
+!setupTopics.js

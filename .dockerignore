@@ -1,0 +1,11 @@
+node_modules/
+npm-debug.log
+
+coverage/
+
+.project
+.settings
+.directory
+.vscode
+
+.git*
