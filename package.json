@@ -50,7 +50,7 @@
     "lint": "export NODE_ENV=development; tslint './lib/*.ts' './*_test.ts' './service.ts' './start.ts'",
     "mocha": "export NODE_ENV=test;  mocha --timeout 60000 ./test/*.js --stack-trace",
     "coveralls": "export NODE_ENV=test;  istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*.js",
-    "test-debug": "export NODE_ENV=test;  mocha --inspect-brk",
+    "test-debug": "export NODE_ENV=test;  mocha ./test/*.js --inspect-brk",
     "createtopics": "node setupTopics.js io.restorecommerce.notification io.restorecommerce.command",
     "postinstall": "tsc -d",
     "tsctests": "tsc test/*.ts --module commonjs -target ES6"
