@@ -1,0 +1,36 @@
+{
+  "logger": {
+    "elasticsearch": {
+      "level": "silly",
+      "clientOpts": {
+        "host": "elasticsearch:9200"
+      },
+      "source": "notification-srv"
+    }
+  },
+  "events": {
+    "kafka": {
+      "connectionString": "zookeeper:2181"
+    }
+  },
+  "server": {
+    "templates": {
+      "prefix": "http://console:8080/"
+    },
+    "transports": [{
+      "name": "notificationGRPC",
+      "provider": "grpc",
+      "services": {
+        "restore-notification-srv":"io.restorecommerce.notification.Service",
+        "commandinterface": "io.restorecommerce.commandinterface.Service"
+      },
+      "addr": "notification-srv:50051",
+      "protos": [
+        "io/restorecommerce/notification.proto",
+        "io/restorecommerce/commandinterface.proto",
+        "io/restorecommerce/job.proto"
+      ],
+      "protoRoot": "./protos/"
+    }]
+  }
+}

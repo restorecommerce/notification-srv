@@ -1,0 +1,62 @@
+{
+  "name": "@restorecommerce/notification-srv",
+  "version": "0.1.0",
+  "description": "Restore Commerce notification microservice",
+  "main": "start.js",
+  "author": "Invend GmbH",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/restorecommerce/restore-notification-srv.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "restore",
+    "commerce",
+    "microservice",
+    "notification"
+  ],
+  "dependencies": {
+    "@restorecommerce/chassis-srv": "git+https://github.com/restorecommerce/chassis-srv.git",
+    "@restorecommerce/cluster-service": "^0.1.0",
+    "@restorecommerce/command-service-interface": "git+ssh://git@gitlab.n-fuse.co:10022/restorecommerce/command-service-interface.git",
+    "@restorecommerce/logger": "^0.1.0",
+    "@restorecommerce/mailer": "^0.1.0",
+    "@restorecommerce/service-config": "^0.1.0",
+    "@restorecommerce/grpc-client": "git+https://github.com/restorecommerce/grpc-client",
+    "@restorecommerce/kafka-client": "git+https://github.com/restorecommerce/kafka-client",
+    "@restorecommerce/protos": "github:restorecommerce/protos",
+    "bluebird": "^3.4.6",
+    "co": "^4.6.0",
+    "debug": "^3.0.0",
+    "lodash": "^4.17.2",
+    "node-fetch": "^1.7.3",
+    "time": "^0.12.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.39",
+    "@types/should": "^11.2.0",
+    "co-mocha": "^1.2.1",
+    "coveralls": "^3.0.0",
+    "is-generator": "^1.0.3",
+    "istanbul": "^0.4.5",
+    "mocha": "^4.0.1",
+    "nock": "^9.0.13",
+    "should": "^11.2.1"
+  },
+  "scripts": {
+    "start": "npm run createtopics && node start.js",
+    "dev": "export NODE_ENV=development; npm run createtopics && node start.js",
+    "pretest": "npm run tsctests && npm run createtopics",
+    "test": "export NODE_ENV=test;  npm run lint && npm run mocha",
+    "lint": "export NODE_ENV=development; tslint './lib/*.ts' './*_test.ts' './service.ts' './start.ts'",
+    "mocha": "export NODE_ENV=test;  mocha --timeout 60000 ./test/*.js --stack-trace",
+    "coveralls": "export NODE_ENV=test;  istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*.js",
+    "test-debug": "export NODE_ENV=test;  mocha --inspect-brk",
+    "createtopics": "node setupTopics.js io.restorecommerce.notification io.restorecommerce.command",
+    "postinstall": "tsc -d",
+    "tsctests": "tsc test/*.ts --module commonjs -target ES6"
+  },
+  "engines": {
+    "node": ">= 9.2.0"
+  }
+}

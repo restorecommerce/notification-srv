@@ -1,0 +1,197 @@
+{
+  "logger": {
+    "console": {
+      "handleExceptions": false,
+      "level": "error",
+      "colorize": true,
+      "prettyPrint": true
+    }
+  },
+  "server": {
+    "mailer": {
+      "tls": {
+        "rejectUnauthorized": false
+      },
+      "queuePrefix": "restore.q",
+      "host": "mail.example.com",
+      "port": 25,
+      "auth": {
+        "user": "test@example.com",
+        "pass": "testPassword"
+      },
+      "address": "'restorecommerce' <noreply@restorecommerce.io>"
+    },
+    "templates": {
+      "prefix": "http://localhost:8080/"
+    },
+    "transports": [
+      {
+        "name": "notificationGRPC",
+        "provider": "grpc",
+        "services": {
+          "restore-notification-srv": "io.restorecommerce.notification.Service",
+          "commandinterface": "io.restorecommerce.commandinterface.Service"
+        },
+        "addr": "localhost:50052",
+        "protos": [
+          "io/restorecommerce/notification.proto",
+          "io/restorecommerce/commandinterface.proto",
+          "io/restorecommerce/job.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/"
+      }
+    ],
+    "services": {
+      "restore-notification-srv": {
+        "send": {
+          "transport": [
+            "notificationGRPC"
+          ]
+        }
+      },
+      "commandinterface": {
+        "check": {
+          "transport": [
+            "grpcCIS"
+          ]
+        },
+        "reset": {
+          "transport": [
+            "grpcCIS"
+          ]
+        },
+        "restore": {
+          "transport": [
+            "grpcCIS"
+          ]
+        },
+        "sendMailNotification": {
+          "transport": [
+            "grpcCIS"
+          ]
+        },
+        "version": {
+          "transport": [
+            "grpcCIS"
+          ]
+        }
+      }
+    }
+  },
+  "client": {
+    "blackbox": {
+      "transports": {
+        "grpc": {
+          "service": "io.restorecommerce.notification.Service",
+          "timeout": 3000,
+          "protos": [
+            "io/restorecommerce/notification.proto"
+          ],
+          "protoRoot": "node_modules/@restorecommerce/protos/"
+        }
+      },
+      "endpoints": {
+        "send": {
+          "loadbalancer": {
+            "name": "roundRobin"
+          },
+          "publisher": {
+            "name": "static",
+            "instances": [
+              "grpc://localhost:50052"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "events": {
+    "kafka": {
+      "provider": "kafka",
+      "groupId": "restore-notification-srv",
+      "clientId": "restore-notification-srv",
+      "connectionString": "localhost:2181",
+      "commandTopic": "io.restorecommerce.command",
+      "sendEmail": {
+        "protos": [
+          "io/restorecommerce/notification.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.notification.Notification"
+      },
+      "queued": {
+        "protos": [
+          "io/restorecommerce/job.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.job.ScheduledJob"
+      },
+      "roomServiceNotification-event": {
+        "protos": [
+          "io/restorecommerce/commandinterface.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
+      },
+      "invoiceNotification-event": {
+        "protos": [
+          "io/restorecommerce/commandinterface.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
+      },
+      "triggerMailCommand": {
+        "protos": [
+          "io/restorecommerce/commandinterface.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
+      },
+      "done": {
+        "protos": [
+          "io/restorecommerce/job.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.job.JobDone"
+      },
+      "healthCheckCommand": {
+        "protos": [
+          "io/restorecommerce/commandinterface.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.commandinterface.HealthCheckRequest"
+      },
+      "healthCheckResponse": {
+        "protos": [
+          "io/restorecommerce/commandinterface.proto"
+        ],
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "messageObject": "io.restorecommerce.commandinterface.HealthCheckResponse"
+      },
+      "topics": {
+        "notification": {
+          "topic": "io.restorecommerce.notification",
+          "events": [
+            "sendEmail"
+          ]
+        },
+        "command":{
+          "topic": "io.restorecommerce.command",
+          "events": [
+            "healthCheckCommand",
+            "triggerMailCommand"
+          ]
+        },
+        "jobs":{
+          "topic": "io.restorecommerce.jobs",
+          "events": [
+            "queuedJob"
+          ]
+        }
+      },
+      "mailNotificationJob": "sendMailNotification",
+      "notificationEvents": [
+      ]
+    }
+  }
+}
