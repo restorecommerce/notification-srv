@@ -40,6 +40,7 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 Attachments may be used in case of email notifications. Attachment properties are based on the standard [nodemailer API](https://community.nodemailer.com/using-attachments/):
 
 `io.restorecommerce.notification.Attachment`
+
 | Field | Type | Description | Email | Logging |
 | ----- | ---- | ----- | ----------- |--------|
 | filename | string | filename to be reported as the name of the attached file, use of unicode is allowed. If you do not want to use a filename, set this value as false, otherwise a filename is generated automatically | required | --- |
@@ -80,9 +81,9 @@ this microservice a `done` event is emitted. Refer [scheduling-srv](https://gith
 
 ## Shared Interface
 
-This microservice implements a shared [Command Interface Service](https://gitlab.n-fuse.co/restorecommerce/command-interface-srv) which
+This microservice implements a shared [Command Interface Service](https://github.com/restorecommerce/command-interface-srv) which
 provides endpoints for retrieving the system status and resetting/restoring the system in case of failure. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
-For usage details please see [the shared interface tests](https://gitlab.n-fuse.co/restorecommerce/command-service-interface/tree/master/test).
+For usage details please see [the shared interface tests](https://github.com/restorecommerce/command-service-interface/tree/master/test).
 
 
 ## Usage

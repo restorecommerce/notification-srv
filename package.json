@@ -27,7 +27,7 @@
     "@restorecommerce/protos": "github:restorecommerce/protos",
     "bluebird": "^3.4.6",
     "co": "^4.6.0",
-    "debug": "^3.0.0",
+    "debug": "^3.1.0",
     "lodash": "^4.17.2",
     "node-fetch": "^1.7.3",
     "time": "^0.12.0"
