@@ -81,7 +81,7 @@ this microservice a `done` event is emitted. Refer [scheduling-srv](https://gith
 
 ## Shared Interface
 
-This microservice implements a shared [Command Interface Service](https://github.com/restorecommerce/command-interface-srv) which
+This microservice implements a shared [command-interface](https://github.com/restorecommerce/command-interface-srv) which
 provides endpoints for retrieving the system status and resetting/restoring the system in case of failure. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
 For usage details please see [the shared interface tests](https://github.com/restorecommerce/command-service-interface/tree/master/test).
 
