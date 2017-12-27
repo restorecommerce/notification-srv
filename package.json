@@ -36,7 +36,6 @@
     "@types/should": "^11.2.0",
     "co-mocha": "^1.2.1",
     "coveralls": "^3.0.0",
-    "is-generator": "^1.0.3",
     "istanbul": "^0.4.5",
     "mocha": "^4.0.1",
     "nock": "^9.0.13",
