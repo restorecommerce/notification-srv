@@ -16,14 +16,14 @@
     "notification"
   ],
   "dependencies": {
-    "@restorecommerce/chassis-srv": "git+https://github.com/restorecommerce/chassis-srv.git",
+    "@restorecommerce/chassis-srv": "github:/restorecommerce/chassis-srv",
     "@restorecommerce/cluster-service": "^0.1.0",
-    "@restorecommerce/command-service-interface": "git+ssh://git@gitlab.n-fuse.co:10022/restorecommerce/command-service-interface.git",
+    "@restorecommerce/command-interface": "github:restorecommerce/command-interface",
     "@restorecommerce/logger": "^0.1.0",
     "@restorecommerce/mailer": "^0.1.0",
     "@restorecommerce/service-config": "^0.1.0",
-    "@restorecommerce/grpc-client": "git+https://github.com/restorecommerce/grpc-client",
-    "@restorecommerce/kafka-client": "git+https://github.com/restorecommerce/kafka-client",
+    "@restorecommerce/grpc-client": "github:restorecommerce/grpc-client",
+    "@restorecommerce/kafka-client": "github:restorecommerce/kafka-client",
     "@restorecommerce/protos": "github:restorecommerce/protos",
     "bluebird": "^3.4.6",
     "co": "^4.6.0",
