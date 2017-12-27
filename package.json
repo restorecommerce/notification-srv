@@ -6,7 +6,7 @@
   "author": "Invend GmbH",
   "repository": {
     "type": "git",
-    "url": "https://github.com/restorecommerce/restore-notification-srv.git"
+    "url": "https://github.com/restorecommerce/notification-srv.git"
   },
   "license": "MIT",
   "keywords": [
