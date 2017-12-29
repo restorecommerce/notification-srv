@@ -6,11 +6,14 @@
 import * as _ from 'lodash';
 import * as kafka from 'kafka-node';
 
+/**
+ * Check availability of Kafka
+ * @param kafkaCfg
+ * @param fn call back function
+ */
 const isKafkaAvailable = function checkKafka(kafkaCfg: any, fn: any): any {
-
   let connectionString = kafkaCfg.connectionString;
   const topics = kafkaCfg.topics;
-
   let client = new kafka.Client(connectionString);
   client.once('connect', function (): any {
     client.loadMetadataForTopics([], function (error: any, results: any): any {

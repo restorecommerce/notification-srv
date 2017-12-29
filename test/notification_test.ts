@@ -2,11 +2,10 @@
 import * as mocha from 'mocha';
 import * as coMocha from 'co-mocha';
 coMocha(mocha);
-
-import * as assert from 'assert';
 import * as co from 'co';
 import * as fs from 'fs';
 import * as fetch from 'node-fetch';
+import * as assert from 'assert';
 import * as Logger from '@restorecommerce/logger';
 import { Notification } from '../lib/notification';
 import * as sconfig from '@restorecommerce/service-config';
@@ -21,7 +20,8 @@ let cfg: any;
 let events: Events;
 let topic: Topic;
 const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
-describe('blackbox testing: send', () => {
+
+describe('testing: send', () => {
 
   before(async function init() {
     cfg = sconfig(process.cwd() + '/test');
@@ -32,23 +32,25 @@ describe('blackbox testing: send', () => {
   });
 
   after(async function stopServer() {
-    await serviceHandler.end();
+    await serviceHandler.stop();
     await events.stop();
   });
 
   it('should log a message', async function sendLogMessage() {
-    const notification = new Notification(cfg, {
+    const notification: Notification = new Notification(cfg, {
       notifyee: console,
       body: 'log with from user: test@web.de',
       transport: 'log',
       provider: 'winston'
     });
+    // empty response
+    const response = {};
     const result = await notification.send('log', service.logger);
-    assert(result);
+    assert.deepEqual(response, result);
   });
 
   it('should send an email', async function sendEmailMessage() {
-    const notification = new Notification(cfg, {
+    const notification: Notification = new Notification(cfg, {
       notifyee: 'test@web.de',
       body: mailBody,
       subject: 'info for test@web.de',
@@ -60,7 +62,7 @@ describe('blackbox testing: send', () => {
   });
 
   it('should send an email through grpc', async function sendEmailGRPC() {
-    const client = new Client(cfg.get('client:blackbox'), service.logger);
+    const client: Client = new Client(cfg.get('client:service'), service.logger);
     const clientService = await client.connect();
     const notification = {
       notifyee: 'test@example.com',
@@ -69,7 +71,8 @@ describe('blackbox testing: send', () => {
       transport: 'email',
       target: 'test@example.com'
     };
-    await clientService.send(notification, service.logger);
+    const result = await clientService.send(notification, service.logger);
+    assert(result);
     await client.end();
   });
 
@@ -100,13 +103,14 @@ describe('blackbox testing: send', () => {
     const result = await notification.send('email', service.logger);
     assert(result);
     assert(result.response);
+    assert(/test.txt/.test(result.response.toString()));
   });
 
   it('should send an email with image URLs', async function sendImage() {
     const imgUrl = 'https://avatars2.githubusercontent.com/u/8339525?v=3&s=200';
     const mailBodyWithURL = fs.readFileSync('./test/fixtures/test_with_image_url.html');
 
-    const notification = new Notification(cfg, {
+    const notification: Notification = new Notification(cfg, {
       notifyee: 'test@web.de',
       body: mailBodyWithURL,
       subject: 'info for test@web.de',
@@ -121,11 +125,12 @@ describe('blackbox testing: send', () => {
     const result = await notification.send('email', service.logger);
     assert(result);
     assert(result.response);
+    assert(/test.png/.test(result.response.toString()));
   });
 
   it('should send an email with image buffers', async function sendImage() {
     const mailBodyWithBuffer = fs.readFileSync('./test/fixtures/test_with_image_buffer.html');
-    const notification = new Notification(cfg,{
+    const notification = new Notification(cfg, {
       notifyee: 'test@web.de',
       body: mailBodyWithBuffer,
       subject: 'info for test@web.de',
@@ -140,5 +145,6 @@ describe('blackbox testing: send', () => {
     const result = await notification.send('email', service.logger);
     assert(result);
     assert(result.response);
+    assert(/rc-logo.png/.test(result.response.toString()));
   });
 });

@@ -1,6 +1,6 @@
 # notification-srv
 
-[![Version npm][version]](https://npmjs.com/package/@restorecommerce/notification-srv)[![Build Status][build]](https://travis-ci.org/restorecommerce/notification-srv?branch=master)[![Dependencies][depend]](https://david-dm.org/restorecommerce/notification-srv)[![Coverage Status][cover]](https://coveralls.io/r/restorecommerce/notification-srv?branch=master)
+<img src="http://img.shields.io/npm/v/%40restorecommerce%2Fnotification%2Dsrv.svg?style=flat-square" alt="">[![Build Status][build]](https://travis-ci.org/restorecommerce/notification-srv?branch=master)[![Dependencies][depend]](https://david-dm.org/restorecommerce/notification-srv)[![Coverage Status][cover]](https://coveralls.io/r/restorecommerce/notification-srv?branch=master)
 
 [version]: http://img.shields.io/npm/v/notification-srv.svg?style=flat-square
 [build]: http://img.shields.io/travis/restorecommerce/notification-srv/master.svg?style=flat-square
@@ -22,7 +22,7 @@ The service should subscribe to any `notification`-related topic from Kafka and 
 This microservice exposes the below gRPC endpoint.
 
 ### Send
-This is a generic operation which can be invoked to send any type of notifications. Requests are performed providing `io.restorecommerce.notification` protobuf message as input and responses are a `google.protobuf.Empty` message.
+This is a generic operation which can be invoked to send any type of notifications. Requests are performed providing `io.restorecommerce.notification.Notification` protobuf message as input and responses are a `google.protobuf.Empty` message.
 
 A `io.restorecommerce.notification.Notification` message can have the following data fields:
 
@@ -69,7 +69,7 @@ This microservice subscribes to the following Kafka events by topic:
 - io.restorecommerce.notitication
   - sendEmail
 
-The notification service subscribes to the following Kafka events by topic:
+List of events emitted to Kafka by this microservice for below topics:
 - io.restorecommerce.command
   - healthCheckResponse
 - io.restorecommerce.jobs
@@ -81,9 +81,9 @@ this microservice a `done` event is emitted. Refer [scheduling-srv](https://gith
 
 ## Shared Interface
 
-This microservice implements a shared [command-interface](https://github.com/restorecommerce/command-interface-srv) which
+This microservice implements a shared [command-interface](https://github.com/restorecommerce/command-interface) which
 provides endpoints for retrieving the system status and resetting/restoring the system in case of failure. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
-For usage details please see [command-interface tests](https://github.com/restorecommerce/command-service-interface/tree/master/test).
+For usage details please see [command-interface tests](https://github.com/restorecommerce/command-interface/tree/master/test).
 
 
 ## Usage

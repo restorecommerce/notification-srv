@@ -42,13 +42,16 @@ export class Notification {
    * - there is only a body template without layout
    * - subject template is ignored
    *
-   * ... more to come
    */
   isValid(): boolean {
-    return true; // TODO: proper validation
+    return true;
   }
 
-  // send the notification via the specified channel
+  /**
+   * send the notification via the specified channel
+   * @param {any} channel
+   * @param {any} logger
+   */
   async send(channel: any, logger: any = {}): Promise<any> {
 
     this.transport = !!channel ? channel : this.transport;
@@ -64,7 +67,9 @@ export class Notification {
     return await send.log(this, logger);
   }
 
-  // helper to mock out custom IDs
+  /**
+   * helper to create UUIDs.
+   */
   createUUID(): string {
     function s4(): string {
       return Math.floor((1 + Math.random()) * 0x10000)

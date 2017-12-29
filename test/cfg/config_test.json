@@ -79,7 +79,7 @@
     }
   },
   "client": {
-    "blackbox": {
+    "service": {
       "transports": {
         "grpc": {
           "service": "io.restorecommerce.notification.Service",

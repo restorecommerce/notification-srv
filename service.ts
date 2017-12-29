@@ -3,7 +3,7 @@ import * as co from 'co';
 import * as _ from 'lodash';
 // microservice
 import * as chassis from '@restorecommerce/chassis-srv';
-import * as cisr from '@restorecommerce/command-service-interface';
+import * as cisr from '@restorecommerce/command-interface';
 import * as Logger from '@restorecommerce/logger';
 import * as sconfig from '@restorecommerce/service-config';
 import * as setup from './lib/setup';
@@ -18,7 +18,7 @@ const HEALTH_CHECK_RES_EVENT = 'healthCheckResponse';
 
 let server: chassis.Server;
 let service;
-let cis: cisr.CommandInterfaceService;
+let cis: cisr.CommandInterface;
 let events: Events;
 
 /**
@@ -37,6 +37,11 @@ class Service {
     this.events = events;
   }
 
+  /**
+   * helper function which invokes different transport notifications
+   * @param request contians the transport channel detail
+   * @param context
+   */
   async send(request: any, context: any): Promise<any> {
     const transport = request.request.transport;
     if (transport === 'email') {
@@ -48,6 +53,11 @@ class Service {
     }
   }
 
+  /**
+   * logs the request message
+   * @param request
+   * @param context
+   */
   async sendLog(request: any, context: any): Promise<any> {
     const { userId, subjectId, bodyId } = request;
     const notification: Notification = new Notification(this.cfg, {
@@ -59,6 +69,11 @@ class Service {
     await notification.send('log');
   }
 
+  /**
+   * triggers sending email
+   * @param request
+   * @param context
+   */
   async sendEmail(request: any, context: any): Promise<any> {
     const req = request.request;
     const { body, notifyee, subject, target } = req;
@@ -74,7 +89,8 @@ class Service {
 }
 
 /**
- * starting/stopping the actual server
+ * starting the actual server
+ * @param cfg
  */
 export async function start(cfg?: any): Promise<any> {
   if (!cfg) {
@@ -138,7 +154,7 @@ export async function start(cfg?: any): Promise<any> {
 
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface'
-  cis = new cisr.CommandInterfaceService(server, eventSetup, cfg.get(), logger);
+  cis = new cisr.CommandInterface(server, eventSetup, cfg.get(), logger);
   await co(server.bind('commandinterface', cis));
 
   const mailNotificationJob = kafkaCfg.mailNotificationJob;
@@ -206,7 +222,7 @@ export async function start(cfg?: any): Promise<any> {
   return service;
 }
 
-export async function end(): Promise<any> {
+export async function stop(): Promise<any> {
   await co(server.end());
   await events.stop();
 }
@@ -218,7 +234,7 @@ if (require.main === module) {
   });
 
   process.on('SIGINT', () => {
-    end().catch((err) => {
+    stop().catch((err) => {
       console.error('shutdown error', err);
       process.exit(1);
     });

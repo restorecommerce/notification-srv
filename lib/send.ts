@@ -3,7 +3,11 @@
 import * as Mailer from '@restorecommerce/mailer';
 import { Notification } from './notification';
 
-// log a bare notification using a chosen logging mechanism
+/**
+ * log a bare notification using a chosen logging mechanism
+ * @param {Notification} notification
+ * @param {any } logger
+ */
 export async function log(notification: Notification, logger?: any): Promise<any> {
   const { body } = notification;
   if (!logger) {
@@ -13,7 +17,12 @@ export async function log(notification: Notification, logger?: any): Promise<any
   return await {}; // success-placeholder
 }
 
-// send a notification via email
+/**
+ * send a notification via email
+ * @param {Notification} notification
+ * @param {any} cfg
+ * @param {any} logger
+ */
 export function email(notification: Notification, cfg: any, logger: any): any {
   let { notifyee, body, subject, replyto, attachments } = notification;
 
