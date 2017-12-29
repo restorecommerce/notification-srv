@@ -76,7 +76,7 @@ describe('testing: send', () => {
     await client.end();
   });
 
-  it('should send mail notification using kafka', async function sendKafkaMail() {
+  it('should send mail notification to kafka', async function sendKafkaMail() {
     const notification = {
       notifyee: 'test@example.com',
       body: mailBody,
@@ -85,7 +85,10 @@ describe('testing: send', () => {
       target: 'test@example.com'
     };
     const topic = events.topic('io.restorecommerce.notification');
+    const offset = await topic.$offset(-1);
     await topic.emit('sendEmail', notification);
+    const newOffset = await topic.$offset(-1);
+    assert.equal(offset+1, newOffset);
   });
 
   it('should send an email with attachments', async function sendAttachment() {
