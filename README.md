@@ -56,7 +56,7 @@ Because of limitations in the protobuf protocol, there is single hatch:
 
 > `content` should be specified as one of the attributes `text` (for strings) or `buffer` (raw bytes, like images).
 
-Textual attachments are appendend in the mail as-is, while binary attachments are converted to base64 and then included (see [tests](#link#).
+Textual attachments are appendend in the mail as-is, while binary attachments are converted to base64 and then included (see [tests](test/)).
 
 ## Kafka Events
 
@@ -88,7 +88,7 @@ For usage details please see [command-interface tests](https://github.com/restor
 
 ## Usage
 
-See [tests](#test/).
+See [tests](test/).
 
 
 **Note**: although any kind of gRPC client can be used to connect to these endpoints, the tests make use of the [grpc-client](https://github.com/restorecommerce/grpc-client),
