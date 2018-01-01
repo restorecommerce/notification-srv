@@ -7,21 +7,25 @@
 [depend]: https://img.shields.io/david/restorecommerce/notification-srv.svg?style=flat-square
 [cover]: http://img.shields.io/coveralls/restorecommerce/notification-srv/master.svg?style=flat-square
 
-A generic microservice which forwards notifications to different types of channels. Currently, the implemented channels are:
+A microservice which sends notifications through different channels. Available channels are:
+
 - Email
 - Log (via winston or classic console)
 
 Unimplemented channels as of now are:
+
 - Slack
+- Mattermost
 - SMS
 
-The service should subscribe to any `notification`-related topic from Kafka and trigger message-forwarding actions based on events, using [kafka-client](https://github.com/restorecommerce/kafka-client). It's also possible to perform notification requests directly through the provided [gRPC](https://grpc.io/docs/) interface, which is exposed using [chassis-srv](https://github.com/restorecommerce/chassis-srv). Internally the microservice uses the [mailer](https://github.com/restorecommerce/mailer) module for sending email notifications which is a wrapper for [nodemailer](https://github.com/nodemailer/nodemailer). The mail server configurations can be set in `server:mailer` in config.json(#cfg/config.json) file.
+The service subscribes to `notification`-related topic using using [kafka-client](https://github.com/restorecommerce/kafka-client) and sends messages based on events on these topics. It is also possible to initiate notification requests directly through its [gRPC](https://grpc.io/docs/) interface, which is exposed using [chassis-srv](https://github.com/restorecommerce/chassis-srv). Internally the microservice uses the [mailer](https://github.com/restorecommerce/mailer) module for sending email notifications which is a wrapper for [nodemailer](https://github.com/nodemailer/nodemailer). The mail server configurations can be set in `server:mailer` in the [`config.json`](#cfg/config.json) file.
 
 ## gRPC Interface
 
 This microservice exposes the below gRPC endpoint.
 
 ### Send
+
 This is a generic operation which can be invoked to send any type of notifications. Requests are performed providing `io.restorecommerce.notification.Notification` protobuf message as input and responses are a `google.protobuf.Empty` message.
 
 A `io.restorecommerce.notification.Notification` message can have the following data fields:
@@ -85,11 +89,9 @@ This microservice implements a shared [command-interface](https://github.com/res
 provides endpoints for retrieving the system status and resetting/restoring the system in case of failure. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
 For usage details please see [command-interface tests](https://github.com/restorecommerce/command-interface/tree/master/test).
 
-
 ## Usage
 
 See [tests](test/).
-
 
 **Note**: although any kind of gRPC client can be used to connect to these endpoints, the tests make use of the [grpc-client](https://github.com/restorecommerce/grpc-client),
 a `restorecommerce` module which allows an application to connect to multiple gRPC endpoints with custom middleware, loadbalancing and retry/timeout support.
