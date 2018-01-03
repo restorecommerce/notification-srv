@@ -52,7 +52,7 @@ Attachments may be used in case of email notifications. Attachment properties ar
 | buffer | bytes | binary data eg.: images | required | --- |
 | path | string | path to a file or an URL (data uris are allowed as well) if you want to stream the file instead of including it (better for larger attachments) | required | --- |
 | content_type | string | optional content type for the attachment, if not set will be derived from the filename property | required | --- |
-| content_disposition | string | optional content disposition type for the attachment, defaults to ‘attachment’ | required | --- |
+| content_disposition | string | optional content disposition type for the attachment, defaults to `attachment` | required | --- |
 | cid | string | optional content ID for using inline images in HTML message source | required | --- |
 | encoding | string | If set and content is string, then encodes the content to a Buffer using the specified encoding. Example values: base64, hex, binary etc. Useful if you want to use binary attachments in a JSON formatted e-mail object | required | --- |
 
