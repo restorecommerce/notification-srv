@@ -32,14 +32,14 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 
 | Field | Type | Description | Email | Logging |
 | ----- | ---- | ----- | ----------- |--------|
-| notifyee | string | IRI of a User or Organization | required | --- |
-| subject | string | IRI of a hbs template | required | --- |
-| body | string | IRI of a hbs template| required | required |
+| notifyee | string | URL of a User or Organization | required | --- |
+| subject | string | URL of a hbs template | required | --- |
+| body | string | URL of a hbs template| required | required |
 | transport | string | Directly declares the transportation channel. Possible values: `email` or `log` | optional | optional |
 | provider | bool | Further specifies the chosen transport. Example: use `winston` when transport is set to `log` | optional | optional |
 | replyto | string | If set, the outgoing mail will have this replyTo header set | optional | --- |
 | target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | --- |
-| attachments | []Attachment | An array of attachment objects, see below | optional | --- |
+| attachments | [ ]Attachment | An array of attachment objects, see below | optional | --- |
 
 Attachments may be used in case of email notifications. Attachment properties are based on the standard [nodemailer API](https://community.nodemailer.com/using-attachments/):
 
