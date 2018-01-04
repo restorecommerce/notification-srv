@@ -39,7 +39,7 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 | provider | bool | Further specifies the chosen transport. Example: use `winston` when transport is set to `log` | optional | optional |
 | replyto | string | If set, the outgoing mail will have this replyTo header set | optional | n/a |
 | target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | n/a |
-| attachments | [ ]Attachment | An array of attachment objects, see below | optional | n/a |
+| attachments | []Attachment | An array of attachment objects, see below | optional | n/a |
 
 Attachments may be used in case of email notifications. Attachment properties are based on the standard [nodemailer API](https://community.nodemailer.com/using-attachments/):
 
