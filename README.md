@@ -30,31 +30,31 @@ This is a generic operation which can be invoked to send any type of notificatio
 
 A `io.restorecommerce.notification.Notification` message can have the following data fields:
 
-| Field | Type | Description | Email | Logging |
+| Field | Type | Description | Email | Log |
 | ----- | ---- | ----- | ----------- |--------|
-| notifyee | string | URL of a User or Organization | required | --- |
-| subject | string | URL of a hbs template | required | --- |
+| notifyee | string | URL of a User or Organization | required | n/a |
+| subject | string | URL of a hbs template | required | n/a |
 | body | string | URL of a hbs template| required | required |
-| transport | string | Directly declares the transportation channel. Possible values: `email` or `log` | optional | optional |
+| transport | string | Directly declares the transportation channel. Possible values: `email` or `log` | required | required |
 | provider | bool | Further specifies the chosen transport. Example: use `winston` when transport is set to `log` | optional | optional |
-| replyto | string | If set, the outgoing mail will have this replyTo header set | optional | --- |
-| target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | --- |
-| attachments | [ ]Attachment | An array of attachment objects, see below | optional | --- |
+| replyto | string | If set, the outgoing mail will have this replyTo header set | optional | n/a |
+| target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | n/a |
+| attachments | [ ]Attachment | An array of attachment objects, see below | optional | n/a |
 
 Attachments may be used in case of email notifications. Attachment properties are based on the standard [nodemailer API](https://community.nodemailer.com/using-attachments/):
 
 `io.restorecommerce.notification.Attachment`
 
-| Field | Type | Description | Email | Logging |
+| Field | Type | Description | Email | Log |
 | ----- | ---- | ----- | ----------- |--------|
-| filename | string | filename to be reported as the name of the attached file, use of unicode is allowed. If you do not want to use a filename, set this value as false, otherwise a filename is generated automatically | required | --- |
-| text | string | String, Buffer or a Stream contents for the attachment | required | --- |
-| buffer | bytes | binary data eg.: images | required | --- |
-| path | string | path to a file or an URL (data uris are allowed as well) if you want to stream the file instead of including it (better for larger attachments) | required | --- |
-| content_type | string | optional content type for the attachment, if not set will be derived from the filename property | required | --- |
-| content_disposition | string | optional content disposition type for the attachment, defaults to `attachment` | required | --- |
-| cid | string | optional content ID for using inline images in HTML message source | required | --- |
-| encoding | string | If set and content is string, then encodes the content to a Buffer using the specified encoding. Example values: base64, hex, binary etc. Useful if you want to use binary attachments in a JSON formatted e-mail object | required | --- |
+| filename | string | filename to be reported as the name of the attached file, use of unicode is allowed. If you do not want to use a filename, set this value as false, otherwise a filename is generated automatically | required | n/a |
+| text | string | String, Buffer or a Stream contents for the attachment | required | n/a |
+| buffer | bytes | binary data eg.: images | required | n/a |
+| path | string | path to a file or an URL (data uris are allowed as well) if you want to stream the file instead of including it (better for larger attachments) | required | n/a |
+| content_type | string | optional content type for the attachment, if not set will be derived from the filename property | required | n/a |
+| content_disposition | string | optional content disposition type for the attachment, defaults to `attachment` | required | n/a |
+| cid | string | optional content ID for using inline images in HTML message source | required | n/a |
+| encoding | string | If set and content is string, then encodes the content to a Buffer using the specified encoding. Example values: base64, hex, binary etc. Useful if you want to use binary attachments in a JSON formatted e-mail object | required | n/a |
 
 Because of limitations in the protobuf protocol, there is single hatch:
 `content` should be specified as one of the attributes `text` (for strings) or `buffer` (raw bytes, like images).
