@@ -74,6 +74,9 @@
       ]
     }
   },
+  "command-interface": {
+    "name": "restore-notification-cis"
+  },
   "server": {
     "mailer": {
       "tls": {
