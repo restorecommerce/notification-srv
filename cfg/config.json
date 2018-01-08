@@ -27,7 +27,7 @@
         "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
       },
-      "done": {
+      "jobDone": {
         "protos": [
           "io/restorecommerce/job.proto"
         ],

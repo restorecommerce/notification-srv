@@ -11,7 +11,8 @@ import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Notification } from './lib/notification';
 
 const SEND_MAIL_EVENT = 'sendEmail';
-const QUEUED_EVENT = 'queuedJob';
+const JOB_QUEUED_EVENT = 'queuedJob';
+const JOB_DONE_EVENT = 'jobDone';
 const TRIGGER_MAIL_CMD_EVENT = 'triggerMailCommand';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const HEALTH_CHECK_RES_EVENT = 'healthCheckResponse';
@@ -147,7 +148,7 @@ export async function start(cfg?: any): Promise<any> {
         job_unique_name: message.job_unique_name
       };
       // Emit the response back to Job Topic.
-      await jobTopic.emit('done', jobDoneObj);
+      await jobTopic.emit(JOB_DONE_EVENT, jobDoneObj);
       return {};
     };
   }
@@ -165,7 +166,7 @@ export async function start(cfg?: any): Promise<any> {
       const notification: Notification = new Notification(cfg, notificationObj);
       await notification.send('email', logger);
     }
-    else if (eventName === QUEUED_EVENT) {
+    else if (eventName === JOB_QUEUED_EVENT) {
       if (notificationObj && notificationObj.name == mailNotificationJob) {
         let notificationRequest = {};
         for (let i = 0; i < notificationObj.data.length; i++) {
