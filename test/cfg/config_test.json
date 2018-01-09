@@ -30,7 +30,7 @@
         "provider": "grpc",
         "services": {
           "restore-notification-srv": "io.restorecommerce.notification.Service",
-          "commandinterface": "io.restorecommerce.commandinterface.Service"
+          "restore-notification-cis": "io.restorecommerce.commandinterface.Service"
         },
         "addr": "localhost:50052",
         "protos": [
@@ -49,7 +49,7 @@
           ]
         }
       },
-      "commandinterface": {
+      "restore-notification-cis": {
         "check": {
           "transport": [
             "grpcCIS"
@@ -77,6 +77,9 @@
         }
       }
     }
+  },
+  "command-interface": {
+    "name": "restore-notification-cis"
   },
   "client": {
     "service": {
@@ -119,41 +122,6 @@
         "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.notification.Notification"
       },
-      "queued": {
-        "protos": [
-          "io/restorecommerce/job.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.job.ScheduledJob"
-      },
-      "roomServiceNotification-event": {
-        "protos": [
-          "io/restorecommerce/commandinterface.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
-      },
-      "invoiceNotification-event": {
-        "protos": [
-          "io/restorecommerce/commandinterface.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
-      },
-      "triggerMailCommand": {
-        "protos": [
-          "io/restorecommerce/commandinterface.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
-      },
-      "done": {
-        "protos": [
-          "io/restorecommerce/job.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.job.JobDone"
-      },
       "healthCheckCommand": {
         "protos": [
           "io/restorecommerce/commandinterface.proto"
@@ -178,20 +146,10 @@
         "command":{
           "topic": "io.restorecommerce.command",
           "events": [
-            "healthCheckCommand",
-            "triggerMailCommand"
-          ]
-        },
-        "jobs":{
-          "topic": "io.restorecommerce.jobs",
-          "events": [
-            "queuedJob"
+            "healthCheckCommand"
           ]
         }
-      },
-      "mailNotificationJob": "sendMailNotification",
-      "notificationEvents": [
-      ]
+      }
     }
   }
 }

@@ -18,7 +18,6 @@
   "dependencies": {
     "@restorecommerce/chassis-srv": "github:restorecommerce/chassis-srv",
     "@restorecommerce/cluster-service": "^0.1.0",
-    "@restorecommerce/command-interface": "github:restorecommerce/command-interface",
     "@restorecommerce/logger": "^0.1.0",
     "@restorecommerce/mailer": "^0.1.0",
     "@restorecommerce/service-config": "^0.1.0",
