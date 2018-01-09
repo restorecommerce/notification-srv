@@ -13,27 +13,6 @@
         "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.notification.Notification"
       },
-      "queuedJob": {
-        "protos": [
-          "io/restorecommerce/job.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.job.ScheduledJob"
-      },
-      "triggerMailCommand": {
-        "protos": [
-          "io/restorecommerce/commandinterface.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.commandinterface.NotificationRequest"
-      },
-      "jobDone": {
-        "protos": [
-          "io/restorecommerce/job.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.job.JobDone"
-      },
       "healthCheckCommand": {
         "protos": [
           "io/restorecommerce/commandinterface.proto"
@@ -58,20 +37,10 @@
         "command":{
           "topic": "io.restorecommerce.command",
           "events": [
-            "healthCheckCommand",
-            "triggerMailCommand"
-          ]
-        },
-        "jobs":{
-          "topic": "io.restorecommerce.jobs",
-          "events": [
-            "queuedJob"
+            "healthCheckCommand"
           ]
         }
       },
-      "mailNotificationJob": "sendMailNotification",
-      "notificationEvents": [
-      ]
     }
   },
   "command-interface": {
