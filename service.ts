@@ -3,7 +3,6 @@ import * as co from 'co';
 import * as _ from 'lodash';
 // microservice
 import * as chassis from '@restorecommerce/chassis-srv';
-import * as cisr from '@restorecommerce/command-interface';
 import * as Logger from '@restorecommerce/logger';
 import * as sconfig from '@restorecommerce/service-config';
 import * as setup from './lib/setup';
@@ -11,15 +10,11 @@ import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Notification } from './lib/notification';
 
 const SEND_MAIL_EVENT = 'sendEmail';
-const JOB_QUEUED_EVENT = 'queuedJob';
-const JOB_DONE_EVENT = 'jobDone';
-const TRIGGER_MAIL_CMD_EVENT = 'triggerMailCommand';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const HEALTH_CHECK_RES_EVENT = 'healthCheckResponse';
 
 let server: chassis.Server;
 let service;
-let cis: cisr.CommandInterface;
 let events: Events;
 
 /**
@@ -120,43 +115,11 @@ export async function start(cfg?: any): Promise<any> {
 
   const that = this;
   const commandTopicName = kafkaCfg.topics.command.topic;
-  const jobTopicName = kafkaCfg.topics.jobs.topic;
-  const commandTopic: Topic = events.topic(commandTopicName);
-  const jobTopic: Topic = events.topic(jobTopicName);
-  const notificationEvents: Array<string> = kafkaCfg.notificationEvents;
-  const eventSetup = {
-    [commandTopicName]: {
-      topic: commandTopic,
-      events: {}
-    }
-  };
-
-  // all notification jobs have a generic mechanism
-  // 1. 'queued' event is sent from scheduling service containing an event name
-  // 2. If the event name is among the possible notification events, an event msg is
-  //    sent to Kafka
-  // 3. A 'done' event is posted to notify the scheduling service that the pending job
-  //    is finished and may be deleted from the database.
-  // 4. The listening services are triggered by the event and generate their specific notifications.
-  for (let event of notificationEvents) {
-    eventSetup[commandTopicName].events[event] = async (message: any, context: any, config: any, eventName: string) => {
-      // Mark this job as completed and trigger done event
-      const jobDoneObj = {
-        id: message.id,
-        schedule_type: message.schedule_type,
-        job_resource_id: message.job_resource_id,
-        job_unique_name: message.job_unique_name
-      };
-      // Emit the response back to Job Topic.
-      await jobTopic.emit(JOB_DONE_EVENT, jobDoneObj);
-      return {};
-    };
-  }
-
   // exposing commands as gRPC methods through chassis
-  // as 'commandinterface'
-  cis = new cisr.CommandInterface(server, eventSetup, cfg.get(), logger);
-  await co(server.bind('commandinterface', cis));
+  // as 'commandinterface
+  const cis = new chassis.CommandInterface(server, cfg.get(), logger);
+  const cisName = cfg.get('command-interface:name');
+  await co(server.bind(cisName, cis));
 
   const mailNotificationJob = kafkaCfg.mailNotificationJob;
   let notificationEventListener = async function eventListener(msg: any, context: any,
@@ -165,29 +128,6 @@ export async function start(cfg?: any): Promise<any> {
     if (eventName === SEND_MAIL_EVENT) {
       const notification: Notification = new Notification(cfg, notificationObj);
       await notification.send('email', logger);
-    }
-    else if (eventName === JOB_QUEUED_EVENT) {
-      if (notificationObj && notificationObj.name == mailNotificationJob) {
-        let notificationRequest = {};
-        for (let i = 0; i < notificationObj.data.length; i++) {
-          if (notificationObj.data[i].type_url &&
-            notificationObj.data[i].value) {
-            let value = Buffer.from(notificationObj.data[i].value, 'base64')
-              .toString('ascii');
-            let key = notificationObj.data[i].type_url;
-            notificationRequest[key] = value;
-          }
-        }
-        notificationRequest['id'] = notificationObj.id;
-        notificationRequest['schedule_type'] = notificationObj.schedule_type;
-        notificationRequest['job_resource_id'] = notificationObj.job_resource_id;
-        notificationRequest['job_unique_name'] = notificationObj.job_unique_name;
-        await cis.sendMailNotification(notificationRequest);
-      }
-    }
-    // No scheduled job directly trigger sendMail command
-    else if (eventName === TRIGGER_MAIL_CMD_EVENT) {
-      await cis.sendMailNotification(notificationObj);
     }
     else if (eventName === HEALTH_CHECK_CMD_EVENT) {
       if (notificationObj && (notificationObj.service ===
@@ -216,10 +156,8 @@ export async function start(cfg?: any): Promise<any> {
       }
     }
   }
-
   await co(server.bind('restore-notification-srv', service));
   await co(server.start());
-
   return service;
 }
 
