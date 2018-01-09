@@ -40,7 +40,7 @@
             "healthCheckCommand"
           ]
         }
-      },
+      }
     }
   },
   "command-interface": {
