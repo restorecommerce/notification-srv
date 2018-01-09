@@ -82,11 +82,12 @@ List of events emitted to Kafka by this microservice for below topics:
 `queuedJob` events are emitted to Kafka by the Scheduling Service to schedule a Job (ex: to trigger mail notification periodically) and upon successful processing of the job by
 this microservice a `done` event is emitted. Refer [scheduling-srv](https://github.com/restorecommerce/scheduling-srv) for more details regarding the protobuf message structure for the Job.
 
-## Shared Interface
+## Chassis Service
 
-This microservice implements a shared [command-interface](https://github.com/restorecommerce/command-interface) which
-provides endpoints for retrieving the system status and resetting/restoring the system in case of failure. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
-For usage details please see [command-interface tests](https://github.com/restorecommerce/command-interface/tree/master/test).
+This service uses chassis-srv, a base module for restorecommerce microservices, in order to provide the following functionalities:
+
+- exposure of all previously mentioned gRPC endpoints
+- implementation of a command interface which provides endpoints for retrieving the system status and resetting/restoring the system in case of failure. These endpoints can be called via gRPC or Kafka events (through the io.restorecommerce.command topic).
 
 ## Usage
 
