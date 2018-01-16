@@ -50,8 +50,6 @@ CMD [ "npm", "start" ]
 # docker build -t restorecommerce/notification-srv .
 #
 # To create a container:
-# docker create --name notification-srv -v <absolute_path_to_cfg>/:/usr/share/notification-srv/cfg --net restorecommercedev_default restorecommerce/notification
-#
 # docker create --name notification-srv --net restorecms_default restorecommerce/notification-srv
 #
 # To run the container:
