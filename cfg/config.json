@@ -89,27 +89,7 @@
         }
       },
       "restore-notification-cis": {
-        "check": {
-          "transport": [
-            "grpcCIS"
-          ]
-        },
-        "reset": {
-          "transport": [
-            "grpcCIS"
-          ]
-        },
-        "restore": {
-          "transport": [
-            "grpcCIS"
-          ]
-        },
-        "sendMailNotification": {
-          "transport": [
-            "grpcCIS"
-          ]
-        },
-        "version": {
+        "command": {
           "transport": [
             "grpcCIS"
           ]

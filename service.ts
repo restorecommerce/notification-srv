@@ -117,7 +117,7 @@ export async function start(cfg?: any): Promise<any> {
   const commandTopicName = kafkaCfg.topics.command.topic;
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
-  const cis = new chassis.CommandInterface(server, cfg.get(), logger);
+  const cis: chassis.ICommandInterface = new chassis.CommandInterface(server, cfg.get(), logger, events);
   const cisName = cfg.get('command-interface:name');
   await co(server.bind(cisName, cis));
 
@@ -130,13 +130,7 @@ export async function start(cfg?: any): Promise<any> {
       await notification.send('email', logger);
     }
     else if (eventName === HEALTH_CHECK_CMD_EVENT) {
-      if (notificationObj && (notificationObj.service ===
-        'restore-notification-srv')) {
-        const serviceStatus = cis.check(notificationObj);
-        const healthCheckTopic: Topic = events.topic(commandTopicName);
-        await healthCheckTopic.emit(HEALTH_CHECK_RES_EVENT,
-          serviceStatus);
-      }
+      await cis.command(msg, context);
     }
   };
 
