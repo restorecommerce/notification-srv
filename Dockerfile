@@ -38,9 +38,7 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 RUN pwd
 # Copy files from base container
-COPY --from=base /home/app/notification-srv/ .
-# Chown all the files to the app user.
-RUN chown -R app:app $HOME
+COPY --chown=app:app --from=base /home/app/notification-srv/ .
 # Change to the app user.
 USER app
 EXPOSE 50051
