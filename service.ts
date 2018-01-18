@@ -150,7 +150,8 @@ export async function start(cfg?: any): Promise<any> {
       }
     }
   }
-  await co(server.bind('restore-notification-srv', service));
+
+  await co(server.bind('io-restorecommerce-notification-srv', service));
   await co(server.start());
   return service;
 }

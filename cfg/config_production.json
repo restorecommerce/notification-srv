@@ -14,9 +14,6 @@
     }
   },
   "server": {
-    "templates": {
-      "prefix": "http://console:8080/"
-    },
     "transports": [{
       "name": "notificationGRPC",
       "provider": "grpc",
@@ -30,7 +27,7 @@
         "io/restorecommerce/commandinterface.proto",
         "io/restorecommerce/job.proto"
       ],
-      "protoRoot": "./protos/"
+      "protoRoot": "node_modules/@restorecommerce/protos/"
     }]
   }
 }

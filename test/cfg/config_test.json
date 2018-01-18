@@ -21,65 +21,41 @@
       },
       "address": "'restorecommerce' <noreply@restorecommerce.io>"
     },
-    "templates": {
-      "prefix": "http://localhost:8080/"
-    },
     "transports": [
       {
         "name": "notificationGRPC",
         "provider": "grpc",
         "services": {
-          "restore-notification-srv": "io.restorecommerce.notification.Service",
-          "restore-notification-cis": "io.restorecommerce.commandinterface.Service"
+          "io-restorecommerce-notification-srv": "io.restorecommerce.notification.Service",
+          "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service"
         },
         "addr": "localhost:50052",
         "protos": [
           "io/restorecommerce/notification.proto",
-          "io/restorecommerce/commandinterface.proto",
-          "io/restorecommerce/job.proto"
+          "io/restorecommerce/commandinterface.proto"
         ],
         "protoRoot": "node_modules/@restorecommerce/protos/"
       }
     ],
     "services": {
-      "restore-notification-srv": {
+      "io-restorecommerce-notification-srv": {
         "send": {
           "transport": [
             "notificationGRPC"
           ]
         }
       },
-      "restore-notification-cis": {
-        "check": {
+      "io-restorecommerce-notification-cis": {
+        "command": {
           "transport": [
-            "grpcCIS"
-          ]
-        },
-        "reset": {
-          "transport": [
-            "grpcCIS"
-          ]
-        },
-        "restore": {
-          "transport": [
-            "grpcCIS"
-          ]
-        },
-        "sendMailNotification": {
-          "transport": [
-            "grpcCIS"
-          ]
-        },
-        "version": {
-          "transport": [
-            "grpcCIS"
+            "notificationGRPC"
           ]
         }
       }
     }
   },
   "command-interface": {
-    "name": "restore-notification-cis"
+    "name": "io-restorecommerce-notification-cis"
   },
   "client": {
     "service": {
