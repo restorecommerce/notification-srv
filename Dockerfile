@@ -27,22 +27,26 @@ RUN pwd
 USER app
 RUN npm install
 
-FROM node:alpine
-RUN mkdir -p /home/app
-# Create an app user so our application doesn't run as root.
-RUN addgroup -S app &&\
-    adduser -S -g app app
-ENV HOME=/home/app
-ENV APP_HOME=/home/app/notification-srv
-RUN mkdir $APP_HOME
-WORKDIR $APP_HOME
-RUN pwd
-# Copy files from base container
-COPY --chown=app:app --from=base /home/app/notification-srv/ .
-# Change to the app user.
-USER app
 EXPOSE 50051
 CMD [ "npm", "start" ]
+
+
+#FROM node:9.2.0-wheezy
+#RUN mkdir -p /home/app
+# Create an app user so our application doesn't run as root.
+#RUN groupadd -r app &&\
+#    useradd -r -g app -d /home/app -s /sbin/nologin -c "Docker image user" app
+#ENV HOME=/home/app
+#ENV APP_HOME=/home/app/notification-srv
+#RUN mkdir $APP_HOME
+#WORKDIR $APP_HOME
+#RUN pwd
+# Copy files from base container
+#COPY --chown=app:app --from=base /home/app/notification-srv/ .
+# Change to the app user.
+#USER app
+#EXPOSE 50051
+#CMD [ "npm", "start" ]
 
 # To build the image:
 # docker build -t restorecommerce/notification-srv .
