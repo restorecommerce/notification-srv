@@ -1,7 +1,5 @@
 'use strict';
 import * as mocha from 'mocha';
-import * as coMocha from 'co-mocha';
-coMocha(mocha);
 import * as co from 'co';
 import * as fs from 'fs';
 import * as fetch from 'node-fetch';
