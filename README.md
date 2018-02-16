@@ -39,7 +39,7 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 | provider | bool | Further specifies the chosen transport. Example: use `winston` when transport is set to `log` | optional | optional |
 | replyto | string | If set, the outgoing mail will have this replyTo header set | optional | n/a |
 | target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | n/a |
-| attachments | []Attachment | An array of attachment objects, see below | optional | n/a |
+| attachments | []`io.restorecommerce.notification.Attachment` | An array of attachment objects, see below | optional | n/a |
 
 Attachments may be used in case of email notifications. Attachment properties are based on the standard [nodemailer API](https://community.nodemailer.com/using-attachments/):
 
@@ -65,29 +65,24 @@ Textual attachments are appendend in the mail as-is, while binary attachments ar
 
 This microservice subscribes to the following Kafka events by topic:
 - io.restorecommerce.command
-  - triggerMailCommand
   - healthCheckCommand
-- io.restorecommerce.jobs
-  - queuedJob
+  - versionCommand
 - io.restorecommerce.notitication
   - sendEmail
 
 List of events emitted to Kafka by this microservice for below topics:
 - io.restorecommerce.command
   - healthCheckResponse
-- io.restorecommerce.jobs
-  - done
+  - versionResponse
 
 `sendEmail` events are based on the same protobuf message as the gRPC call for the `Send` endpoint.
-`queuedJob` events are emitted to Kafka by the Scheduling Service to schedule a Job (ex: to trigger mail notification periodically) and upon successful processing of the job by
-this microservice a `done` event is emitted. Refer [scheduling-srv](https://github.com/restorecommerce/scheduling-srv) for more details regarding the protobuf message structure for the Job.
 
 ## Chassis Service
 
 This service uses chassis-srv, a base module for restorecommerce microservices, in order to provide the following functionalities:
 
 - exposure of all previously mentioned gRPC endpoints
-- implementation of a command interface which provides endpoints for retrieving the system status and resetting/restoring the system in case of failure. These endpoints can be called via gRPC or Kafka events (through the io.restorecommerce.command topic).
+- implementation of a command interface which provides endpoints for retrieving the system status and version information. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
 
 ## Usage
 
