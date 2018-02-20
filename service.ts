@@ -157,9 +157,6 @@ export async function start(cfg?: any): Promise<any> {
 
   await co(server.bind('io-restorecommerce-notification-srv', service));
   await co(server.start());
-  // delay to avoid updating of the latestOffset to redis instantly
-  // as the current offSetValue needs to be used for subscribing to topic
-  setTimeout(offsetStore.updateTopicOffsets.bind(offsetStore), 5000);
   return service;
 }
 
