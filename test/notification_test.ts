@@ -2,7 +2,6 @@
 import * as mocha from 'mocha';
 import * as co from 'co';
 import * as fs from 'fs';
-import * as fetch from 'node-fetch';
 import * as assert from 'assert';
 import * as Logger from '@restorecommerce/logger';
 import { Notification } from '../lib/notification';
@@ -18,6 +17,10 @@ let cfg: any;
 let events: Events;
 let topic: Topic;
 const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
+
+/**
+ * NOTE: A running instance of Kafka and redis is needed to execute below test.
+ */
 
 describe('testing: send', () => {
 

@@ -1,4 +1,9 @@
 {
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "interval": 1000
+  },
   "events": {
     "kafka": {
       "provider": "kafka",
@@ -47,7 +52,7 @@
             "sendEmail"
           ]
         },
-        "command":{
+        "command": {
           "topic": "io.restorecommerce.command",
           "events": [
             "healthCheckCommand",

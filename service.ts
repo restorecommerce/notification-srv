@@ -16,6 +16,7 @@ const HEALTH_CHECK_RES_EVENT = 'healthCheckResponse';
 let server: chassis.Server;
 let service;
 let events: Events;
+let offsetStore: chassis.OffsetStore;
 
 /**
  * Main API for sending notifications.
@@ -109,6 +110,7 @@ export async function start(cfg?: any): Promise<any> {
   if (kafkaIsAvailable) {
     events = new Events(kafkaCfg, logger);
     await events.start();
+    offsetStore = new chassis.OffsetStore(events, cfg, logger);
   } else {
     throw new Error('Kafka not available');
   }
@@ -143,22 +145,28 @@ export async function start(cfg?: any): Promise<any> {
   for (let topicType of topicTypes) {
     const topicName = kafkaCfg.topics[topicType].topic;
     const topic: Topic = events.topic(topicName);
+    const offsetValue = await offsetStore.getOffset(topicName);
+    logger.info('subscribing to topic with offset value', topicName, offsetValue);
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
       for (let eventName of eventNames) {
-        await topic.on(eventName, notificationEventListener);
+        await topic.on(eventName, notificationEventListener, offsetValue);
       }
     }
   }
 
   await co(server.bind('io-restorecommerce-notification-srv', service));
   await co(server.start());
+  // delay to avoid updating of the latestOffset to redis instantly
+  // as the current offSetValue needs to be used for subscribing to topic
+  setTimeout(offsetStore.updateTopicOffsets.bind(offsetStore), 5000);
   return service;
 }
 
 export async function stop(): Promise<any> {
   await co(server.end());
   await events.stop();
+  await offsetStore.stop();
 }
 
 if (require.main === module) {

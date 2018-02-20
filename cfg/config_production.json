@@ -8,6 +8,9 @@
       "source": "notification-srv"
     }
   },
+  "redis": {
+    "host": "redis"
+  },
   "events": {
     "kafka": {
       "connectionString": "zookeeper:2181"
