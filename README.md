@@ -79,10 +79,11 @@ List of events emitted to Kafka by this microservice for below topics:
 
 ## Chassis Service
 
-This service uses chassis-srv, a base module for restorecommerce microservices, in order to provide the following functionalities:
+This service uses [chassis-srv](http://github.com/restorecommerce/chassis-srv), a base module for [restorecommerce](https://github.com/restorecommerce) microservices, in order to provide the following functionalities:
 
 - exposure of all previously mentioned gRPC endpoints
-- implementation of a command interface which provides endpoints for retrieving the system status and version information. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
+- implementation of a [command-interface](https://github.com/restorecommerce/chassis-srv/blob/master/command-interface.md) which
+provides endpoints for retrieving the system status and version information. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
 
 ## Usage
 
