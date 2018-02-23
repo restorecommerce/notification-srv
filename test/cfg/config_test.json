@@ -98,6 +98,7 @@
       "groupId": "restore-notification-srv",
       "clientId": "restore-notification-srv",
       "connectionString": "localhost:2181",
+      "latestOffset": true,
       "commandTopic": "io.restorecommerce.command",
       "sendEmail": {
         "protos": [
