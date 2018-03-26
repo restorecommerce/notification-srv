@@ -18,16 +18,16 @@
   "dependencies": {
     "@restorecommerce/chassis-srv": "github:restorecommerce/chassis-srv",
     "@restorecommerce/cluster-service": "^0.1.0",
+    "@restorecommerce/kafka-client": "github:restorecommerce/kafka-client",
     "@restorecommerce/logger": "^0.1.0",
     "@restorecommerce/mailer": "^0.1.0",
     "@restorecommerce/service-config": "^0.1.0",
-    "@restorecommerce/grpc-client": "github:restorecommerce/grpc-client",
-    "@restorecommerce/kafka-client": "github:restorecommerce/kafka-client",
     "@restorecommerce/protos": "github:restorecommerce/protos",
     "co": "^4.6.0",
     "lodash": "^4.17.2"
   },
   "devDependencies": {
+    "@restorecommerce/grpc-client": "github:restorecommerce/grpc-client",
     "@types/mocha": "^2.2.39",
     "@types/should": "^11.2.0",
     "coveralls": "^3.0.0",
