@@ -121,7 +121,7 @@ export async function start(cfg?: any): Promise<any> {
   // as 'commandinterface
   const cis: chassis.ICommandInterface = new chassis.CommandInterface(server, cfg.get(), logger, events);
   const cisName = cfg.get('command-interface:name');
-  await co(server.bind(cisName, cis));
+  await server.bind(cisName, cis);
 
   const mailNotificationJob = kafkaCfg.mailNotificationJob;
   let notificationEventListener = async function eventListener(msg: any, context: any,
@@ -155,13 +155,13 @@ export async function start(cfg?: any): Promise<any> {
     }
   }
 
-  await co(server.bind('io-restorecommerce-notification-srv', service));
-  await co(server.start());
+  await server.bind('io-restorecommerce-notification-srv', service);
+  await server.start();
   return service;
 }
 
 export async function stop(): Promise<any> {
-  await co(server.end());
+  await server.stop();
   await events.stop();
   await offsetStore.stop();
 }
