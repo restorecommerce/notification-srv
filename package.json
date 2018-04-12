@@ -19,10 +19,10 @@
     "@restorecommerce/chassis-srv": "github:restorecommerce/chassis-srv",
     "@restorecommerce/cluster-service": "^0.1.0",
     "@restorecommerce/kafka-client": "github:restorecommerce/kafka-client",
-    "@restorecommerce/logger": "^0.1.0",
+    "@restorecommerce/logger": "^0.1.3",
     "@restorecommerce/mailer": "^0.1.0",
-    "@restorecommerce/service-config": "^0.1.0",
     "@restorecommerce/protos": "github:restorecommerce/protos",
+    "@restorecommerce/service-config": "^0.1.0",
     "co": "^4.6.0",
     "lodash": "^4.17.2"
   },
