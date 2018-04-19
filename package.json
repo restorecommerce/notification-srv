@@ -23,7 +23,6 @@
     "@restorecommerce/mailer": "^0.1.0",
     "@restorecommerce/protos": "github:restorecommerce/protos",
     "@restorecommerce/service-config": "^0.1.0",
-    "co": "^4.6.0",
     "lodash": "^4.17.2"
   },
   "devDependencies": {
