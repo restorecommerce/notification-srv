@@ -10,7 +10,7 @@
 A microservice which sends notifications through different channels. Available channels are:
 
 - Email
-- Log (via winston or classic console)
+- Log (via [winston](httshttps://github.com/winstonjs/winston) or classic console)
 
 Unimplemented channels as of now are:
 
