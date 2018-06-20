@@ -1,6 +1,6 @@
 {
   "name": "@restorecommerce/notification-srv",
-  "version": "0.1.0",
+  "version": "0.0.7",
   "description": "Restore Commerce notification microservice",
   "main": "start.js",
   "author": "Invend GmbH",
@@ -23,7 +23,8 @@
     "@restorecommerce/mailer": "^0.1.0",
     "@restorecommerce/protos": "github:restorecommerce/protos",
     "@restorecommerce/service-config": "^0.1.0",
-    "lodash": "^4.17.2"
+    "lodash": "^4.17.2",
+    "typescript": "^2.8.3"
   },
   "devDependencies": {
     "@restorecommerce/grpc-client": "github:restorecommerce/grpc-client",
