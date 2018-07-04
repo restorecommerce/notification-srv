@@ -35,12 +35,14 @@
         "provider": "grpc",
         "services": {
           "io-restorecommerce-notification-srv": "io.restorecommerce.notification.Service",
-          "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service"
+          "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service",
+          "io-restorecommerce-notification-reflection": "grpc.reflection.v1alpha.ServerReflection"
         },
         "addr": "localhost:50052",
         "protos": [
           "io/restorecommerce/notification.proto",
-          "io/restorecommerce/commandinterface.proto"
+          "io/restorecommerce/commandinterface.proto",
+          "grpc/reflection/v1alpha/reflection.proto"
         ],
         "protoRoot": "node_modules/@restorecommerce/protos/"
       }
@@ -59,11 +61,20 @@
             "notificationGRPC"
           ]
         }
+      },
+      "io-restorecommerce-notification-reflection": {
+        "serverReflectionInfo": {
+          "transport": [
+            "notificationGRPC"
+          ]
+        }
       }
     }
   },
-  "command-interface": {
-    "name": "io-restorecommerce-notification-cis"
+  "serviceNames": {
+    "notification": "io-restorecommerce-notification-srv",
+    "cis": "io-restorecommerce-notification-cis",
+    "reflection": "io-restorecommerce-notification-reflection"
   },
   "client": {
     "service": {

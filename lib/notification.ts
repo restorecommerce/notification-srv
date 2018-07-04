@@ -53,18 +53,17 @@ export class Notification {
    * @param {any} logger
    */
   async send(channel: any, logger: any = {}): Promise<any> {
-
     this.transport = !!channel ? channel : this.transport;
     if (this.transport === 'email') {
       return send.email(this, this.cfg, logger);
     }
     if (this.transport === 'slack') {
-      return await send.slack(this);
+      return send.slack(this);
     }
     if (this.transport === 'sms') {
-      return await send.sms(this);
+      return send.sms(this);
     }
-    return await send.log(this, logger);
+    return send.log(this, logger);
   }
 
   /**

@@ -66,9 +66,6 @@
       }
     }
   },
-  "command-interface": {
-    "name": "io-restorecommerce-notification-cis"
-  },
   "server": {
     "mailer": {
       "tls": {
@@ -89,14 +86,16 @@
         "provider": "grpc",
         "services": {
           "io-restorecommerce-notification-srv": "io.restorecommerce.notification.Service",
-          "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service"
+          "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service",
+          "io-restorecommerce-notification-reflection": "grpc.reflection.v1alpha.ServerReflection"
         },
-        "addr": "localhost:50052",
         "protos": [
           "io/restorecommerce/notification.proto",
-          "io/restorecommerce/commandinterface.proto"
+          "io/restorecommerce/commandinterface.proto",
+          "grpc/reflection/v1alpha/reflection.proto"
         ],
-        "protoRoot": "node_modules/@restorecommerce/protos/"
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "addr": "localhost:50052"
       }
     ],
     "services": {
@@ -113,34 +112,19 @@
             "notificationGRPC"
           ]
         }
+      },
+      "io-restorecommerce-notification-reflection": {
+        "serverReflectionInfo": {
+          "transport": [
+            "notificationGRPC"
+          ]
+        }
       }
     }
   },
-  "client": {
-    "service": {
-      "transports": {
-        "grpc": {
-          "service": "io.restorecommerce.notification.Service",
-          "timeout": 3000,
-          "protos": [
-            "io/restorecommerce/notification.proto"
-          ],
-          "protoRoot": "node_modules/@restorecommerce/protos/"
-        }
-      },
-      "endpoints": {
-        "send": {
-          "loadbalancer": {
-            "name": "roundRobin"
-          },
-          "publisher": {
-            "name": "static",
-            "instances": [
-              "grpc://localhost:50052"
-            ]
-          }
-        }
-      }
-    }
+  "serviceNames": {
+    "notification": "io-restorecommerce-notification-srv",
+    "cis": "io-restorecommerce-notification-cis",
+    "reflection": "io-restorecommerce-notification-reflection"
   }
 }

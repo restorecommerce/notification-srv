@@ -14,7 +14,7 @@ export async function log(notification: Notification, logger?: any): Promise<any
     logger = console;
   }
   logger.log(body);
-  return await {}; // success-placeholder
+  return {}; // success-placeholder
 }
 
 /**

@@ -119,8 +119,9 @@ export async function start(cfg?: any): Promise<any> {
   const commandTopicName = kafkaCfg.topics.command.topic;
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
+  const serviceNamesCfg = cfg.get('serviceNames');
   const cis: chassis.ICommandInterface = new chassis.CommandInterface(server, cfg.get(), logger, events);
-  const cisName = cfg.get('command-interface:name');
+  const cisName = serviceNamesCfg.cis;
   await server.bind(cisName, cis);
 
   const mailNotificationJob = kafkaCfg.mailNotificationJob;
@@ -146,7 +147,7 @@ export async function start(cfg?: any): Promise<any> {
     const topicName = kafkaCfg.topics[topicType].topic;
     const topic: Topic = events.topic(topicName);
     const offsetValue = await offsetStore.getOffset(topicName);
-    logger.info('subscribing to topic with offset value', topicName, offsetValue);
+    logger.info(`subscribing to topic ${topicName} with offset value:`, offsetValue);
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
       for (let eventName of eventNames) {
@@ -155,7 +156,15 @@ export async function start(cfg?: any): Promise<any> {
     }
   }
 
-  await server.bind('io-restorecommerce-notification-srv', service);
+  await server.bind(serviceNamesCfg.notification, service);
+
+  // Add ReflectionService
+  const reflectionServiceName = serviceNamesCfg.reflection;
+  const transportName = cfg.get(`server:services:${reflectionServiceName}:serverReflectionInfo:transport:0`);
+  const transport = server.transport[transportName];
+  const reflectionService = new chassis.ServerReflection(transport.$builder, server.config);
+  await server.bind(reflectionServiceName, reflectionService);
+
   await server.start();
   return service;
 }
