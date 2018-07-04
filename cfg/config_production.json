@@ -20,15 +20,16 @@
     "transports": [{
       "name": "notificationGRPC",
       "provider": "grpc",
-      "services": {
-        "restore-notification-srv":"io.restorecommerce.notification.Service",
-        "commandinterface": "io.restorecommerce.commandinterface.Service"
-      },
       "addr": "notification-srv:50051",
+      "services": {
+        "io-restorecommerce-notification-srv": "io.restorecommerce.notification.Service",
+        "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service",
+        "io-restorecommerce-notification-reflection": "grpc.reflection.v1alpha.ServerReflection"
+      },
       "protos": [
         "io/restorecommerce/notification.proto",
         "io/restorecommerce/commandinterface.proto",
-        "io/restorecommerce/job.proto"
+        "grpc/reflection/v1alpha/reflection.proto"
       ],
       "protoRoot": "node_modules/@restorecommerce/protos/"
     }]
