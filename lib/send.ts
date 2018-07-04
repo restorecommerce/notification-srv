@@ -13,7 +13,7 @@ export async function log(notification: Notification, logger?: any): Promise<any
   if (!logger) {
     logger = console;
   }
-  logger.log(body);
+  logger.log(notification.level, body);
   return {}; // success-placeholder
 }
 

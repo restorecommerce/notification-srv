@@ -42,7 +42,8 @@ describe('testing: send', () => {
       notifyee: console,
       body: 'log with from user: test@web.de',
       transport: 'log',
-      provider: 'winston'
+      provider: 'winston',
+      level: 'info'
     });
     // empty response
     const response = {};

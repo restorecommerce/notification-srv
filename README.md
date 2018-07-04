@@ -40,6 +40,7 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 | replyto | string | If set, the outgoing mail will have this replyTo header set | optional | n/a |
 | target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | n/a |
 | attachments | []`io.restorecommerce.notification.Attachment` | An array of attachment objects, see below | optional | n/a |
+| level | string | Logging level ex: `info` | n/a | required |
 
 Attachments may be used in case of email notifications. Attachment properties are based on the standard [nodemailer API](https://community.nodemailer.com/using-attachments/):
 

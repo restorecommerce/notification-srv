@@ -24,6 +24,7 @@ export class Notification {
   attachments: any;
   replyto: string;
   cfg: any;
+  level: string;
   constructor(cfg: any, opts?: any) {
     this.cfg = cfg;
     _.extend(this, _.pick(opts, ...Attrs));
