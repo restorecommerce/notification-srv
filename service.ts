@@ -151,7 +151,8 @@ export async function start(cfg?: any): Promise<any> {
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
       for (let eventName of eventNames) {
-        await topic.on(eventName, notificationEventListener, offsetValue);
+        await topic.on(eventName, notificationEventListener,
+          { startingOffset: offsetValue });
       }
     }
   }
