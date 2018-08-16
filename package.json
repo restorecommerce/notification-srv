@@ -17,22 +17,22 @@
   ],
   "dependencies": {
     "@restorecommerce/chassis-srv": "github:restorecommerce/chassis-srv",
-    "@restorecommerce/cluster-service": "^0.1.0",
+    "@restorecommerce/cluster-service": "^0.1.1",
     "@restorecommerce/kafka-client": "github:restorecommerce/kafka-client",
-    "@restorecommerce/logger": "^0.1.3",
-    "@restorecommerce/mailer": "^0.1.0",
+    "@restorecommerce/logger": "^0.1.6",
+    "@restorecommerce/mailer": "^0.1.2",
     "@restorecommerce/protos": "github:restorecommerce/protos",
-    "@restorecommerce/service-config": "^0.1.0",
-    "lodash": "^4.17.2",
-    "typescript": "^2.8.3"
+    "@restorecommerce/service-config": "^0.1.1",
+    "lodash": "^4.17.10",
+    "typescript": "^3.0.1"
   },
   "devDependencies": {
     "@restorecommerce/grpc-client": "github:restorecommerce/grpc-client",
-    "@types/mocha": "^5.0.0",
-    "coveralls": "^3.0.0",
+    "@types/mocha": "^5.2.5",
+    "coveralls": "^3.0.2",
     "istanbul": "^0.4.5",
-    "mocha": "^5.1.0",
-    "should": "^13.2.1"
+    "mocha": "^5.2.0",
+    "should": "^13.2.3"
   },
   "scripts": {
     "start": "npm run createtopics && node start.js",
