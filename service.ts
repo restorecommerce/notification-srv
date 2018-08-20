@@ -6,12 +6,17 @@ import * as sconfig from '@restorecommerce/service-config';
 import * as setup from './lib/setup';
 import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Notification } from './lib/notification';
+import { PendingNotification, NotificationTransport } from './interfaces';
+import { fail } from 'assert';
 
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
+const VERSION_CMD_EVENT = 'versionCommand';
+const QUEUED_JOB_EVENT = 'queuedJob';
+const FLUSH_NOTIFICATIONS_JOB_TYPE = 'flushPendingNotificationsJob';
 
 let server: chassis.Server;
-let service;
+let service: Service;
 let events: Events;
 let offsetStore: chassis.OffsetStore;
 
@@ -24,6 +29,7 @@ class Service {
   server: chassis.Server;
   logger: Logger;
   cfg: any;
+  pendingQueue: PendingNotification[];
   constructor(cfg: any, events: Events, server: chassis.Server, logger: Logger) {
     this.cfg = cfg;
     this.server = server;
@@ -38,47 +44,37 @@ class Service {
    */
   async send(request: any, context: any): Promise<any> {
     const transport = request.request.transport;
-    if (transport === 'email') {
-      await this.sendEmail(request, context);
-    } else if (transport == 'log') {
-      await this.sendLog(request, context);
+    if (transport === 'email' || transport === 'log') {
+      return this.sendNotification(request.request);
     } else {
       this.logger.error('Transport not implemented:', transport);
     }
   }
 
-  /**
-   * logs the request message
-   * @param request
-   * @param context
-   */
-  async sendLog(request: any, context: any): Promise<any> {
-    const { userId, subjectId, bodyId } = request;
-    const notification: Notification = new Notification(this.cfg, {
-      userId, subjectId, bodyId
-    });
-    if (!notification.isValid()) {
-      throw new Error('invalid or not existing params');
+  async sendNotification(data: any): Promise<any> {
+    const transport: NotificationTransport = data.transport;
+    let notification: Notification;
+    if (transport == 'log') {
+      const { userId, subjectId, bodyId } = data;
+      notification = new Notification(this.cfg, {
+        userId, subjectId, bodyId
+      });
+    } else {
+      const { body, notifyee, subject, target } = data;
+      notification = new Notification(this.cfg, {
+        notifyee, target, subject, body
+      });
     }
-    await notification.send('log');
-  }
 
-  /**
-   * triggers sending email
-   * @param request
-   * @param context
-   */
-  async sendEmail(request: any, context: any): Promise<any> {
-    const req = request.request;
-    const { body, notifyee, subject, target } = req;
-    const notification: Notification = new Notification(this.cfg, {
-      notifyee, target, subject, body
-    });
-
-    if (!notification.isValid()) {
-      throw new Error('invalid or not existing params');
+    try {
+      await notification.send(transport, service.logger);
+    } catch (err) {
+      this.logger.error('Error while sending notification; adding message to pending notifications...');
+      this.pendingQueue.push({
+        transport: 'mail',
+        notification
+      });
     }
-    await notification.send('email', service.logger);
   }
 }
 
@@ -121,13 +117,42 @@ export async function start(cfg?: any): Promise<any> {
 
   let notificationEventListener = async function eventListener(msg: any, context: any,
     config: any, eventName: string): Promise<any> {
-    let notificationObj = msg;
     if (eventName === SEND_MAIL_EVENT) {
+      const notificationObj = msg;
       const notification: Notification = new Notification(cfg, notificationObj);
-      await notification.send('email', logger);
+      try {
+        await service.sendNotification(msg);
+      } catch (err) {
+        this.logger.error('Error while sending notification; adding message to pending notifications...');
+        this.pendingQueue.push({
+          transport: 'mail',
+          notification
+        });
+      }
     }
-    else if (eventName === HEALTH_CHECK_CMD_EVENT) {
+    else if (eventName === HEALTH_CHECK_CMD_EVENT || eventName === VERSION_CMD_EVENT) {
       await cis.command(msg, context);
+    } else if (eventName == QUEUED_JOB_EVENT) {
+      if (msg.type == FLUSH_NOTIFICATIONS_JOB_TYPE) {
+        logger.info('Processing notifications flush request...');
+        const len = service.pendingQueue.length;
+        let failureQueue: PendingNotification[] = [];
+
+        for (let i = 0; i < len; i++) {
+          // flush
+          const pendingNotif = service.pendingQueue.shift();
+          const notification = pendingNotif.notification;
+          try {
+            await notification.send(pendingNotif.transport, service.logger);
+          } catch (err) {
+            service.logger.error('Failed to send pending notification; inserting message back into the queue');
+            failureQueue.push(pendingNotif);
+          }
+        }
+        if (!_.isEmpty(failureQueue)) {
+          service.pendingQueue = failureQueue;
+        }
+      }
     }
   };
 

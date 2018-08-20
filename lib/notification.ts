@@ -1,6 +1,3 @@
-'use strict';
-
-// dependencies
 import * as _ from 'lodash';
 import * as send from './send';
 

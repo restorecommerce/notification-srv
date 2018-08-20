@@ -1,9 +1,5 @@
-'use strict';
-import * as mocha from 'mocha';
-import * as co from 'co';
 import * as fs from 'fs';
 import * as assert from 'assert';
-import * as Logger from '@restorecommerce/logger';
 import { Notification } from '../lib/notification';
 import * as sconfig from '@restorecommerce/service-config';
 import * as serviceHandler from './../service';
@@ -11,11 +7,8 @@ import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
 
 let service: any;
-let subject: string, layout: string, body: string;
-let templatesUrl: string;
 let cfg: any;
 let events: Events;
-let topic: Topic;
 const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
 
 /**
@@ -26,7 +19,6 @@ describe('testing: send', () => {
 
   before(async function init() {
     cfg = sconfig(process.cwd() + '/test');
-    templatesUrl = cfg.get('server:templates:prefix');
     service = await serviceHandler.start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
     await events.start();

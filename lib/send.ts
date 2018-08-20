@@ -1,5 +1,3 @@
-'use strict';
-
 import * as Mailer from '@restorecommerce/mailer';
 import { Notification } from './notification';
 
