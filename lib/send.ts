@@ -32,10 +32,10 @@ export function email(notification: Notification, cfg: any, logger: any): any {
   const mailer = new Mailer(mailConf);
   const mail = {
     from: mailConf.address,
-    to: notification.notifyee,
-    subject: notification.subject,
-    html: notification.body,
-    replyTo: notification.replyto,
+    to: notifyee,
+    subject,
+    html: body,
+    replyTo: replyto,
     attachments: []
   };
 

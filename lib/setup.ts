@@ -19,19 +19,19 @@ const isKafkaAvailable = function checkKafka(kafkaCfg: any, fn: any): any {
     client.loadMetadataForTopics([], function (error: any, results: any): any {
       const topicDetails = JSON.stringify(results);
 
-      for (let topic of topics)  {
-        if ( topicDetails.indexOf(topic.topic) > -1) {
+      for (let topic of topics) {
+        if (topicDetails.indexOf(topic.topic) > -1) {
           fn(null, true);
         } else {
           fn(error, false);
         }
       }
     });
-});
+  });
 
 };
 
 export function wrapCheckKafka(connectionString: string): any {
   return (fn) => isKafkaAvailable(connectionString, fn);
 }
-export {wrapCheckKafka as isKafkaAvailable};
+export { wrapCheckKafka as isKafkaAvailable };

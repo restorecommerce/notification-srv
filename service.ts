@@ -1,5 +1,3 @@
-'use strict';
-import * as co from 'co';
 import * as _ from 'lodash';
 // microservice
 import * as chassis from '@restorecommerce/chassis-srv';
@@ -11,7 +9,6 @@ import { Notification } from './lib/notification';
 
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
-const HEALTH_CHECK_RES_EVENT = 'healthCheckResponse';
 
 let server: chassis.Server;
 let service;
@@ -115,8 +112,6 @@ export async function start(cfg?: any): Promise<any> {
     throw new Error('Kafka not available');
   }
 
-  const that = this;
-  const commandTopicName = kafkaCfg.topics.command.topic;
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
   const serviceNamesCfg = cfg.get('serviceNames');
@@ -124,7 +119,6 @@ export async function start(cfg?: any): Promise<any> {
   const cisName = serviceNamesCfg.cis;
   await server.bind(cisName, cis);
 
-  const mailNotificationJob = kafkaCfg.mailNotificationJob;
   let notificationEventListener = async function eventListener(msg: any, context: any,
     config: any, eventName: string): Promise<any> {
     let notificationObj = msg;
