@@ -24,7 +24,7 @@ let offsetStore: chassis.OffsetStore;
  * Main API for sending notifications.
  * Exposes methods via gRPC.
  */
-class Service {
+export class Service {
   events: Events;
   server: chassis.Server;
   logger: Logger;
@@ -35,6 +35,7 @@ class Service {
     this.server = server;
     this.logger = logger;
     this.events = events;
+    this.pendingQueue = [];
   }
 
   /**
@@ -69,11 +70,22 @@ class Service {
     try {
       await notification.send(transport, service.logger);
     } catch (err) {
-      this.logger.error('Error while sending notification; adding message to pending notifications...');
-      this.pendingQueue.push({
-        transport: 'mail',
-        notification
-      });
+      let toQueue = !!err.responseCode || err.code == 'ECONNECTION';
+      if (err.responseCode) { // SMTP response codes
+        this.logger.error('Error while sending email: ' + err.responseCode);
+        if ([451, 550, 501, 556, 552, 554].indexOf(err.responseCode) == -1) { // ignoring messages related with invalid messages or email addresses
+          toQueue = false;
+        }
+      }
+
+      if (toQueue) {
+        this.logger.verbose('Queueing email message');
+        this.pendingQueue.push({
+          transport: 'mail',
+          notification
+        });
+      }
+
     }
   }
 }
@@ -149,7 +161,7 @@ export async function start(cfg?: any): Promise<any> {
             failureQueue.push(pendingNotif);
           }
         }
-        if (!_.isEmpty(failureQueue)) {
+        if (!_.isEmpty(failureQueue)) { // restoring pending queue with potentially failed notifications
           service.pendingQueue = failureQueue;
         }
       }

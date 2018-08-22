@@ -2,11 +2,11 @@ import * as fs from 'fs';
 import * as assert from 'assert';
 import { Notification } from '../lib/notification';
 import * as sconfig from '@restorecommerce/service-config';
-import * as serviceHandler from './../service';
-import { Events, Topic } from '@restorecommerce/kafka-client';
+import { Service, start, stop } from './../service';
+import { Events } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
 
-let service: any;
+let service: Service;
 let cfg: any;
 let events: Events;
 const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
@@ -19,13 +19,13 @@ describe('testing: send', () => {
 
   before(async function init() {
     cfg = sconfig(process.cwd() + '/test');
-    service = await serviceHandler.start(cfg);
+    service = await start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
     await events.start();
   });
 
   after(async function stopServer() {
-    await serviceHandler.stop();
+    await stop();
     await events.stop();
   });
 
@@ -70,6 +70,25 @@ describe('testing: send', () => {
     await client.end();
   });
 
+  it('should queue failed emails', async function () {
+    let previousEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
+    const client: Client = new Client(cfg.get('client:service'), service.logger);
+    const clientService = await client.connect();
+    const notification = {
+      notifyee: 'test@example.com',
+      body: mailBody,
+      subject: 'info for test@web.de',
+      transport: 'email',
+      target: 'test@example.com'
+    };
+    const result = await clientService.send(notification, service.logger);
+    assert(result);
+    assert.deepStrictEqual(service.pendingQueue.length, 1);
+    await client.end();
+    process.env.NODE_ENV = previousEnv;
+  });
+
   it('should send mail notification to kafka', async function sendKafkaMail() {
     const notification = {
       notifyee: 'test@example.com',
@@ -82,7 +101,7 @@ describe('testing: send', () => {
     const offset = await topic.$offset(-1);
     await topic.emit('sendEmail', notification);
     const newOffset = await topic.$offset(-1);
-    assert.equal(offset+1, newOffset);
+    assert.equal(offset + 1, newOffset);
   });
 
   it('should send an email with attachments', async function sendAttachment() {
