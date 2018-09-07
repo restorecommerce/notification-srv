@@ -7,7 +7,6 @@ import * as setup from './lib/setup';
 import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Notification } from './lib/notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
-import { fail } from 'assert';
 
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';

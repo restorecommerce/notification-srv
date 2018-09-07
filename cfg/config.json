@@ -62,6 +62,12 @@
             "healthCheckCommand",
             "versionCommand"
           ]
+        },
+        "job": {
+          "topic": "io.restorecommerce.jobs",
+          "events": [
+            "flushPendingNotificationsJob"
+          ]
         }
       }
     }
