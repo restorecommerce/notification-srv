@@ -12,7 +12,7 @@
       "provider": "kafka",
       "groupId": "restore-notification-srv",
       "clientId": "restore-notification-srv",
-      "connectionString": "localhost:2181",
+      "kafkaHost": "localhost:9092",
       "latestOffset": false,
       "sendEmail": {
         "protos": [
