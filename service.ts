@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import * as chassis from '@restorecommerce/chassis-srv';
 import * as Logger from '@restorecommerce/logger';
 import * as sconfig from '@restorecommerce/service-config';
-import * as setup from './lib/setup';
 import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Notification } from './lib/notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
@@ -102,22 +101,11 @@ export async function start(cfg?: any): Promise<any> {
   server = new chassis.Server(cfg.get('server'), logger);
 
   // prepare kafka & events
-  let kafkaIsAvailable = false;
-  let kafkaCfg;
-  try {
-    kafkaCfg = cfg.get('events:kafka');
-    kafkaIsAvailable = setup.isKafkaAvailable(kafkaCfg);
-  } catch (e) {
-    kafkaIsAvailable = false;
-  }
+  let kafkaCfg = cfg.get('events:kafka');
 
-  if (kafkaIsAvailable) {
-    events = new Events(kafkaCfg, logger);
-    await events.start();
-    offsetStore = new chassis.OffsetStore(events, cfg, logger);
-  } else {
-    throw new Error('Kafka not available');
-  }
+  events = new Events(kafkaCfg, logger);
+  await events.start();
+  offsetStore = new chassis.OffsetStore(events, cfg, logger);
 
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
