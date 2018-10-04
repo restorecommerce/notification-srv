@@ -5,4 +5,4 @@ export interface PendingNotification {
     transport: NotificationTransport;
 }
 
-export type NotificationTransport = 'log' | 'mail';
+export type NotificationTransport = 'log' | 'email';

@@ -79,7 +79,7 @@ export class Service {
       if (toQueue) {
         this.logger.verbose('Queueing email message');
         this.pendingQueue.push({
-          transport: 'mail',
+          transport: 'email',
           notification
         });
       }
@@ -124,7 +124,7 @@ export async function start(cfg?: any): Promise<any> {
       } catch (err) {
         this.logger.error('Error while sending notification; adding message to pending notifications...');
         this.pendingQueue.push({
-          transport: 'mail',
+          transport: 'email',
           notification
         });
       }
