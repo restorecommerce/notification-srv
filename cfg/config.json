@@ -56,6 +56,13 @@
         "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.commandinterface.CommandResponse"
       },
+      "queuedJob": {
+        "protos": [
+          "io/restorecommerce/job.proto"
+        ],
+        "protoRoot": "protos/",
+        "messageObject": "io.restorecommerce.job.ScheduledJob"
+      },
       "topics": {
         "notification": {
           "topic": "io.restorecommerce.notification",
