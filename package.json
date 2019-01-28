@@ -23,6 +23,7 @@
     "@restorecommerce/mailer": "^0.1.2",
     "@restorecommerce/protos": "github:restorecommerce/protos",
     "@restorecommerce/service-config": "^0.1.1",
+    "cross-env": "^5.2.0",
     "lodash": "^4.17.10",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"
@@ -38,16 +39,16 @@
   },
   "scripts": {
     "start": "npm run createtopics && node start.js",
-    "dev": "export NODE_ENV=development; npm run createtopics && node start.js",
+    "dev": "cross-env NODE_ENV=development npm run createtopics && node start.js",
     "pretest": "npm run tsctests && npm run createtopics",
-    "test": "export NODE_ENV=test;  npm run lint && npm run mocha",
-    "lint": "export NODE_ENV=development; tslint './lib/*.ts' './*_test.ts' './service.ts' './start.ts'",
-    "mocha": "export NODE_ENV=test;  mocha -R spec --timeout 60000 ./test/*.js --stack-trace --exit",
-    "coveralls": "export NODE_ENV=test;  istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*.js --exit",
-    "test-debug": "export NODE_ENV=test;  mocha ./test/*.js --inspect-brk --exit",
+    "test": "cross-env NODE_ENV=test npm run lint && npm run mocha",
+    "lint": "cross-env NODE_ENV=development tslint lib/*.ts *_test.ts service.ts start.ts",
+    "mocha": "cross-env NODE_ENV=test mocha -R spec --timeout 60000 test/notification_test.js --stack-trace --exit",
+    "coveralls": "cross-env NODE_ENV=test istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec test/*.js --exit",
+    "test-debug": "cross-env NODE_ENV=test mocha test/*.js --inspect-brk --exit",
     "createtopics": "node setupTopics.js io.restorecommerce.notification io.restorecommerce.command",
     "postinstall": "tsc -d",
-    "tsctests": "tsc test/*.ts --module commonjs -target ES6"
+    "tsctests": "tsc test/notification_test.ts --module commonjs -target ES6"
   },
   "engines": {
     "node": ">= 9.2.0"
