@@ -33,5 +33,15 @@
       ],
       "protoRoot": "node_modules/@restorecommerce/protos/"
     }]
+  },
+  "client": {
+    "service": {
+      "publisher": {
+        "name": "static",
+        "instances": [
+          "grpc://resource-srv:50051"
+        ]
+      }
+    }
   }
 }
