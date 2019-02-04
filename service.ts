@@ -4,6 +4,7 @@ import * as chassis from '@restorecommerce/chassis-srv';
 import * as Logger from '@restorecommerce/logger';
 import * as sconfig from '@restorecommerce/service-config';
 import { Events, Topic } from '@restorecommerce/kafka-client';
+import { Client } from '@restorecommerce/grpc-client';
 import { Notification } from './lib/notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
 
@@ -12,6 +13,7 @@ const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const VERSION_CMD_EVENT = 'versionCommand';
 const QUEUED_JOB_EVENT = 'queuedJob';
 const FLUSH_NOTIFICATIONS_JOB_TYPE = 'flushPendingNotificationsJob';
+const MAIL_SERVER_CREDENTIALS = 'mail_server_credentials';
 
 let server: chassis.Server;
 let service: Service;
@@ -97,6 +99,21 @@ export async function start(cfg?: any): Promise<any> {
     cfg = sconfig(process.cwd());
   }
   const logger: any = new Logger(cfg.get('logger'));
+  // Make a gRPC call to resource service for credentials resource and update
+  // cfg for user and pass for mail server
+  const client: Client = new Client(cfg.get('client:service'), logger);
+  const credentialService = await client.connect();
+  const result = await credentialService.read({});
+  if (result && result.data && result.data.items) {
+    const credentialsList = result.data.items;
+    for (let credential of credentialsList) {
+      if (credential.id === MAIL_SERVER_CREDENTIALS) {
+        cfg.set('server:mailer:auth:user', credential.user);
+        cfg.set('server:mailer:auth:pass', credential.pass);
+        break;
+      }
+    }
+  }
 
   server = new chassis.Server(cfg.get('server'), logger);
 
