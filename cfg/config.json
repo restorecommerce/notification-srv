@@ -7,6 +7,32 @@
       "db-offsetStore": 0
     }
   },
+  "client": {
+    "service": {
+      "transports": {
+        "grpc": {
+          "service": "io.restorecommerce.credential.Service",
+          "timeout": 3000,
+          "protos": [
+            "io/restorecommerce/credential.proto"
+          ],
+          "protoRoot": "protos/"
+        }
+      },
+      "loadbalancer": {
+        "name": "roundRobin"
+      },
+      "publisher": {
+        "name": "static",
+        "instances": [
+          "grpc://localhost:50053"
+        ]
+      },
+      "endpoints": {
+        "read": {}
+      }
+    }
+  },
   "events": {
     "kafka": {
       "provider": "kafka",
