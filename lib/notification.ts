@@ -9,7 +9,8 @@ const Attrs = [
   'provider',
   'replyto',
   'target',
-  'attachments'
+  'attachments',
+  'bcc'
 ];
 
 export class Notification {
@@ -22,8 +23,15 @@ export class Notification {
   replyto: string;
   cfg: any;
   level: string;
+  bcc: string[];
   constructor(cfg: any, opts?: any) {
     this.cfg = cfg;
+    // TODO: this is a temporary hack to include bcc,
+    // need to update the protos and the respective calling services
+    this.bcc = cfg.get('mailServerCfg:bcc');
+    if ( this.bcc && this.bcc.length > 0) {
+      Object.assign(opts, { bcc: this.bcc });
+    }
     _.extend(this, _.pick(opts, ...Attrs));
   }
 

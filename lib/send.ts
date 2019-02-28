@@ -22,7 +22,7 @@ export async function log(notification: Notification, logger?: any): Promise<any
  * @param {any} logger
  */
 export function email(notification: Notification, cfg: any, logger: any): any {
-  let { notifyee, body, subject, replyto, attachments } = notification;
+  let { notifyee, body, subject, replyto, attachments, bcc } = notification;
 
   const target = notifyee.email;
   const mailConf = cfg.get('server:mailer');
@@ -34,7 +34,8 @@ export function email(notification: Notification, cfg: any, logger: any): any {
     subject,
     html: body,
     replyTo: replyto,
-    attachments: []
+    attachments: [],
+    bcc: []
   };
 
   if (attachments && attachments !== []) {
@@ -45,6 +46,10 @@ export function email(notification: Notification, cfg: any, logger: any): any {
       list.push(a);
     }
     mail.attachments = list;
+  }
+
+  if (bcc && bcc !== []) {
+    mail.bcc = bcc;
   }
 
   return mailer.send(mail);
