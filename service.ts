@@ -73,7 +73,9 @@ export class Service {
       let toQueue = !!err.responseCode || err.code == 'ECONNECTION';
       if (err.responseCode) { // SMTP response codes
         this.logger.error('Error while sending email: ' + err.responseCode);
-        if ([451, 550, 501, 556, 552, 554].indexOf(err.responseCode) == -1) { // ignoring messages related with invalid messages or email addresses
+        // "code":"EAUTH","response":"454 4.7.0 Temporary authentication failure:
+        // Connection lost to authentication server","responseCode":454
+        if ([451, 454, 550, 501, 556, 552, 554].indexOf(err.responseCode) == -1) { // ignoring messages related with invalid messages or email addresses
           toQueue = false;
         }
       }
@@ -152,6 +154,7 @@ export async function start(cfg?: any): Promise<any> {
       if (msg.type == FLUSH_NOTIFICATIONS_JOB_TYPE) {
         logger.info('Processing notifications flush request...');
         const len = service.pendingQueue.length;
+        logger.info('Pending mail queue length:', {length: len});
         let failureQueue: PendingNotification[] = [];
 
         for (let i = 0; i < len; i++) {

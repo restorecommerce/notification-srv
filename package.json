@@ -25,17 +25,16 @@
     "@restorecommerce/service-config": "^0.1.1",
     "cross-env": "^5.2.0",
     "lodash": "^4.17.10",
-    "tslint": "^5.11.0",
-    "typescript": "^3.0.1"
+    "typescript": "^3.3.3333"
   },
   "devDependencies": {
     "@restorecommerce/grpc-client": "github:restorecommerce/grpc-client",
-    "@types/mocha": "^5.2.5",
-    "coveralls": "^3.0.2",
+    "@types/mocha": "^5.2.6",
+    "coveralls": "^3.0.3",
     "istanbul": "^0.4.5",
-    "mocha": "^5.2.0",
+    "mocha": "^6.0.2",
     "should": "^13.2.3",
-    "tslint": "^5.11.0"
+    "tslint": "^5.13.1"
   },
   "scripts": {
     "start": "npm run createtopics && node start.js",

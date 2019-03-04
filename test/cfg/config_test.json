@@ -77,7 +77,7 @@
     "reflection": "io-restorecommerce-notification-reflection"
   },
   "client": {
-    "service": {
+    "notificationService": {
       "transports": {
         "grpc": {
           "service": "io.restorecommerce.notification.Service",
@@ -100,6 +100,30 @@
             ]
           }
         }
+      }
+    },
+    "service": {
+      "transports": {
+        "grpc": {
+          "service": "io.restorecommerce.credential.Service",
+          "timeout": 3000,
+          "protos": [
+            "io/restorecommerce/credential.proto"
+          ],
+          "protoRoot": "protos/"
+        }
+      },
+      "loadbalancer": {
+        "name": "roundRobin"
+      },
+      "publisher": {
+        "name": "static",
+        "instances": [
+          "grpc://localhost:50053"
+        ]
+      },
+      "endpoints": {
+        "read": {}
       }
     }
   },
@@ -139,7 +163,7 @@
             "sendEmail"
           ]
         },
-        "command":{
+        "command": {
           "topic": "io.restorecommerce.command",
           "events": [
             "healthCheckCommand"

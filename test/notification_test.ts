@@ -56,7 +56,7 @@ describe('testing: send', () => {
   });
 
   it('should send an email through grpc', async function sendEmailGRPC() {
-    const client: Client = new Client(cfg.get('client:service'), service.logger);
+    const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
     const clientService = await client.connect();
     const notification = {
       notifyee: 'test@example.com',
@@ -73,7 +73,7 @@ describe('testing: send', () => {
   it('should queue failed emails', async function () {
     let previousEnv = process.env.NODE_ENV
     process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
-    const client: Client = new Client(cfg.get('client:service'), service.logger);
+    const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
     const clientService = await client.connect();
     const notification = {
       notifyee: 'test@example.com',
