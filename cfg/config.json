@@ -40,13 +40,6 @@
       "clientId": "restore-notification-srv",
       "kafkaHost": "localhost:9092",
       "latestOffset": false,
-      "queuedJob": {
-        "protos": [
-          "io/restorecommerce/job.proto"
-        ],
-        "protoRoot": "protos/",
-        "messageObject": "io.restorecommerce.job.ScheduledJob"
-      },
       "sendEmail": {
         "protos": [
           "io/restorecommerce/notification.proto"
