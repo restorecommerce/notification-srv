@@ -61,9 +61,9 @@ export class Service {
         userId, subjectId, bodyId
       });
     } else {
-      const { body, notifyee, subject, target, attachments } = data;
+      const { body, notifyee, subject, target, attachments, bcc, cc } = data;
       notification = new Notification(this.cfg, {
-        notifyee, target, subject, body, attachments
+        notifyee, target, subject, body, attachments, bcc, cc
       });
     }
 

@@ -10,7 +10,8 @@ const Attrs = [
   'replyto',
   'target',
   'attachments',
-  'bcc'
+  'bcc',
+  'cc'
 ];
 
 export class Notification {
@@ -24,6 +25,7 @@ export class Notification {
   cfg: any;
   level: string;
   bcc: string[];
+  cc: string[];
   constructor(cfg: any, opts?: any) {
     this.cfg = cfg;
     // TODO: this is a temporary hack to include bcc,
