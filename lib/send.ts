@@ -24,10 +24,6 @@ export async function log(notification: Notification, logger?: any): Promise<any
 export function email(notification: Notification, cfg: any, logger: any): any {
 
   let { notifyee, body, subject, replyto, attachments, bcc, cc } = notification;
-  const array = notifyee.split(',');
-  const CC = cc.toString();
-  const ccMailslIst = CC.split(',');
-
 
   const target = notifyee.email;
   const mailConf = cfg.get('server:mailer');
@@ -35,13 +31,14 @@ export function email(notification: Notification, cfg: any, logger: any): any {
   const mailer = new Mailer(mailConf);
   const mail = {
     from: mailConf.address,
-   to: array,
+    to: notifyee,
     subject,
     html: body,
     replyTo: replyto,
     attachments: [],
     bcc: [],
     cc: []
+
   };
 
   if (attachments && attachments !== []) {
@@ -54,14 +51,13 @@ export function email(notification: Notification, cfg: any, logger: any): any {
     mail.attachments = list;
   }
 
-  if (ccMailslIst && ccMailslIst !== []) {
-    mail.bcc = ccMailslIst;
+  if (bcc && bcc !== []) {
+    mail.bcc = bcc;
   }
 
   if (cc && cc != []) {
     mail.cc = cc;
   }
-
   return mailer.send(mail);
 }
 

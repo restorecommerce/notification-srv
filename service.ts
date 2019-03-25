@@ -154,7 +154,7 @@ export async function start(cfg?: any): Promise<any> {
       if (msg.type == FLUSH_NOTIFICATIONS_JOB_TYPE) {
         logger.info('Processing notifications flush request...');
         const len = service.pendingQueue.length;
-        logger.info('Pending mail queue length:', {length: len});
+        logger.info('Pending mail queue length:', { length: len });
         let failureQueue: PendingNotification[] = [];
 
         for (let i = 0; i < len; i++) {
