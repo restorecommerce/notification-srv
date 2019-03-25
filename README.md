@@ -32,7 +32,7 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 
 | Field | Type | Description | Email | Log |
 | ----- | ---- | ----- | ----------- |--------|
-| notifyee | string | URL of a User or Organization | required | n/a |
+| notifyee | [Array] | list of notificaiton identifier e.g [email] | required | n/a |
 | subject | string | URL of a hbs template | required | n/a |
 | body | string | URL of a hbs template| required | required |
 | transport | string | Directly declares the transportation channel. Possible values: `email` or `log` | required | required |
