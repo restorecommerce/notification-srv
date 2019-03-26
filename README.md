@@ -38,7 +38,6 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 | body | string | URL of a hbs template| required | required |
 | transport | string | Directly declares the transportation channel. Possible values: `email` or `log` | required | required |
 | provider | bool | Further specifies the chosen transport. Example: use `winston` when transport is set to `log` | optional | optional |
-| target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | n/a |
 | attachments | []`io.restorecommerce.notification.Attachment` | An array of attachment objects, see below | optional | n/a |
 
 `io.restorecommerce.notification.Email`
