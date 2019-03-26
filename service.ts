@@ -61,16 +61,16 @@ export class Service {
         userId, subjectId, bodyId
       });
     } else {
-      const { body, notifyee, subject, target, attachments, bcc, cc } = data;
+      const { body, email, subject, target, attachments, bcc, cc } = data;
       notification = new Notification(this.cfg, {
-        notifyee, target, subject, body, attachments, bcc, cc
+        email, target, subject, body, attachments, bcc, cc
       });
     }
 
     try {
       await notification.send(transport, service.logger);
     } catch (err) {
-      let toQueue = !!err.responseCode || err.code == 'ECONNECTION';
+      let toQueue = !!err.responseCode || err.code == 'ECONNECTION' || err.command == 'CONN';
       if (err.responseCode) { // SMTP response codes
         this.logger.error('Error while sending email: ' + err.responseCode);
         // "code":"EAUTH","response":"454 4.7.0 Temporary authentication failure:
@@ -103,16 +103,18 @@ export async function start(cfg?: any): Promise<any> {
   const logger: any = new Logger(cfg.get('logger'));
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server
-  const client: Client = new Client(cfg.get('client:service'), logger);
-  const credentialService = await client.connect();
-  const result = await credentialService.read({});
-  if (result && result.data && result.data.items) {
-    const credentialsList = result.data.items;
-    for (let credential of credentialsList) {
-      if (credential.id === MAIL_SERVER_CREDENTIALS) {
-        cfg.set('server:mailer:auth:user', credential.user);
-        cfg.set('server:mailer:auth:pass', credential.pass);
-        break;
+  if (!_.isEmpty(cfg.get('client:service'))) {
+    const client: Client = new Client(cfg.get('client:service'), logger);
+    const credentialService = await client.connect();
+    const result = await credentialService.read({});
+    if (result && result.data && result.data.items) {
+      const credentialsList = result.data.items;
+      for (let credential of credentialsList) {
+        if (credential.id === MAIL_SERVER_CREDENTIALS) {
+          cfg.set('server:mailer:auth:user', credential.user);
+          cfg.set('server:mailer:auth:pass', credential.pass);
+          break;
+        }
       }
     }
   }

@@ -32,14 +32,27 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 
 | Field | Type | Description | Email | Log |
 | ----- | ---- | ----- | ----------- |--------|
-| notifyee | [Array] | list of notificaiton identifier e.g [email] | required | n/a |
+| email | `io.restorecommerce.notification.Email` | email channel properties | required | n/a |
+| log | `io.restorecommerce.notification.Log` | log channel properties | n/a | required |
 | subject | string | URL of a hbs template | required | n/a |
 | body | string | URL of a hbs template| required | required |
 | transport | string | Directly declares the transportation channel. Possible values: `email` or `log` | required | required |
 | provider | bool | Further specifies the chosen transport. Example: use `winston` when transport is set to `log` | optional | optional |
-| replyto | string | If set, the outgoing mail will have this replyTo header set | optional | n/a |
 | target | string | Email address. If this is set, the notification will be sent to this adress directly, skipping any notifyee lookup | optional | n/a |
 | attachments | []`io.restorecommerce.notification.Attachment` | An array of attachment objects, see below | optional | n/a |
+
+`io.restorecommerce.notification.Email`
+
+| Field | Type | Description | Email | Log |
+| ----- | ---- | ----- | ----------- |--------|
+| to | string [ ] | an array of recipients email addresses that will appear on the to: field | optional | n/a |
+| cc | string [ ] | an array of recipients email addresses that will appear on the cc: field | optional | n/a |
+| bcc | string [ ] |  an array of recipients email addresses that will appear on the bcc: field | optional | n/a |
+| replyto | string |  If set, the outgoing mail will have this replyTo header set | optinal | n/a |
+
+`io.restorecommerce.notification.Log`
+| Field | Type | Description | Email | Log |
+| ----- | ---- | ----- | ----------- |--------|
 | level | string | Logging level ex: `info` | n/a | required |
 
 Attachments may be used in case of email notifications. Attachment properties are based on the standard [nodemailer API](https://community.nodemailer.com/using-attachments/):
@@ -87,9 +100,45 @@ This service uses [chassis-srv](http://github.com/restorecommerce/chassis-srv), 
 provides endpoints for retrieving the system status and version information. These endpoints can be called via gRPC or Kafka events (through the `io.restorecommerce.command` topic).
 - stores the offset values for Kafka topics at regular intervals to [Redis](https://redis.io/).
 
-## Usage
+## Development
+
+### Tests
 
 See [tests](test/).
 
 **Note**: although any kind of gRPC client can be used to connect to these endpoints, the tests make use of the [grpc-client](https://github.com/restorecommerce/grpc-client),
 a `restorecommerce` module which allows an application to connect to multiple gRPC endpoints with custom middleware, loadbalancing and retry/timeout support.
+
+## Usage
+
+### Development
+
+- Install dependencies
+
+```sh
+npm install
+```
+
+- Build application
+
+```sh
+# compile the code
+npm run build
+```
+
+- Run application and restart it on changes in the code
+
+```sh
+# Start notification-srv backend in dev mode
+npm run dev
+```
+
+### Production
+
+```sh
+# compile the code
+npm run build
+
+# run compiled server
+npm start
+```

@@ -17,25 +17,26 @@ const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
 
 describe('testing: send', () => {
 
-  before(async function init() {
+  before(async function init(): Promise<void> {
     cfg = sconfig(process.cwd() + '/test');
     service = await start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
     await events.start();
   });
 
-  after(async function stopServer() {
+  after(async function stopServer(): Promise<void> {
     await stop();
     await events.stop();
   });
 
-  it('should log a message', async function sendLogMessage() {
+  it('should log a message', async function sendLogMessage(): Promise<void> {
     const notification: Notification = new Notification(cfg, {
-      notifyee: console,
+      log: {
+        level: 'info'
+      },
       body: 'log with from user: test@web.de',
       transport: 'log',
       provider: 'winston',
-      level: 'info'
     });
     // empty response
     const response = {};
@@ -43,44 +44,48 @@ describe('testing: send', () => {
     assert.deepEqual(response, result);
   });
 
-  it('should send an email', async function sendEmailMessage() {
+  it('should send an email', async function sendEmailMessage(): Promise<void> {
     const notification: Notification = new Notification(cfg, {
-      notifyee: 'test@web.de',
+      email: {
+        to: 'test@web.de'
+      },
       body: mailBody,
       subject: 'info for test@web.de',
       transport: 'email',
-      target: 'test@web.de'
+      // target: 'test@web.de'
     });
     const result = await notification.send('email', service.logger);
     assert(result);
   });
 
-  it('should send an email through grpc', async function sendEmailGRPC() {
+  it('should send an email through grpc', async function sendEmailGRPC(): Promise<void> {
     const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
     const clientService = await client.connect();
     const notification = {
-      notifyee: 'test@example.com',
+      email: {
+        to: 'test@example.com'
+      },
       body: mailBody,
       subject: 'info for test@web.de',
       transport: 'email',
-      target: 'test@example.com'
     };
     const result = await clientService.send(notification, service.logger);
     assert(result);
     await client.end();
   });
 
-  it('should queue failed emails', async function () {
-    let previousEnv = process.env.NODE_ENV
+  it('should queue failed emails', async function (): Promise<void> {
+    let previousEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
     const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
     const clientService = await client.connect();
     const notification = {
-      notifyee: 'test@example.com',
+      email: {
+        to: 'test@example.com'
+      },
       body: mailBody,
       subject: 'info for test@web.de',
       transport: 'email',
-      target: 'test@example.com'
     };
     const result = await clientService.send(notification, service.logger);
     assert(result);
@@ -89,13 +94,14 @@ describe('testing: send', () => {
     process.env.NODE_ENV = previousEnv;
   });
 
-  it('should send mail notification to kafka', async function sendKafkaMail() {
+  it('should send mail notification to kafka', async function sendKafkaMail(): Promise<void> {
     const notification = {
-      notifyee: 'test@example.com',
+      email: {
+        to: 'test@example.com'
+      },
       body: mailBody,
       subject: 'info for test@web.de',
-      transport: 'email',
-      target: 'test@example.com'
+      transport: 'email'
     };
     const topic = events.topic('io.restorecommerce.notification');
     const offset = await topic.$offset(-1);
@@ -104,9 +110,11 @@ describe('testing: send', () => {
     assert.equal(offset + 1, newOffset);
   });
 
-  it('should send an email with attachments', async function sendAttachment() {
+  it('should send an email with attachments', async function sendAttachment(): Promise<void> {
     const notification = new Notification(cfg, {
-      notifyee: 'test@example.com',
+      email: {
+        to: 'test@example.com'
+      },
       body: mailBody,
       subject: 'info for test@web.de',
       transport: 'email',
@@ -122,12 +130,14 @@ describe('testing: send', () => {
     assert(/test.txt/.test(result.response.toString()));
   });
 
-  it('should send an email with image URLs', async function sendImage() {
+  it('should send an email with image URLs', async function sendImage(): Promise<void> {
     const imgUrl = 'https://avatars2.githubusercontent.com/u/8339525?v=3&s=200';
     const mailBodyWithURL = fs.readFileSync('./test/fixtures/test_with_image_url.html');
 
     const notification: Notification = new Notification(cfg, {
-      notifyee: 'test@web.de',
+      email: {
+        to: 'test@web.de'
+      },
       body: mailBodyWithURL,
       subject: 'info for test@web.de',
       transport: 'email',
@@ -144,17 +154,19 @@ describe('testing: send', () => {
     assert(/test.png/.test(result.response.toString()));
   });
 
-  it('should send an email with image buffers', async function sendImage() {
+  it('should send an email with image buffers', async function sendImage(): Promise<void> {
     const mailBodyWithBuffer = fs.readFileSync('./test/fixtures/test_with_image_buffer.html');
     const notification = new Notification(cfg, {
-      notifyee: 'test@web.de',
+      email: {
+        to: 'test@web.de'
+      },
       body: mailBodyWithBuffer,
       subject: 'info for test@web.de',
       transport: 'email',
       target: 'test@web.de',
       attachments: [{
         filename: 'rc-logo.png',
-        buffer: new Buffer(fs.readFileSync('./test/fixtures/rc-logo.png')),
+        buffer: Buffer.from(fs.readFileSync('./test/fixtures/rc-logo.png')),
         cid: 'rc-logo.png'
       }]
     });

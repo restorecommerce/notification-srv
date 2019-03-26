@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
 import * as send from './send';
+import { Email, Log } from '../interfaces';
 
 const Attrs = [
-  'notifyee',
+  'log',
+  'email',
   'subject',
   'body',
   'transport',
@@ -10,13 +12,12 @@ const Attrs = [
   'replyto',
   'target',
   'attachments',
-  'bcc',
-  'cc'
+  'level'
 ];
 
 export class Notification {
-  target: string;
-  notifyee: any;
+  log: Log;
+  email: Email;
   subject: any;
   body: any;
   transport: string;

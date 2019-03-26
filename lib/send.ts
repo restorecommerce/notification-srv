@@ -7,11 +7,11 @@ import { Notification } from './notification';
  * @param {any } logger
  */
 export async function log(notification: Notification, logger?: any): Promise<any> {
-  const { body } = notification;
+  const { log, body } = notification;
   if (!logger) {
     logger = console;
   }
-  logger.log(notification.level, body);
+  logger.log(log.level, body);
   return {}; // success-placeholder
 }
 
@@ -23,15 +23,14 @@ export async function log(notification: Notification, logger?: any): Promise<any
  */
 export function email(notification: Notification, cfg: any, logger: any): any {
 
-  let { notifyee, body, subject, replyto, attachments, bcc, cc } = notification;
+  let { email, body, subject, replyto, attachments, bcc, cc } = notification;
 
-  const target = notifyee.email;
   const mailConf = cfg.get('server:mailer');
   mailConf.logger = logger;
   const mailer = new Mailer(mailConf);
   const mail = {
     from: mailConf.address,
-    to: notifyee,
+    to: email.to,
     subject,
     html: body,
     replyTo: replyto,
@@ -51,12 +50,12 @@ export function email(notification: Notification, cfg: any, logger: any): any {
     mail.attachments = list;
   }
 
-  if (bcc && bcc !== []) {
-    mail.bcc = bcc;
+  if (cc && cc != []) {
+    mail.cc = email.cc;
   }
 
-  if (cc && cc != []) {
-    mail.cc = cc;
+  if (bcc && bcc !== []) {
+    mail.bcc = email.bcc;
   }
   return mailer.send(mail);
 }
