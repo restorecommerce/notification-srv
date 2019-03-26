@@ -48,9 +48,10 @@ A `io.restorecommerce.notification.Notification` message can have the following 
 | to | string [ ] | an array of recipients email addresses that will appear on the to: field | optional | n/a |
 | cc | string [ ] | an array of recipients email addresses that will appear on the cc: field | optional | n/a |
 | bcc | string [ ] |  an array of recipients email addresses that will appear on the bcc: field | optional | n/a |
-| replyto | string |  If set, the outgoing mail will have this replyTo header set | optinal | n/a |
+| replyto | string |  If set, the outgoing mail will have this replyTo header set | optional | n/a |
 
 `io.restorecommerce.notification.Log`
+
 | Field | Type | Description | Email | Log |
 | ----- | ---- | ----- | ----------- |--------|
 | level | string | Logging level ex: `info` | n/a | required |
