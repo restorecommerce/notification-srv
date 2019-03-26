@@ -110,7 +110,7 @@
           "protos": [
             "io/restorecommerce/credential.proto"
           ],
-          "protoRoot": "protos/"
+          "protoRoot": "node_modules/@restorecommerce/protos/"
         }
       },
       "loadbalancer": {
