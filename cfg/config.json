@@ -79,7 +79,7 @@
         "protos": [
           "io/restorecommerce/job.proto"
         ],
-        "protoRoot": "protos/",
+        "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.job.ScheduledJob"
       },
       "topics": {
