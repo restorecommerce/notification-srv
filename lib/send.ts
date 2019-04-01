@@ -49,7 +49,7 @@ export function email(notification: Notification, cfg: any, logger: any): any {
     mail.attachments = list;
   }
 
-  // return mailer.send(mail);
+  return mailer.send(mail);
 }
 
 export async function slack(notification: Notification): Promise<any> {
