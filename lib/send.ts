@@ -23,7 +23,7 @@ export async function log(notification: Notification, logger?: any): Promise<any
  */
 export function email(notification: Notification, cfg: any, logger: any): any {
 
-  let { email, body, subject, replyto, attachments, bcc, cc } = notification;
+  let { email, body, subject, replyto, attachments } = notification;
 
   const mailConf = cfg.get('server:mailer');
   mailConf.logger = logger;
@@ -35,9 +35,8 @@ export function email(notification: Notification, cfg: any, logger: any): any {
     html: body,
     replyTo: replyto,
     attachments: [],
-    bcc: [],
-    cc: []
-
+    cc: email.cc,
+    bcc: email.bcc
   };
 
   if (attachments && attachments !== []) {
@@ -50,14 +49,7 @@ export function email(notification: Notification, cfg: any, logger: any): any {
     mail.attachments = list;
   }
 
-  if (cc && cc != []) {
-    mail.cc = email.cc;
-  }
-
-  if (bcc && bcc !== []) {
-    mail.bcc = email.bcc;
-  }
-  return mailer.send(mail);
+  // return mailer.send(mail);
 }
 
 export async function slack(notification: Notification): Promise<any> {
