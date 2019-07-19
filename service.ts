@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 // microservice
 import * as chassis from '@restorecommerce/chassis-srv';
-import * as Logger from '@restorecommerce/logger';
+import { Logger } from '@restorecommerce/logger';
 import * as sconfig from '@restorecommerce/service-config';
 import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
@@ -27,10 +27,10 @@ let offsetStore: chassis.OffsetStore;
 export class Service {
   events: Events;
   server: chassis.Server;
-  logger: Logger;
+  logger: chassis.Logger;
   cfg: any;
   pendingQueue: PendingNotification[];
-  constructor(cfg: any, events: Events, server: chassis.Server, logger: Logger) {
+  constructor(cfg: any, events: Events, server: chassis.Server, logger: chassis.Logger) {
     this.cfg = cfg;
     this.server = server;
     this.logger = logger;
@@ -100,7 +100,7 @@ export async function start(cfg?: any): Promise<any> {
   if (!cfg) {
     cfg = sconfig(process.cwd());
   }
-  const logger: any = new Logger(cfg.get('logger'));
+  const logger = new Logger(cfg.get('logger'));
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server
   if (!_.isEmpty(cfg.get('client:service'))) {
