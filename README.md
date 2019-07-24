@@ -104,7 +104,14 @@ provides endpoints for retrieving the system status and version information. The
 
 ### Tests
 
-See [tests](test/).
+See [tests](test/). To execute the tests a running instance of [Kafka](https://kafka.apache.org/) and [Redis](https://redis.io/) are needed.
+Refer to [System](https://github.com/restorecommerce/system) repository to start the backing-services before running the tests.
+
+- To run tests
+
+```sh
+npm run test
+```
 
 **Note**: although any kind of gRPC client can be used to connect to these endpoints, the tests make use of the [grpc-client](https://github.com/restorecommerce/grpc-client),
 a `restorecommerce` module which allows an application to connect to multiple gRPC endpoints with custom middleware, loadbalancing and retry/timeout support.
