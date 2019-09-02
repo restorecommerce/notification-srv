@@ -15,3 +15,4 @@ lib/*.d.ts
 lib/*.js
 *.js
 !setupTopics.js
+.nyc_output
