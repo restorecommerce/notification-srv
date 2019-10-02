@@ -51,7 +51,8 @@
     "tsctests": "tsc -d -p tsconfig.test.json",
     "build:tsc": "tsc -d",
     "build:clean": "rimraf service.js start.js interfaces.js lib/*.js",
-    "build": "npm-run-all lint build:clean build:tsc"
+    "build": "npm-run-all lint build:clean build:tsc",
+    "healthcheck": "node healthcheck.js"
   },
   "engines": {
     "node": ">= 9.2.0"
