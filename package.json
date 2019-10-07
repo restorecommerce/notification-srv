@@ -26,7 +26,7 @@
     "lodash": "^4.17.14"
   },
   "devDependencies": {
-    "@restorecommerce/grpc-client": "github:restorecommerce/grpc-client",
+    "@restorecommerce/grpc-client": "^0.0.1",
     "@types/mocha": "^5.2.7",
     "coveralls": "^3.0.6",
     "cross-env": "^5.2.1",
@@ -41,7 +41,7 @@
   "scripts": {
     "start": "npm run createtopics && node start.js",
     "dev": "cross-env NODE_ENV=development npm run createtopics && node start.js",
-    "pretest": "npm run tsctests && npm run createtopics",
+    "pretest": "npm run build && npm run tsctests && npm run createtopics",
     "test": "cross-env NODE_ENV=test npm run lint && nyc npm run mocha",
     "lint": "tslint lib/*.ts *_test.ts service.ts start.ts interfaces.ts",
     "mocha": "cross-env NODE_ENV=test mocha -R spec --timeout 60000 test/notification_test.js --stack-trace --exit",
