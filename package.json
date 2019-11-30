@@ -24,7 +24,8 @@
     "@restorecommerce/protos": "github:restorecommerce/protos",
     "@restorecommerce/service-config": "^0.1.6",
     "lodash": "^4.17.14",
-    "ts-node": "^8.5.4"
+    "ts-node": "^8.5.4",
+    "tslint": "^5.20.1"
   },
   "devDependencies": {
     "@restorecommerce/grpc-client": "0.0.4",
@@ -49,7 +50,7 @@
     "start": "npm run createtopics && node lib/start.js",
     "dev": "cross-env NODE_ENV=development npm run createtopics && nodemon --watch './src/**/*.ts' --exec 'ts-node' src/start.ts",
     "pretest": "npm run build && npm run tsctests && npm run createtopics",
-    "test": "cross-env NODE_ENV=test npm run lint && nyc npm run mocha",
+    "test": "npm run lint && nyc npm run mocha",
     "lint": "eslint src --ext .ts",
     "mocha": "cross-env NODE_ENV=test mocha -R spec --timeout 60000 test/notification_test.js --stack-trace --exit",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
