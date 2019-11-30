@@ -5,7 +5,7 @@ import { Logger } from '@restorecommerce/logger';
 import * as sconfig from '@restorecommerce/service-config';
 import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
-import { Notification } from './lib/notification';
+import { Notification } from './notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
 
 const SEND_MAIL_EVENT = 'sendEmail';
@@ -20,7 +20,7 @@ let service: Service;
 let events: Events;
 let offsetStore: chassis.OffsetStore;
 
-/**
+/*
  * Main API for sending notifications.
  * Exposes methods via gRPC.
  */
@@ -92,7 +92,7 @@ export class Service {
   }
 }
 
-/**
+/*
  * starting the actual server
  * @param cfg
  */
@@ -135,8 +135,7 @@ export async function start(cfg?: any): Promise<any> {
   const cisName = serviceNamesCfg.cis;
   await server.bind(cisName, cis);
 
-  let notificationEventListener = async function eventListener(msg: any, context: any,
-    config: any, eventName: string): Promise<any> {
+  const notificationEventListener = async (msg: any, context: any, config: any, eventName: string): Promise<any> => {
     if (eventName === SEND_MAIL_EVENT) {
       const notificationObj = msg;
       const notification: Notification = new Notification(cfg, notificationObj);

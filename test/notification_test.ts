@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as assert from 'assert';
-import { Notification } from '../lib/notification';
 import * as sconfig from '@restorecommerce/service-config';
-import { Service, start, stop } from './../service';
 import { Events } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
+import { Notification } from '../lib/notification';
+import { Service, start, stop } from '../lib/service';
 
 let service: Service;
 let cfg: any;
