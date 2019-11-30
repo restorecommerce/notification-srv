@@ -11,6 +11,7 @@
 .vscode
 
 !setupTopics.js
+!.eslintrc.js
 
 coverage/
 lib/
