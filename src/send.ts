@@ -6,14 +6,14 @@ import { Notification } from './notification';
  * @param {Notification} notification
  * @param {any } logger
  */
-export async function log(notification: Notification, logger?: any): Promise<any> {
+export const log = async (notification: Notification, logger?: any): Promise<any> => {
   const { log, body } = notification;
   if (!logger) {
     logger = console;
   }
   logger.log(log.level, body);
   return {}; // success-placeholder
-}
+};
 
 /**
  * send a notification via email
@@ -21,7 +21,7 @@ export async function log(notification: Notification, logger?: any): Promise<any
  * @param {any} cfg
  * @param {any} logger
  */
-export function email(notification: Notification, cfg: any, logger: any): any {
+export const email = (notification: Notification, cfg: any, logger: any): any => {
 
   let { email, body, subject, replyto, attachments } = notification;
 
@@ -50,12 +50,13 @@ export function email(notification: Notification, cfg: any, logger: any): any {
   }
 
   return mailer.send(mail);
-}
+};
 
-export async function slack(notification: Notification): Promise<any> {
+export const slack =  async (notification: Notification): Promise<any> => {
   return true;
-}
+};
 
-export async function sms(notification: Notification): Promise<any> {
+export const sms = async (notification: Notification): Promise<any> => {
   return true;
-}
+};
+

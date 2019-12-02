@@ -209,11 +209,11 @@ export async function start(cfg?: any): Promise<any> {
   return service;
 }
 
-export async function stop(): Promise<any> {
+export const stop = async(): Promise<any> => {
   await server.stop();
   await events.stop();
   await offsetStore.stop();
-}
+};
 
 if (require.main === module) {
   start().catch((err) => {
