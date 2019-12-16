@@ -16,7 +16,7 @@ const FLUSH_NOTIFICATIONS_JOB_TYPE = 'flushPendingNotificationsJob';
 const MAIL_SERVER_CREDENTIALS = 'mail_server_credentials';
 
 let server: chassis.Server;
-let service: Service;
+let service: NotificationService;
 let events: Events;
 let offsetStore: chassis.OffsetStore;
 
@@ -24,7 +24,7 @@ let offsetStore: chassis.OffsetStore;
  * Main API for sending notifications.
  * Exposes methods via gRPC.
  */
-export class Service {
+export class NotificationService {
   events: Events;
   server: chassis.Server;
   logger: chassis.Logger;
@@ -177,7 +177,7 @@ export async function start(cfg?: any): Promise<any> {
   };
 
   // finally create the service and bind to the server
-  service = new Service(cfg, events, server, logger);
+  service = new NotificationService(cfg, events, server, logger);
   // Subsribe to notification topic to send out notification when the message
   // arrives on notification topic
   // (topic name is notification and eventName is sendEmail)
