@@ -4,9 +4,9 @@ import * as sconfig from '@restorecommerce/service-config';
 import { Events } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
 import { Notification } from '../lib/notification';
-import { Service, start, stop } from '../lib/service';
+import { NotificationService, start, stop } from '../lib/service';
 
-let service: Service;
+let service: NotificationService;
 let cfg: any;
 let events: Events;
 const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
