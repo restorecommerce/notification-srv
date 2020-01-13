@@ -18,3 +18,8 @@ lib/
 node_modules/
 npm-debug.log
 scripts/bin/
+
+config
+id_rsa
+id_rsa.pub
+known_hosts
