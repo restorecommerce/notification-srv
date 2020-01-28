@@ -17,13 +17,25 @@ Unimplemented channels as of now are:
 - Mattermost
 - SMS
 
-The service subscribes to `notification`-related topic using using [kafka-client](https://github.com/restorecommerce/kafka-client) and sends messages based on events on these topics. It is also possible to initiate notification requests directly through its [gRPC](https://grpc.io/docs/) interface, which is exposed using [chassis-srv](https://github.com/restorecommerce/chassis-srv). Internally the microservice uses the [mailer](https://github.com/restorecommerce/mailer) module for sending email notifications which is a wrapper for [nodemailer](https://github.com/nodemailer/nodemailer). The mail server configurations can be set in `server:mailer` in the [`config.json`](#cfg/config.json) file.
+The service subscribes to `notification`-related topic using using [kafka-client](https://github.com/restorecommerce/kafka-client) and sends messages based on events on these topics. It is also possible to initiate notification requests directly through its [gRPC](https://grpc.io/docs/) interface, which is exposed using [chassis-srv](https://github.com/restorecommerce/chassis-srv). Internally the microservice uses the [mailer](https://github.com/restorecommerce/mailer) module for sending email notifications which is a wrapper for [nodemailer](https://github.com/nodemailer/nodemailer).
+
+## Configuration
+
+The mail server configurations can be set in `server:mailer` in the [`config.json`](#cfg/config.json) file.
+
+- `host`: hostname of mail server
+- `port`: port of mail server to connect to
+- `auth.user`: user name for mail server
+- `auth.pass`: password for mail server
+- `address`: specifies the from address for every message
+
+Alternatively the credentials for the mail server `auth.user` and `auth.pass` can be added as separate resource [`Credential`](https://github.com/restorecommerce/protos/blob/master/io/restorecommerce/credential.proto#L30) resource using [`resources-srv`](https://github.com/restorecommerce/resource-srv).
 
 ## gRPC Interface
 
 This microservice exposes the below gRPC endpoint.
 
-### Send
+### `Send`
 
 This is a generic operation which can be invoked to send any type of notifications. Requests are performed providing `io.restorecommerce.notification.Notification` protobuf message as input and responses are a `google.protobuf.Empty` message.
 
