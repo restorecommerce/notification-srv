@@ -1,8 +1,7 @@
 # notification-srv
 
-<img src="http://img.shields.io/npm/v/%40restorecommerce%2Fnotification%2Dsrv.svg?style=flat-square" alt="">[![Build Status][build]](https://travis-ci.org/restorecommerce/notification-srv?branch=master)[![Dependencies][depend]](https://david-dm.org/restorecommerce/notification-srv)[![Coverage Status][cover]](https://coveralls.io/github/restorecommerce/notification-srv?branch=master)
+[![Build Status][build]](https://travis-ci.org/restorecommerce/notification-srv?branch=master)[![Dependencies][depend]](https://david-dm.org/restorecommerce/notification-srv)[![Coverage Status][cover]](https://coveralls.io/github/restorecommerce/notification-srv?branch=master)
 
-[version]: http://img.shields.io/npm/v/notification-srv.svg?style=flat-square
 [build]: http://img.shields.io/travis/restorecommerce/notification-srv/master.svg?style=flat-square
 [depend]: https://img.shields.io/david/restorecommerce/notification-srv.svg?style=flat-square
 [cover]: http://img.shields.io/coveralls/restorecommerce/notification-srv/master.svg?style=flat-square
@@ -78,16 +77,19 @@ Textual attachments are appendend in the mail as-is, while binary attachments ar
 ## Kafka Events
 
 This microservice subscribes to the following Kafka events by topic:
-- io.restorecommerce.command
-  - healthCheckCommand
-  - versionCommand
-- io.restorecommerce.notitication
-  - sendEmail
+
+| Topic Name | Event Name | Description |
+| ----------- | ------------ | ------------- |
+| `io.restorecommerce.command`      | `healthCheckCommand` | to get system health check |
+|                                   | `versionCommand` | to get system version |
+| `io.restorecommerce.notitication` | `sendEmail` | to send email |
 
 List of events emitted to Kafka by this microservice for below topics:
-- io.restorecommerce.command
-  - healthCheckResponse
-  - versionResponse
+
+| Topic Name | Event Name | Description |
+| ----------- | ------------ | ------------- |
+| `io.restorecommerce.command` | `healthCheckResponse` | system health check response |
+|                              | `versionResponse` | system version response |
 
 `sendEmail` events are based on the same protobuf message as the gRPC call for the `Send` endpoint.
 
@@ -116,36 +118,39 @@ npm run test
 **Note**: although any kind of gRPC client can be used to connect to these endpoints, the tests make use of the [grpc-client](https://github.com/restorecommerce/grpc-client),
 a `restorecommerce` module which allows an application to connect to multiple gRPC endpoints with custom middleware, loadbalancing and retry/timeout support.
 
-## Usage
+## Running as Docker Container
 
-### Development
+This service depends on a set of _backing services_ that can be started using a
+dedicated [docker compose definition](https://github.com/restorecommerce/system).
 
-- Install dependencies
+```sh
+docker run \
+ --name restorecommerce_notification_srv \
+ --hostname notification-srv \
+ --network=system_test \
+ -e NODE_ENV=production \
+ -p 50051:50051 \
+ restorecommerce/notification-srv
+```
+
+## Running Locally
+
+Install dependencies
 
 ```sh
 npm install
 ```
 
-- Build application
+Build service
 
 ```sh
 # compile the code
 npm run build
 ```
 
-- Run application and restart it on changes in the code
+Start service
 
 ```sh
-# Start notification-srv backend in dev mode
-npm run dev
-```
-
-### Production
-
-```sh
-# compile the code
-npm run build
-
-# run compiled server
+# run compiled service
 npm start
 ```

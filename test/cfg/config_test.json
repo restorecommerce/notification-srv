@@ -108,7 +108,7 @@
       "provider": "kafka",
       "groupId": "restore-notification-srv",
       "clientId": "restore-notification-srv",
-      "kafkaHost": "localhost:9092",
+      "kafkaHost": "localhost:29092",
       "latestOffset": true,
       "commandTopic": "io.restorecommerce.command",
       "sendEmail": {
