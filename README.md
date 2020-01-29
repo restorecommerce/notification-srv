@@ -141,7 +141,7 @@ docker run \
  --hostname notification-srv \
  --network=system_test \
  -e NODE_ENV=production \
- -p 50051:50051 \
+ -p 50052:50052 \
  restorecommerce/notification-srv
 ```
 
