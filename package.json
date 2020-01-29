@@ -16,12 +16,12 @@
     "notification"
   ],
   "dependencies": {
-    "@restorecommerce/chassis-srv": "github:restorecommerce/chassis-srv",
+    "@restorecommerce/chassis-srv": "^0.0.1",
     "@restorecommerce/cluster-service": "^0.1.4",
-    "@restorecommerce/kafka-client": "^0.1.7",
+    "@restorecommerce/kafka-client": "^0.1.8",
     "@restorecommerce/logger": "^0.1.12",
     "@restorecommerce/mailer": "^0.1.4",
-    "@restorecommerce/protos": "github:restorecommerce/protos",
+    "@restorecommerce/protos": "^0.0.1",
     "@restorecommerce/service-config": "^0.1.6",
     "lodash": "^4.17.14"
   },
