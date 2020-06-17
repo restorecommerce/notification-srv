@@ -20,7 +20,7 @@
     "transports": [{
       "name": "notificationGRPC",
       "provider": "grpc",
-      "addr": "notification-srv:50052",
+      "addr": "notification-srv:50051",
       "services": {
         "io-restorecommerce-notification-srv": "io.restorecommerce.notification.Service",
         "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service",
@@ -39,7 +39,7 @@
       "publisher": {
         "name": "static",
         "instances": [
-          "grpc://resource-srv:50053"
+          "grpc://resource-srv:5005"
         ]
       }
     }
