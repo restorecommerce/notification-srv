@@ -1,0 +1,5 @@
+name: notification-srv
+title: Notification Service
+version: master
+nav:
+  - modules/ROOT/nav.adoc
