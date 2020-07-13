@@ -18,7 +18,9 @@ A microservice for sending notifications.
 [#configuration]
 == Configuration
 
-The following Mail Server configuration properties under the link:cfg/config.json[server:mailer] configuration are available:
+The following Mail Server configuration properties under the
+link:https://github.com/restorecommerce/notification-srv/blob/master/cfg/config.json#L109[server:mailer]
+configuration are available:
 
 - `host`: hostname of mail server.
 - `port`: port of mail server to connect to.
@@ -95,7 +97,8 @@ Attachment properties are based on the standard https://community.nodemailer.com
 Because of limitations in the protobuf protocol, there is single hatch:
 `content` should be specified as one of the attributes `text` (for strings) or `buffer` (raw bytes, like images).
 
-Textual attachments are appended in the mail as-is, while binary attachments are converted to base64 and then included (see link:test[tests]).
+Textual attachments are appended in the mail as-is, while binary attachments are converted to base64 and then included
+(see link:https://github.com/restorecommerce/notification-srv/blob/master/test/notification_test.ts[tests]).
 
 [#events]
 == Events
