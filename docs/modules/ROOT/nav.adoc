@@ -1,1 +1,17 @@
-* xref:index.adoc[notification-srv]
+// INDEX
+* xref:index.adoc[Notification Service]
+
+// FEATURES
+* xref:index.adoc#features[Features]
+
+// CONFIGURATION
+* xref:index.adoc#configuration[Configuration]
+
+// API
+* xref:index.adoc#API[API]
+** xref:index.adoc#api_notification_send[`Send`]
+
+// EVENTS
+* xref:index.adoc#events[Events]
+** xref:index.adoc#emitted-events[Emitted]
+** xref:index.adoc#subscribed-events[Subscribed]

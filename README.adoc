@@ -35,7 +35,7 @@ Alternatively the credentials for the mail server `auth.user` and `auth.pass` ca
 This microservice exposes the following gRPC endpoints:
 
 [#api_notification_send]
-=== Send
+=== `Send`
 
 This is a generic operation which can be invoked to send any type of notifications.
 Requests are performed providing `io.restorecommerce.notification.Notification` protobuf message as input
