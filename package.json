@@ -23,7 +23,7 @@
     "@restorecommerce/mailer": "^0.1.8",
     "@restorecommerce/protos": "^0.0.4",
     "@restorecommerce/service-config": "^0.1.6",
-    "lodash": "^4.17.14"
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
     "@restorecommerce/grpc-client": "^0.0.5",
