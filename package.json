@@ -18,6 +18,7 @@
   "dependencies": {
     "@restorecommerce/chassis-srv": "^0.0.3",
     "@restorecommerce/cluster-service": "^0.1.4",
+    "@restorecommerce/grpc-client": "^0.0.5",
     "@restorecommerce/kafka-client": "^0.1.8",
     "@restorecommerce/logger": "^0.1.16",
     "@restorecommerce/mailer": "^0.1.8",
@@ -26,7 +27,6 @@
     "lodash": "^4.17.19"
   },
   "devDependencies": {
-    "@restorecommerce/grpc-client": "^0.0.5",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.1",
     "@typescript-eslint/eslint-plugin": "^2.28.0",
