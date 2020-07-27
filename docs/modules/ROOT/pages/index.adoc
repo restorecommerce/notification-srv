@@ -4,7 +4,8 @@ https://travis-ci.org/restorecommerce/notification-srv?branch=master[image:http:
 https://david-dm.org/restorecommerce/notification-srv[image:https://img.shields.io/david/restorecommerce/notification-srv.svg?style=flat-square[Dependencies]]
 https://coveralls.io/github/restorecommerce/notification-srv?branch=master[image:http://img.shields.io/coveralls/restorecommerce/notification-srv/master.svg?style=flat-square[Coverage Status]]
 
-A microservice for sending notifications.
+A microservice for sending notifications part of the
+link:https://github.com/restorecommerce[Restorecommerce].
 
 [#features]
 == Features
