@@ -7,6 +7,7 @@ import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
 import { Notification } from './notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
+import { createClient } from 'redis';
 
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
@@ -128,10 +129,16 @@ export async function start(cfg?: any): Promise<any> {
   await events.start();
   offsetStore = new chassis.OffsetStore(events, cfg, logger);
 
+  // init redis client for subject index
+  const redisConfig = cfg.get('redis');
+  redisConfig.db = cfg.get('redis:db-indexes:db-subject');
+  const redisClient = createClient(redisConfig);
+
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
   const serviceNamesCfg = cfg.get('serviceNames');
-  const cis: chassis.ICommandInterface = new chassis.CommandInterface(server, cfg.get(), logger, events);
+  const cis: chassis.ICommandInterface = new chassis.CommandInterface(server,
+    cfg, logger, events, redisClient);
   const cisName = serviceNamesCfg.cis;
   await server.bind(cisName, cis);
 
@@ -209,7 +216,7 @@ export async function start(cfg?: any): Promise<any> {
   return service;
 }
 
-export const stop = async(): Promise<any> => {
+export const stop = async (): Promise<any> => {
   await server.stop();
   await events.stop();
   await offsetStore.stop();
