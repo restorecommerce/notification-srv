@@ -1,6 +1,6 @@
 {
   "name": "@restorecommerce/notification-srv",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Restore Commerce notification microservice",
   "main": "lib/start.js",
   "author": "Invend GmbH",
