@@ -22,7 +22,7 @@
     "@restorecommerce/kafka-client": "^0.1.12",
     "@restorecommerce/logger": "^0.2.1",
     "@restorecommerce/mailer": "^0.1.9",
-    "@restorecommerce/protos": "^0.0.9",
+    "@restorecommerce/protos": "^0.0.10",
     "@restorecommerce/service-config": "^0.2.0",
     "lodash": "^4.17.20"
   },
