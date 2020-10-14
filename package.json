@@ -1,6 +1,6 @@
 {
   "name": "@restorecommerce/notification-srv",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Restore Commerce notification microservice",
   "main": "lib/start.js",
   "author": "Invend GmbH",
@@ -16,7 +16,7 @@
     "notification"
   ],
   "dependencies": {
-    "@restorecommerce/chassis-srv": "^0.1.4",
+    "@restorecommerce/chassis-srv": "^0.1.5",
     "@restorecommerce/cluster-service": "^0.1.4",
     "@restorecommerce/grpc-client": "0.0.7",
     "@restorecommerce/kafka-client": "^0.1.12",

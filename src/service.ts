@@ -137,7 +137,7 @@ export async function start(cfg?: any): Promise<any> {
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
   const serviceNamesCfg = cfg.get('serviceNames');
-  const cis: chassis.ICommandInterface = new chassis.CommandInterface(server,
+  const cis = new chassis.CommandInterface(server,
     cfg, logger, events, redisClient);
   const cisName = serviceNamesCfg.cis;
   await server.bind(cisName, cis);
@@ -211,6 +211,10 @@ export async function start(cfg?: any): Promise<any> {
   const transport = server.transport[transportName];
   const reflectionService = new chassis.ServerReflection(transport.$builder, server.config);
   await server.bind(reflectionServiceName, reflectionService);
+
+  await server.bind(serviceNamesCfg.health, new chassis.Health(cis, async () => {
+    return redisClient.ping();
+  }));
 
   await server.start();
   return service;
