@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 // microservice
 import * as chassis from '@restorecommerce/chassis-srv';
-import { Logger } from '@restorecommerce/logger';
-import * as sconfig from '@restorecommerce/service-config';
+import { createLogger } from '@restorecommerce/logger';
+import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events, Topic } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
 import { Notification } from './notification';
@@ -99,9 +99,9 @@ export class NotificationService {
  */
 export async function start(cfg?: any): Promise<any> {
   if (!cfg) {
-    cfg = sconfig(process.cwd());
+    cfg = createServiceConfig(process.cwd());
   }
-  const logger = new Logger(cfg.get('logger'));
+  const logger = createLogger(cfg.get('logger'));
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server
   if (!_.isEmpty(cfg.get('client:service'))) {

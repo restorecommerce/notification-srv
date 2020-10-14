@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as assert from 'assert';
-import * as sconfig from '@restorecommerce/service-config';
+import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events } from '@restorecommerce/kafka-client';
 import { Client } from '@restorecommerce/grpc-client';
 import { Notification } from '../lib/notification';
@@ -18,7 +18,7 @@ const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
 describe('testing: send', () => {
 
   before(async function init(): Promise<void> {
-    cfg = sconfig(process.cwd() + '/test');
+    cfg = createServiceConfig(process.cwd() + '/test');
     service = await start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
     await events.start();
