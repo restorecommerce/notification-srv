@@ -212,9 +212,7 @@ export async function start(cfg?: any): Promise<any> {
   const reflectionService = new chassis.ServerReflection(transport.$builder, server.config);
   await server.bind(reflectionServiceName, reflectionService);
 
-  await server.bind(serviceNamesCfg.health, new chassis.Health(cis, async () => {
-    return redisClient.ping();
-  }));
+  await server.bind(serviceNamesCfg.health, new chassis.Health(cis));
 
   await server.start();
   return service;
