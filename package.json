@@ -1,7 +1,7 @@
 {
   "name": "@restorecommerce/notification-srv",
   "version": "0.1.6",
-  "description": "Restore Commerce notification microservice",
+  "description": "Restorecommerce notification microservice",
   "main": "lib/start.js",
   "author": "n-fuse GmbH",
   "repository": {
