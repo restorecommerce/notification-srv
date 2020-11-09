@@ -34,7 +34,7 @@ describe('testing: send', () => {
       log: {
         level: 'info'
       },
-      body: 'log with from user: test@web.de',
+      body: 'log with from user: thomas.hoppe@n-fuse.co',
       transport: 'log',
       provider: 'winston',
     });
@@ -47,12 +47,12 @@ describe('testing: send', () => {
   it('should send an email', async function sendEmailMessage(): Promise<void> {
     const notification: Notification = new Notification(cfg, {
       email: {
-        to: 'test@web.de'
+        to: 'thomas.hoppe@n-fuse.co'
       },
       body: mailBody,
-      subject: 'info for test@web.de',
+      subject: 'info for thomas.hoppe@n-fuse.co',
       transport: 'email',
-      // target: 'test@web.de'
+      // target: 'thomas.hoppe@n-fuse.co'
     });
     const result = await notification.send('email', service.logger);
     assert(result);
@@ -63,10 +63,10 @@ describe('testing: send', () => {
     const clientService = await client.connect();
     const notification = {
       email: {
-        to: 'test@example.com'
+        to: 'thomas.hoppe@n-fuse.co'
       },
       body: mailBody,
-      subject: 'info for test@web.de',
+      subject: 'info for thomas.hoppe@n-fuse.co',
       transport: 'email',
     };
     const result = await clientService.send(notification, service.logger);
@@ -81,10 +81,10 @@ describe('testing: send', () => {
     const clientService = await client.connect();
     const notification = {
       email: {
-        to: 'test@example.com'
+        to: 'thomas.hoppe@n-fuse.co'
       },
       body: mailBody,
-      subject: 'info for test@web.de',
+      subject: 'info for thomas.hoppe@n-fuse.co',
       transport: 'email',
     };
     const result = await clientService.send(notification, service.logger);
@@ -100,7 +100,7 @@ describe('testing: send', () => {
         to: 'test@example.com'
       },
       body: mailBody,
-      subject: 'info for test@web.de',
+      subject: 'info for thomas.hoppe@n-fuse.co',
       transport: 'email'
     };
     const topic = events.topic('io.restorecommerce.notification');
@@ -116,7 +116,7 @@ describe('testing: send', () => {
         to: 'test@example.com'
       },
       body: mailBody,
-      subject: 'info for test@web.de',
+      subject: 'info for thomas.hoppe@n-fuse.co',
       transport: 'email',
       target: 'test@example.com',
       attachments: [{
@@ -136,12 +136,12 @@ describe('testing: send', () => {
 
     const notification: Notification = new Notification(cfg, {
       email: {
-        to: 'test@web.de'
+        to: 'thomas.hoppe@n-fuse.co'
       },
       body: mailBodyWithURL,
-      subject: 'info for test@web.de',
+      subject: 'info for thomas.hoppe@n-fuse.co',
       transport: 'email',
-      target: 'test@web.de',
+      target: 'thomas.hoppe@n-fuse.co',
       attachments: [{
         filename: 'test.png',
         path: imgUrl,
@@ -158,12 +158,12 @@ describe('testing: send', () => {
     const mailBodyWithBuffer = fs.readFileSync('./test/fixtures/test_with_image_buffer.html');
     const notification = new Notification(cfg, {
       email: {
-        to: 'test@web.de'
+        to: 'thomas.hoppe@n-fuse.co'
       },
       body: mailBodyWithBuffer,
-      subject: 'info for test@web.de',
+      subject: 'info for thomas.hoppe@n-fuse.co',
       transport: 'email',
-      target: 'test@web.de',
+      target: 'thomas.hoppe@n-fuse.co',
       attachments: [{
         filename: 'rc-logo.png',
         buffer: Buffer.from(fs.readFileSync('./test/fixtures/rc-logo.png')),

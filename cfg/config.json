@@ -108,6 +108,7 @@
   },
   "server": {
     "mailer": {
+      "debug": false,
       "tls": {
         "rejectUnauthorized": false
       },

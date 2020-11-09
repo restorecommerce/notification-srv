@@ -2,7 +2,7 @@
   "logger": {
     "console": {
       "handleExceptions": false,
-      "level": "fatal",
+      "level": "silly",
       "colorize": true,
       "prettyPrint": true
     }
@@ -17,6 +17,7 @@
   },
   "server": {
     "mailer": {
+      "debug": false,
       "tls": {
         "rejectUnauthorized": false
       },

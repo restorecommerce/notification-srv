@@ -49,7 +49,7 @@ export class NotificationService {
     if (transport === 'email' || transport === 'log') {
       return this.sendNotification(request.request);
     } else {
-      this.logger.error('Transport not implemented:', transport);
+      this.logger.error(`Transport ${transport} not implemented`);
     }
   }
 
