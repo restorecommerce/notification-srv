@@ -28,7 +28,8 @@
         "user": "test@example.com",
         "pass": "testPassword"
       },
-      "address": "'restorecommerce' <noreply@restorecommerce.io>"
+      "address": "'restorecommerce' <noreply@restorecommerce.io>",
+      "destinationAddress": "test@example.com"
     },
     "transports": [
       {

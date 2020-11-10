@@ -6,19 +6,28 @@ import { Client } from '@restorecommerce/grpc-client';
 import { Notification } from '../lib/notification';
 import { NotificationService, start, stop } from '../lib/service';
 
-let service: NotificationService;
-let cfg: any;
-let events: Events;
+// NOTE: A running instance of Kafka and redis is needed to execute below test.
+const cfg = createServiceConfig(process.cwd() + '/test');
 const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
 
-/**
- * NOTE: A running instance of Kafka and redis is needed to execute below test.
- */
+let service: NotificationService;
+let events: Events;
+
+// If default cfg is not provided assume a
+// real email configuration is being tested
+let defaultCfg: boolean;
+const hostCfg = cfg.get('server:mailer:host');
+const emailAddr = cfg.get('server:mailer:destinationAddress');
+if (hostCfg === 'mail.example.com') {
+  console.log('Using default email server configuration.');
+  defaultCfg = true;
+} else {
+  console.log('Using custom email server configuration.');
+  defaultCfg = false;
+}
 
 describe('testing: send', () => {
-
   before(async function init(): Promise<void> {
-    cfg = createServiceConfig(process.cwd() + '/test');
     service = await start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
     await events.start();
@@ -34,7 +43,7 @@ describe('testing: send', () => {
       log: {
         level: 'info'
       },
-      body: 'log with from user: test@example.com',
+      body: 'log with from user: test@web.de',
       transport: 'log',
       provider: 'winston',
     });
@@ -45,17 +54,25 @@ describe('testing: send', () => {
   });
 
   it('should send an email', async function sendEmailMessage(): Promise<void> {
-    const notification: Notification = new Notification(cfg, {
+    const notification = new Notification(cfg, {
       email: {
-        to: 'test@example.com'
+        to: emailAddr
       },
       body: mailBody,
-      subject: 'info for test@example.com',
+      subject: 'should send an email',
       transport: 'email',
-      // target: 'test@example.com'
     });
-    const result = await notification.send('email', service.logger);
-    assert(result);
+
+    if (defaultCfg) {
+      const result = await notification.send('email', service.logger);
+      assert(result);
+    } else {
+      let previousEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
+      const result = await notification.send('email', service.logger);
+      assert(result);
+      process.env.NODE_ENV = previousEnv;
+    }
   });
 
   it('should send an email through grpc', async function sendEmailGRPC(): Promise<void> {
@@ -63,44 +80,62 @@ describe('testing: send', () => {
     const clientService = await client.connect();
     const notification = {
       email: {
-        to: 'test@example.com'
+        to: emailAddr
       },
       body: mailBody,
-      subject: 'info for test@example.com',
+      subject: 'should send an email through grpc',
       transport: 'email',
     };
-    const result = await clientService.send(notification, service.logger);
-    assert(result);
+
+    if (defaultCfg) {
+      const result = await clientService.send(notification, service.logger);
+      assert(result);
+    } else {
+      let previousEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
+      const result = await clientService.send(notification, service.logger);
+      assert(result);
+      process.env.NODE_ENV = previousEnv;
+    }
+
     await client.end();
   });
 
   it('should queue failed emails', async function (): Promise<void> {
-    let previousEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
     const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
     const clientService = await client.connect();
     const notification = {
       email: {
-        to: 'test@example.com'
+        to: emailAddr
       },
       body: mailBody,
-      subject: 'info for test@example.com',
+      subject: 'should queue failed emails',
       transport: 'email',
     };
-    const result = await clientService.send(notification, service.logger);
-    assert(result);
-    assert.deepStrictEqual(service.pendingQueue.length, 1);
+
+    if (defaultCfg) {
+      let previousEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
+      const result = await clientService.send(notification, service.logger);
+      assert(result);
+      assert.deepStrictEqual(service.pendingQueue.length, 1);
+      process.env.NODE_ENV = previousEnv;
+    } else {
+      const result = await clientService.send(notification, service.logger);
+      assert(result);
+      assert.deepStrictEqual(service.pendingQueue.length, 0);
+    }
+
     await client.end();
-    process.env.NODE_ENV = previousEnv;
   });
 
   it('should send mail notification to kafka', async function sendKafkaMail(): Promise<void> {
     const notification = {
       email: {
-        to: 'test@example.com'
+        to: emailAddr
       },
       body: mailBody,
-      subject: 'info for test@example.com',
+      subject: 'should send mail notification to kafka',
       transport: 'email'
     };
     const topic = events.topic('io.restorecommerce.notification');
@@ -113,10 +148,10 @@ describe('testing: send', () => {
   it('should send an email with attachments', async function sendAttachment(): Promise<void> {
     const notification = new Notification(cfg, {
       email: {
-        to: 'test@example.com'
+        to: emailAddr
       },
       body: mailBody,
-      subject: 'info for test@example.com',
+      subject: 'should send an email with attachments',
       transport: 'email',
       target: 'test@example.com',
       attachments: [{
@@ -124,10 +159,22 @@ describe('testing: send', () => {
         text: 'this is an example text.'
       }]
     });
-    const result = await notification.send('email', service.logger);
-    assert(result);
-    assert(result.response);
-    assert(/test.txt/.test(result.response.toString()));
+
+    if (defaultCfg) {
+      const result = await notification.send('email', service.logger);
+      assert(result);
+      assert(result.response);
+      assert(/test.txt/.test(result.response.toString()));
+    } else {
+      let previousEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
+      const result = await notification.send('email', service.logger);
+      assert(result);
+      assert(result.response);
+      let smtpResponse = result.response.split(" ")[0];
+      assert(/250/.test(smtpResponse)); // SMTP Response 250
+      process.env.NODE_ENV = previousEnv;
+    }
   });
 
   it('should send an email with image URLs', async function sendImage(): Promise<void> {
@@ -136,43 +183,67 @@ describe('testing: send', () => {
 
     const notification: Notification = new Notification(cfg, {
       email: {
-        to: 'test@example.com'
+        to: emailAddr
       },
       body: mailBodyWithURL,
-      subject: 'info for test@example.com',
+      subject: 'should send an email with image URLs',
       transport: 'email',
-      target: 'test@example.com',
+      target: 'test@web.de',
       attachments: [{
         filename: 'test.png',
         path: imgUrl,
         cid: imgUrl
       }]
     });
-    const result = await notification.send('email', service.logger);
-    assert(result);
-    assert(result.response);
-    assert(/test.png/.test(result.response.toString()));
+
+    if (defaultCfg) {
+      const result = await notification.send('email', service.logger);
+      assert(result);
+      assert(result.response);
+      assert(/test.png/.test(result.response.toString()));
+    } else {
+      let previousEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
+      const result = await notification.send('email', service.logger);
+      assert(result);
+      assert(result.response);
+      let smtpResponse = result.response.split(" ")[0];
+      assert(/250/.test(smtpResponse)); // SMTP Response 250
+      process.env.NODE_ENV = previousEnv;
+    }
   });
 
   it('should send an email with image buffers', async function sendImage(): Promise<void> {
     const mailBodyWithBuffer = fs.readFileSync('./test/fixtures/test_with_image_buffer.html');
     const notification = new Notification(cfg, {
       email: {
-        to: 'test@example.com'
+        to: emailAddr
       },
       body: mailBodyWithBuffer,
-      subject: 'info for test@example.com',
+      subject: 'should send an email with image buffers',
       transport: 'email',
-      target: 'test@example.com',
+      target: 'test@web.de',
       attachments: [{
         filename: 'rc-logo.png',
         buffer: Buffer.from(fs.readFileSync('./test/fixtures/rc-logo.png')),
         cid: 'rc-logo.png'
       }]
     });
-    const result = await notification.send('email', service.logger);
-    assert(result);
-    assert(result.response);
-    assert(/rc-logo.png/.test(result.response.toString()));
+
+    if (defaultCfg) {
+      const result = await notification.send('email', service.logger);
+      assert(result);
+      assert(result.response);
+      assert(/rc-logo.png/.test(result.response.toString()));
+    } else {
+      let previousEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
+      const result = await notification.send('email', service.logger);
+      assert(result);
+      assert(result.response);
+      let smtpResponse = result.response.split(" ")[0];
+      assert(/250/.test(smtpResponse)); // SMTP Response 250
+      process.env.NODE_ENV = previousEnv;
+    }
   });
 });
