@@ -102,6 +102,8 @@ describe('testing: send', () => {
   });
 
   it('should queue failed emails', async function (): Promise<void> {
+    let previousEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
     const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
     const clientService = await client.connect();
     const notification = {
@@ -114,19 +116,27 @@ describe('testing: send', () => {
     };
 
     if (defaultCfg) {
-      let previousEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
       const result = await clientService.send(notification, service.logger);
       assert(result);
       assert.deepStrictEqual(service.pendingQueue.length, 1);
-      process.env.NODE_ENV = previousEnv;
     } else {
+      // restart server with different mailer cfg
+      // so that we prevent sending an email
+      await stop();
+      let prevHost = cfg.get('server:mailer:host');
+      cfg.set('server:mailer:host', 'mail.example.com');
+      service = await start(cfg);
       const result = await clientService.send(notification, service.logger);
       assert(result);
-      assert.deepStrictEqual(service.pendingQueue.length, 0);
+      assert.deepStrictEqual(service.pendingQueue.length, 1);
+      // restart server again with prev cfg
+      await stop();
+      cfg.set('server:mailer:host', prevHost);
+      service = await start(cfg);
     }
 
     await client.end();
+    process.env.NODE_ENV = previousEnv;
   });
 
   it('should send mail notification to kafka', async function sendKafkaMail(): Promise<void> {
