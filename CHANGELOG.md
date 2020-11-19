@@ -1,3 +1,11 @@
+### 0.1.8 (November 19th, 2020)
+
+- updated dependencies
+
+### 0.1.7 (November 9th, 2020)
+
+- upgrade dependencies and improve logging
+
 ### 0.1.6 (October 19th, 2020)
 
 - updated chassis-srv
