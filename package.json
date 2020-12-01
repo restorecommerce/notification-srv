@@ -52,6 +52,7 @@
     "test": "cross-env NODE_ENV=test npm run lint && nyc npm run mocha",
     "lint": "eslint src --ext .ts",
     "mocha": "cross-env NODE_ENV=test mocha -R spec --timeout 60000 test/notification_test.js --stack-trace --exit",
+    "lcov-report": "nyc report --reporter=lcov",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test-debug": "cross-env NODE_ENV=test mocha test/*.js --inspect-brk --exit",
     "createtopics": "node setupTopics.js io.restorecommerce.notification io.restorecommerce.command",
