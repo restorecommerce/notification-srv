@@ -76,7 +76,7 @@ describe('testing: send', () => {
   });
 
   it('should send an email through grpc', async function sendEmailGRPC(): Promise<void> {
-    const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
+    const client: Client = new Client(cfg.get('client:notificationReqService'), service.logger);
     const clientService = await client.connect();
     const notification = {
       email: {
@@ -104,7 +104,7 @@ describe('testing: send', () => {
   it('should queue failed emails', async function (): Promise<void> {
     let previousEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
-    const client: Client = new Client(cfg.get('client:notificationService'), service.logger);
+    const client: Client = new Client(cfg.get('client:notificationReqService'), service.logger);
     const clientService = await client.connect();
     const notification = {
       email: {
@@ -148,7 +148,7 @@ describe('testing: send', () => {
       subject: 'should send mail notification to kafka',
       transport: 'email'
     };
-    const topic = events.topic('io.restorecommerce.notification');
+    const topic = events.topic('io.restorecommerce.notification_req');
     const offset = await topic.$offset(-1);
     await topic.emit('sendEmail', notification);
     const newOffset = await topic.$offset(-1);

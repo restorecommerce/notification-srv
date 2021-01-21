@@ -37,16 +37,16 @@
   "events": {
     "kafka": {
       "provider": "kafka",
-      "groupId": "restore-notification-srv",
-      "clientId": "restore-notification-srv",
+      "groupId": "restore-notification-req-srv",
+      "clientId": "restore-notification-req-srv",
       "kafkaHost": "localhost:29092",
       "latestOffset": false,
       "sendEmail": {
         "protos": [
-          "io/restorecommerce/notification.proto"
+          "io/restorecommerce/notification_req.proto"
         ],
         "protoRoot": "node_modules/@restorecommerce/protos/",
-        "messageObject": "io.restorecommerce.notification.Notification"
+        "messageObject": "io.restorecommerce.notification_req.NotificationReq"
       },
       "healthCheckCommand": {
         "protos": [
@@ -84,8 +84,8 @@
         "messageObject": "io.restorecommerce.job.ScheduledJob"
       },
       "topics": {
-        "notification": {
-          "topic": "io.restorecommerce.notification",
+        "notificationReq": {
+          "topic": "io.restorecommerce.notification_req",
           "events": [
             "sendEmail"
           ]
@@ -123,16 +123,16 @@
     },
     "transports": [
       {
-        "name": "notificationGRPC",
+        "name": "notificationReqGRPC",
         "provider": "grpc",
         "services": {
-          "io-restorecommerce-notification-srv": "io.restorecommerce.notification.Service",
-          "io-restorecommerce-notification-cis": "io.restorecommerce.commandinterface.Service",
-          "io-restorecommerce-notification-reflection": "grpc.reflection.v1alpha.ServerReflection",
+          "io-restorecommerce-notification-req-srv": "io.restorecommerce.notification_req.Service",
+          "io-restorecommerce-notification-req-cis": "io.restorecommerce.commandinterface.Service",
+          "io-restorecommerce-notification-req-reflection": "grpc.reflection.v1alpha.ServerReflection",
           "grpc-health-v1": "grpc.health.v1.Health"
         },
         "protos": [
-          "io/restorecommerce/notification.proto",
+          "io/restorecommerce/notification_req.proto",
           "io/restorecommerce/commandinterface.proto",
           "grpc/reflection/v1alpha/reflection.proto",
           "grpc/health/v1/health.proto"
@@ -142,45 +142,45 @@
       }
     ],
     "services": {
-      "io-restorecommerce-notification-srv": {
+      "io-restorecommerce-notification-req-srv": {
         "send": {
           "transport": [
-            "notificationGRPC"
+            "notificationReqGRPC"
           ]
         }
       },
-      "io-restorecommerce-notification-cis": {
+      "io-restorecommerce-notification-req-cis": {
         "command": {
           "transport": [
-            "notificationGRPC"
+            "notificationReqGRPC"
           ]
         }
       },
-      "io-restorecommerce-notification-reflection": {
+      "io-restorecommerce-notification-req-reflection": {
         "serverReflectionInfo": {
           "transport": [
-            "notificationGRPC"
+            "notificationReqGRPC"
           ]
         }
       },
       "grpc-health-v1": {
         "check": {
           "transport": [
-            "notificationGRPC"
+            "notificationReqGRPC"
           ]
         },
         "watch": {
           "transport": [
-            "notificationGRPC"
+            "notificationReqGRPC"
           ]
         }
       }
     }
   },
   "serviceNames": {
-    "notification": "io-restorecommerce-notification-srv",
-    "cis": "io-restorecommerce-notification-cis",
-    "reflection": "io-restorecommerce-notification-reflection",
+    "notification_req": "io-restorecommerce-notification-req-srv",
+    "cis": "io-restorecommerce-notification-req-cis",
+    "reflection": "io-restorecommerce-notification-req-reflection",
     "health": "grpc-health-v1"
   }
 }

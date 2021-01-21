@@ -185,9 +185,9 @@ export async function start(cfg?: any): Promise<any> {
 
   // finally create the service and bind to the server
   service = new NotificationService(cfg, events, server, logger);
-  // Subsribe to notification topic to send out notification when the message
-  // arrives on notification topic
-  // (topic name is notification and eventName is sendEmail)
+  // Subscribe to notification_req topic to send out notification when the message
+  // arrives on notification_req topic
+  // (topic name is notification_req and eventName is sendEmail)
   const topicTypes = _.keys(kafkaCfg.topics);
   for (let topicType of topicTypes) {
     const topicName = kafkaCfg.topics[topicType].topic;
@@ -203,7 +203,7 @@ export async function start(cfg?: any): Promise<any> {
     }
   }
 
-  await server.bind(serviceNamesCfg.notification, service);
+  await server.bind(serviceNamesCfg.notification_req, service);
 
   // Add ReflectionService
   const reflectionServiceName = serviceNamesCfg.reflection;

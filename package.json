@@ -54,7 +54,7 @@
     "mocha": "cross-env NODE_ENV=test mocha -R spec --timeout 60000 test/notification_test.js --stack-trace --exit",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test-debug": "cross-env NODE_ENV=test mocha test/*.js --inspect-brk --exit",
-    "createtopics": "node setupTopics.js io.restorecommerce.notification io.restorecommerce.command",
+    "createtopics": "node setupTopics.js io.restorecommerce.notification_req io.restorecommerce.command",
     "tsctests": "tsc -d -p tsconfig.test.json",
     "build:tsc": "tsc -d",
     "build:clean": "rimraf lib",
