@@ -1,3 +1,19 @@
+## 0.1.10 (December 4th, 2020)
+
+- up protos (last_login updated on token)
+
+## 0.1.9 (December 2nd, 2020)
+
+- fix docker image permissions
+
+### 0.1.8 (November 19th, 2020)
+
+- updated dependencies
+
+### 0.1.7 (November 9th, 2020)
+
+- upgrade dependencies and improve logging
+
 ### 0.1.6 (October 19th, 2020)
 
 - updated chassis-srv

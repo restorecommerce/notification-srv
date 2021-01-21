@@ -8,6 +8,7 @@ import { Client } from '@restorecommerce/grpc-client';
 import { Notification } from './notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
 import { createClient } from 'redis';
+import { Logger } from 'winston';
 
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
@@ -28,10 +29,10 @@ let offsetStore: chassis.OffsetStore;
 export class NotificationService {
   events: Events;
   server: chassis.Server;
-  logger: chassis.Logger;
+  logger: Logger;
   cfg: any;
   pendingQueue: PendingNotification[];
-  constructor(cfg: any, events: Events, server: chassis.Server, logger: chassis.Logger) {
+  constructor(cfg: any, events: Events, server: chassis.Server, logger: Logger) {
     this.cfg = cfg;
     this.server = server;
     this.logger = logger;
