@@ -41,24 +41,24 @@ This microservice exposes the following gRPC endpoints:
 === `Send`
 
 This is a generic operation which can be invoked to send any type of notifications.
-Requests are performed providing `io.restorecommerce.notification.Notification` protobuf message as input
+Requests are performed providing `io.restorecommerce.notification_req.NotificationReq` protobuf message as input
 and responses are a `google.protobuf.Empty` message.
 
-`io.restorecommerce.notification.Notification`
+`io.restorecommerce.notification_req.NotificationReq`
 
 [width="100%",cols="20%,16%,30%,20%,12%",options="header",]
 |======================================================================================================================================
 | Field | Type | Description | Email | Log
-| email | `io.restorecommerce.notification.Email` | email channel properties | required | n/a
-| log | `io.restorecommerce.notification.Log` | log channel properties | n/a | required
+| email | `io.restorecommerce.notification_req.Email` | email channel properties | required | n/a
+| log | `io.restorecommerce.notification_req.Log` | log channel properties | n/a | required
 | subject | string | URL of a hbs template | required | n/a
 | body | string | URL of a hbs template| required | required
 | transport | string | Directly declares the transportation channel. Possible values: `email` or `log` | required | required
 | provider | bool | Further specifies the chosen transport. Example: use `winston` when transport is set to `log` | optional | optional
-| attachments | []`io.restorecommerce.notification.Attachment` | An array of attachment objects, see below | optional | n/a
+| attachments | []`io.restorecommerce.notification_req.Attachment` | An array of attachment objects, see below | optional | n/a
 |======================================================================================================================================
 
-`io.restorecommerce.notification.Email`
+`io.restorecommerce.notification_req.Email`
 
 [width="100%",cols="20%,16%,30%,20%,12%",options="header",]
 |======================================================================================================================================
@@ -69,7 +69,7 @@ and responses are a `google.protobuf.Empty` message.
 | replyto | string |  If set, the outgoing mail will have this replyTo header set | optional | n/a
 |======================================================================================================================================
 
-`io.restorecommerce.notification.Log`
+`io.restorecommerce.notification_req.Log`
 
 [width="100%",cols="20%,16%,30%,20%,12%",options="header",]
 |======================================================================================================================================
@@ -80,7 +80,7 @@ and responses are a `google.protobuf.Empty` message.
 Attachments may be used in case of email notifications.
 Attachment properties are based on the standard https://community.nodemailer.com/using-attachments/[nodemailer API]:
 
-`io.restorecommerce.notification.Attachment`
+`io.restorecommerce.notification_req.Attachment`
 
 [width="100%",cols="20%,16%,30%,20%,12%",options="header",]
 |======================================================================================================================================
@@ -124,9 +124,9 @@ This microservice consumes messages for the following events by topic:
 [width="100%",cols="31%,33%,36%",options="header",]
 |======================================================================================================================================
 | Topic Name | Event Name | Description
-| `io.restorecommerce.command`      | `healthCheckCommand` | to get system health check
-|                                   | `versionCommand` | to get system version
-| `io.restorecommerce.notitication` | `sendEmail` | to send email
+| `io.restorecommerce.command`          | `healthCheckCommand` | to get system health check
+|                                       | `versionCommand`     | to get system version
+| `io.restorecommerce.notification_req` | `sendEmail`          | to send email
 |======================================================================================================================================
 
 `sendEmail` events are based on the same protobuf message as the gRPC call for the `Send` endpoint.
