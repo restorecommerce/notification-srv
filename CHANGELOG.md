@@ -1,3 +1,9 @@
+## 0.1.11 (January 22nd, 2020)
+
+- updated dependencies
+- adapted code and configuration to match new notification_req.proto
+- updated readme
+
 ## 0.1.10 (December 4th, 2020)
 
 - up protos (last_login updated on token)
