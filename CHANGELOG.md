@@ -1,3 +1,7 @@
+## 0.1.12 (February 23rd, 2020)
+
+- updated dependencies, node and npm
+
 ## 0.1.11 (January 22nd, 2020)
 
 - updated dependencies
