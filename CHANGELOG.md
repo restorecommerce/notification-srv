@@ -1,8 +1,12 @@
-## 0.1.12 (February 23rd, 2020)
+## 0.1.13 (February 24th, 2021)
+
+- updated logger and srv-config
+
+## 0.1.12 (February 23rd, 2021)
 
 - updated dependencies, node and npm
 
-## 0.1.11 (January 22nd, 2020)
+## 0.1.11 (January 22nd, 2021)
 
 - updated dependencies
 - adapted code and configuration to match new notification_req.proto
