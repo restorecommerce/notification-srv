@@ -51,7 +51,7 @@ export class Notification {
 
   /**
    * send the notification via the specified channel
-   * @param {any} channegit l
+   * @param {any} channel
    * @param {any} logger
    */
   async send(channel: any, logger: any = {}): Promise<any> {
