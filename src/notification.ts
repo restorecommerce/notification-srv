@@ -37,7 +37,6 @@ export class Notification {
    * channel requires *different* attributes.
    *
    * channel "email":
-   * - notifyee == IRI to a user object
    * - subject, body == IRI to template
    * - layout == template, surrounding body
    *
@@ -52,7 +51,7 @@ export class Notification {
 
   /**
    * send the notification via the specified channel
-   * @param {any} channel
+   * @param {any} channegit l
    * @param {any} logger
    */
   async send(channel: any, logger: any = {}): Promise<any> {
