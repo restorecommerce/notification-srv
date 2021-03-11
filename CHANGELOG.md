@@ -1,3 +1,7 @@
+## 0.1.14 (March 11th, 2021)
+
+- updated dependencies.
+
 ## 0.1.13 (February 24th, 2021)
 
 - updated logger and srv-config
