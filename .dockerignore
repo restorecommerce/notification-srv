@@ -1,12 +1,17 @@
-node_modules/
 npm-debug.log
 
+node_modules/
 coverage/
 
 .project
 .settings
-.directory
-.vscode
 
 .git*
+
+*.log
+*~
+
+buildImage.bash
+Dockerfile
+.dockerignore
 lib/
