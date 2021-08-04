@@ -4,7 +4,7 @@ import * as chassis from '@restorecommerce/chassis-srv';
 import { createLogger } from '@restorecommerce/logger';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events, Topic } from '@restorecommerce/kafka-client';
-import { Client } from '@restorecommerce/grpc-client';
+import { GrpcClient } from '@restorecommerce/grpc-client';
 import { Notification } from './notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
 import Redis from 'ioredis';
@@ -51,6 +51,12 @@ export class NotificationService {
       return this.sendNotification(request.request);
     } else {
       this.logger.error(`Transport ${transport} not implemented`);
+      return {
+        operation_status: {
+          code: 404,
+          message: `Transport ${transport} not implemented`
+        }
+      };
     }
   }
 
@@ -70,7 +76,15 @@ export class NotificationService {
     }
 
     try {
-      await notification.send(transport, service.logger);
+      const sendNotificationResp = await notification.send(transport, service.logger);
+      if (sendNotificationResp.response) {
+        return {
+          operation_status: {
+            code: 200,
+            message: 'success'
+          }
+        };
+      }
     } catch (err) {
       let toQueue = !!err.responseCode || err.code == 'ECONNECTION' || err.command == 'CONN';
       if (err.responseCode) { // SMTP response codes
@@ -89,7 +103,12 @@ export class NotificationService {
           notification
         });
       }
-
+      return {
+        operation_status: {
+          code: err.code,
+          message: err.message
+        }
+      };
     }
   }
 }
@@ -106,8 +125,8 @@ export async function start(cfg?: any): Promise<any> {
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server
   if (!_.isEmpty(cfg.get('client:service'))) {
-    const client: Client = new Client(cfg.get('client:service'), logger);
-    const credentialService = await client.connect();
+    const client: GrpcClient = new GrpcClient(cfg.get('client:credentialService'), logger);
+    const credentialService = client.credentialService;
     const result = await credentialService.read({});
     if (result && result.data && result.data.items) {
       const credentialsList = result.data.items;
@@ -192,7 +211,7 @@ export async function start(cfg?: any): Promise<any> {
   const topicTypes = _.keys(kafkaCfg.topics);
   for (let topicType of topicTypes) {
     const topicName = kafkaCfg.topics[topicType].topic;
-    const topic: Topic = events.topic(topicName);
+    const topic: Topic = await events.topic(topicName);
     const offsetValue = await offsetStore.getOffset(topicName);
     logger.info(`subscribing to topic ${topicName} with offset value:`, offsetValue);
     if (kafkaCfg.topics[topicType].events) {

@@ -1,6 +1,5 @@
 'use strict';
 
-import * as co from 'co';
 import * as Cluster from '@restorecommerce/cluster-service';
 import { createServiceConfig } from '@restorecommerce/service-config';
 

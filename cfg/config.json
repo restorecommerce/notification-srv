@@ -9,28 +9,17 @@
     }
   },
   "client": {
-    "service": {
-      "transports": {
-        "grpc": {
-          "service": "io.restorecommerce.credential.Service",
-          "timeout": 3000,
-          "protos": [
-            "io/restorecommerce/credential.proto"
-          ],
-          "protoRoot": "node_modules/@restorecommerce/protos/"
+    "credentialService": {
+      "address": "localhost:50053",
+      "proto": {
+        "protoRoot": "node_modules/@restorecommerce/protos/",
+        "protoPath": "io/restorecommerce/credential.proto",
+        "credentialService": {
+          "notificationReqService": {
+            "packageName": "io.restorecommerce.credential",
+            "serviceName": "Service"
+          }
         }
-      },
-      "loadbalancer": {
-        "name": "roundRobin"
-      },
-      "publisher": {
-        "name": "static",
-        "instances": [
-          "grpc://localhost:50053"
-        ]
-      },
-      "endpoints": {
-        "read": {}
       }
     }
   },
@@ -38,8 +27,12 @@
     "kafka": {
       "provider": "kafka",
       "groupId": "restore-notification-req-srv",
-      "clientId": "restore-notification-req-srv",
-      "kafkaHost": "localhost:29092",
+      "kafka": {
+        "clientId": "restore-notification-req-srv",
+        "brokers": [
+          "localhost:29092"
+        ]
+      },
       "latestOffset": false,
       "sendEmail": {
         "protos": [

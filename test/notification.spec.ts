@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as assert from 'assert';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events } from '@restorecommerce/kafka-client';
-import { Client } from '@restorecommerce/grpc-client';
+import { GrpcClient } from '@restorecommerce/grpc-client';
 import { Notification } from '../lib/notification';
 import { NotificationService, start, stop } from '../lib/service';
 
@@ -30,6 +30,13 @@ describe('testing: send', () => {
   before(async function init(): Promise<void> {
     service = await start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
+    events = new Events({
+      ...cfg.get('events:kafka'),
+      groupId: 'restore-notification-req-srv-test-runner',
+      kafka: {
+        ...cfg.get('events:kafka:kafka'),
+      }
+    }, service.logger);
     await events.start();
   });
 
@@ -56,7 +63,7 @@ describe('testing: send', () => {
   it('should send an email', async function sendEmailMessage(): Promise<void> {
     const notification = new Notification(cfg, {
       email: {
-        to: emailAddr
+        to: [emailAddr]
       },
       body: mailBody,
       subject: 'should send an email',
@@ -76,11 +83,11 @@ describe('testing: send', () => {
   });
 
   it('should send an email through grpc', async function sendEmailGRPC(): Promise<void> {
-    const client: Client = new Client(cfg.get('client:notificationReqService'), service.logger);
-    const clientService = await client.connect();
+    const client: GrpcClient = new GrpcClient(cfg.get('client:notificationReqService'), service.logger);
+    const clientService = client.notificationReqService;
     const notification = {
       email: {
-        to: emailAddr
+        to: [emailAddr]
       },
       body: mailBody,
       subject: 'should send an email through grpc',
@@ -98,17 +105,17 @@ describe('testing: send', () => {
       process.env.NODE_ENV = previousEnv;
     }
 
-    await client.end();
+    await client.close();
   });
 
   it('should queue failed emails', async function (): Promise<void> {
     let previousEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
-    const client: Client = new Client(cfg.get('client:notificationReqService'), service.logger);
-    const clientService = await client.connect();
+    const client: GrpcClient = new GrpcClient(cfg.get('client:notificationReqService'), service.logger);
+    const clientService = client.notificationReqService;
     const notification = {
       email: {
-        to: emailAddr
+        to: [emailAddr]
       },
       body: mailBody,
       subject: 'should queue failed emails',
@@ -135,20 +142,20 @@ describe('testing: send', () => {
       service = await start(cfg);
     }
 
-    await client.end();
+    await client.close();
     process.env.NODE_ENV = previousEnv;
   });
 
   it('should send mail notification to kafka', async function sendKafkaMail(): Promise<void> {
     const notification = {
       email: {
-        to: emailAddr
+        to: [emailAddr]
       },
       body: mailBody,
       subject: 'should send mail notification to kafka',
       transport: 'email'
     };
-    const topic = events.topic('io.restorecommerce.notification_req');
+    const topic = await events.topic('io.restorecommerce.notification_req');
     const offset = await topic.$offset(-1);
     await topic.emit('sendEmail', notification);
     const newOffset = await topic.$offset(-1);
@@ -158,7 +165,7 @@ describe('testing: send', () => {
   it('should send an email with attachments', async function sendAttachment(): Promise<void> {
     const notification = new Notification(cfg, {
       email: {
-        to: emailAddr
+        to: [emailAddr]
       },
       body: mailBody,
       subject: 'should send an email with attachments',
@@ -193,7 +200,7 @@ describe('testing: send', () => {
 
     const notification: Notification = new Notification(cfg, {
       email: {
-        to: emailAddr
+        to: [emailAddr]
       },
       body: mailBodyWithURL,
       subject: 'should send an email with image URLs',
@@ -227,7 +234,7 @@ describe('testing: send', () => {
     const mailBodyWithBuffer = fs.readFileSync('./test/fixtures/test_with_image_buffer.html');
     const notification = new Notification(cfg, {
       email: {
-        to: emailAddr
+        to: [emailAddr]
       },
       body: mailBodyWithBuffer,
       subject: 'should send an email with image buffers',
