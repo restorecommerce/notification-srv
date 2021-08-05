@@ -43,7 +43,7 @@
   },
     "client": {
     "credentialService": {
-      "address": "resource-srv:50053"
+      "address": "resource-srv:50051"
     }
   }
 }
