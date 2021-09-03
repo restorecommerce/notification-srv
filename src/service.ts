@@ -124,16 +124,16 @@ export async function start(cfg?: any): Promise<any> {
   const logger = createLogger(cfg.get('logger'));
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server
-  if (!_.isEmpty(cfg.get('client:service'))) {
+  if (!_.isEmpty(cfg.get('client:credentialService'))) {
     const client: GrpcClient = new GrpcClient(cfg.get('client:credentialService'), logger);
     const credentialService = client.credentialService;
     const result = await credentialService.read({});
-    if (result && result.data && result.data.items) {
-      const credentialsList = result.data.items;
-      for (let credential of credentialsList) {
-        if (credential.id === MAIL_SERVER_CREDENTIALS) {
-          cfg.set('server:mailer:auth:user', credential.user);
-          cfg.set('server:mailer:auth:pass', credential.pass);
+    if (result && result.items) {
+      const credentialsList = result.items;
+      for (let credentialObj of credentialsList) {
+        if (credentialObj?.payload?.id === MAIL_SERVER_CREDENTIALS) {
+          cfg.set('server:mailer:auth:user', credentialObj.payload.user);
+          cfg.set('server:mailer:auth:pass', credentialObj.payload.pass);
           break;
         }
       }
