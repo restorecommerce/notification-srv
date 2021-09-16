@@ -14,8 +14,8 @@
       "proto": {
         "protoRoot": "node_modules/@restorecommerce/protos/",
         "protoPath": "io/restorecommerce/credential.proto",
-        "credentialService": {
-          "notificationReqService": {
+        "services": {
+          "credentialService": {
             "packageName": "io.restorecommerce.credential",
             "serviceName": "Service"
           }
