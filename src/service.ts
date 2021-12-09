@@ -121,7 +121,12 @@ export async function start(cfg?: any): Promise<any> {
   if (!cfg) {
     cfg = createServiceConfig(process.cwd());
   }
-  const logger = createLogger(cfg.get('logger'));
+  const loggerCfg = cfg.get('logger');
+  loggerCfg.esTransformer = (msg) => {
+    msg.fields = JSON.stringify(msg.fields);
+    return msg;
+  };
+  const logger = createLogger(loggerCfg);
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server
   if (!_.isEmpty(cfg.get('client:credentialService'))) {
