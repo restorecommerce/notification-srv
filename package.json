@@ -1,6 +1,6 @@
 {
   "name": "@restorecommerce/notification-srv",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Restorecommerce notification microservice",
   "main": "lib/start.js",
   "author": "n-fuse GmbH",
@@ -16,14 +16,14 @@
     "notification"
   ],
   "dependencies": {
-    "@restorecommerce/chassis-srv": "^0.3.4",
+    "@restorecommerce/chassis-srv": "^0.3.5",
     "@restorecommerce/cluster-service": "^0.1.10",
-    "@restorecommerce/grpc-client": "^0.2.12",
-    "@restorecommerce/kafka-client": "^0.2.25",
-    "@restorecommerce/logger": "^0.11.1",
+    "@restorecommerce/grpc-client": "^0.2.14",
+    "@restorecommerce/kafka-client": "^0.2.29",
+    "@restorecommerce/logger": "^0.11.3",
     "@restorecommerce/mailer": "^0.1.15",
     "@restorecommerce/protos": "^0.4.11",
-    "@restorecommerce/service-config": "^0.4.21",
+    "@restorecommerce/service-config": "^0.4.23",
     "lodash": "^4.17.20"
   },
   "devDependencies": {
