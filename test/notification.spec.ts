@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as assert from 'assert';
+import assert from 'assert';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events } from '@restorecommerce/kafka-client';
 import { GrpcClient } from '@restorecommerce/grpc-client';

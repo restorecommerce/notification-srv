@@ -1,4 +1,4 @@
-import * as Mailer from '@restorecommerce/mailer';
+import Mailer from '@restorecommerce/mailer';
 import { Notification } from './notification';
 
 /**
