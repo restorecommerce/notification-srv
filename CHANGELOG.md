@@ -1,3 +1,7 @@
+## 0.2.10 (February 14th, 2022)
+
+- up dependencies and migrated from ioredis to redis
+
 ## 0.2.9 (December 22nd, 2021)
 
 - removed importHelpers flag from tsconfig
