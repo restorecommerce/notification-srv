@@ -21,7 +21,7 @@
     "@restorecommerce/grpc-client": "^0.3.1",
     "@restorecommerce/kafka-client": "^0.3.1",
     "@restorecommerce/logger": "^0.12.1",
-    "@restorecommerce/mailer": "^0.1.16",
+    "@restorecommerce/mailer": "^0.1.17",
     "@restorecommerce/protos": "^0.6.3",
     "@restorecommerce/service-config": "^0.4.25",
     "lodash": "^4.17.20"

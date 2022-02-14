@@ -27,7 +27,7 @@ export const email = (notification: Notification, cfg: any, logger: any): any =>
 
   const mailConf = cfg.get('server:mailer');
   mailConf.logger = logger;
-  const mailer = new Mailer(mailConf);
+  const mailer = new Mailer(mailConf, {});
   const mail = {
     from: mailConf.address,
     to: email.to,
