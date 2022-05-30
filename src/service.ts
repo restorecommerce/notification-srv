@@ -7,7 +7,7 @@ import { Events, Topic } from '@restorecommerce/kafka-client';
 import { GrpcClient } from '@restorecommerce/grpc-client';
 import { Notification } from './notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 import { Logger } from 'winston';
 
 const SEND_MAIL_EVENT = 'sendEmail';
@@ -157,7 +157,7 @@ export async function start(cfg?: any): Promise<any> {
   // init redis client for subject index
   const redisConfig = cfg.get('redis');
   redisConfig.database = cfg.get('redis:db-indexes:db-subject');
-  const redisClient = createClient(redisConfig);
+  const redisClient: RedisClientType<any, any> = createClient(redisConfig);
   redisClient.on('error', (err) => logger.error('Redis client error in subject store', err));
   await redisClient.connect();
   // exposing commands as gRPC methods through chassis
