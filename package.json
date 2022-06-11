@@ -23,7 +23,7 @@
     "@restorecommerce/logger": "^0.12.2",
     "@restorecommerce/mailer": "^0.1.20",
     "@restorecommerce/protos": "^0.6.9",
-    "@restorecommerce/service-config": "^0.4.26",
+    "@restorecommerce/service-config": "^0.4.27",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
