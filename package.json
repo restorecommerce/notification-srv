@@ -24,7 +24,8 @@
     "@restorecommerce/mailer": "^0.1.21",
     "@restorecommerce/protos": "^0.7.2",
     "@restorecommerce/service-config": "^0.4.27",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "retry": "^0.13.1"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",

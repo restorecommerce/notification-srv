@@ -9,6 +9,7 @@ import { Notification } from './notification';
 import { PendingNotification, NotificationTransport } from './interfaces';
 import { createClient, RedisClientType } from 'redis';
 import { Logger } from 'winston';
+import * as retry from 'retry';
 
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
@@ -128,21 +129,43 @@ export async function start(cfg?: any): Promise<any> {
   };
   const logger = createLogger(loggerCfg);
   // Make a gRPC call to resource service for credentials resource and update
-  // cfg for user and pass for mail server
-  if (!_.isEmpty(cfg.get('client:credentialService'))) {
+  // cfg for user and pass for mail server (if its not set up in config - server:mailer:auth:user)
+  if (!cfg.get('server:mailer:auth:user') && !_.isEmpty(cfg.get('client:credentialService'))) {
     const client: GrpcClient = new GrpcClient(cfg.get('client:credentialService'), logger);
     const credentialService = client.credentialService;
-    const result = await credentialService.read({});
-    if (result && result.items) {
-      const credentialsList = result.items;
-      for (let credentialObj of credentialsList) {
-        if (credentialObj?.payload?.id === MAIL_SERVER_CREDENTIALS) {
-          cfg.set('server:mailer:auth:user', credentialObj.payload.user);
-          cfg.set('server:mailer:auth:pass', credentialObj.payload.pass);
-          break;
-        }
-      }
-    }
+    // retry mechanism, till the credentials are read from resource-srv
+    const maxTo = cfg.get('retry:maxTimeout') || 2000;
+    logger.info(`Retrying with maxTimeout:${maxTo}`);
+    const operation = retry.operation({ forever: true, maxTimeout: maxTo });
+
+    await new Promise((resolve, reject) => {
+      operation.attempt(async () => {
+        const result = await credentialService.read({});
+        await new Promise((resolve, reject) => {
+          if (result?.items?.length > 0) {
+            const credentialsList = result.items;
+            for (let credentialObj of credentialsList) {
+              if (credentialObj?.payload?.id === MAIL_SERVER_CREDENTIALS) {
+                cfg.set('server:mailer:auth:user', credentialObj.payload.user);
+                cfg.set('server:mailer:auth:pass', credentialObj.payload.pass);
+                break;
+              }
+            }
+            resolve(true);
+          } else {
+            let err = 'Either resource-srv is unreachable or mail server credentials do not exist in DB';
+            this.logger.error(err);
+            reject(err);
+          }
+        }).then((resp) => {
+          resolve(resp);
+        }).catch(err => {
+          const attemptNo = operation.attempts();
+          logger.info(`Retry connecting to Resource Service, attempt no: ${attemptNo}`);
+          operation.retry(err);
+        });
+      });
+    });
   }
 
   server = new chassis.Server(cfg.get('server'), logger);
