@@ -89,7 +89,7 @@ export class NotificationService {
     } catch (err) {
       let toQueue = !!err.responseCode || err.code == 'ECONNECTION' || err.command == 'CONN';
       if (err.responseCode) { // SMTP response codes
-        this.logger.error('Error while sending email: ' + err.responseCode);
+        this.logger.error('Error while sending email', { code: err.responseCode });
         // "code":"EAUTH","response":"454 4.7.0 Temporary authentication failure:
         // Connection lost to authentication server","responseCode":454
         if ([451, 454, 550, 501, 553, 556, 552, 554].indexOf(err.responseCode) == -1) { // ignoring messages related with invalid messages or email addresses
@@ -181,7 +181,7 @@ export async function start(cfg?: any): Promise<any> {
   const redisConfig = cfg.get('redis');
   redisConfig.database = cfg.get('redis:db-indexes:db-subject');
   const redisClient: RedisClientType<any, any> = createClient(redisConfig);
-  redisClient.on('error', (err) => logger.error('Redis client error in subject store', err));
+  redisClient.on('error', (err) => logger.error('Redis client error in subject store', { code: err.code, message: err.message, stack: err.stack }));
   await redisClient.connect();
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
@@ -198,7 +198,7 @@ export async function start(cfg?: any): Promise<any> {
       try {
         await service.sendNotification(msg);
       } catch (err) {
-        this.logger.error('Error while sending notification; adding message to pending notifications...');
+        this.logger.error('Error while sending notification; adding message to pending notifications');
         this.pendingQueue.push({
           transport: 'email',
           notification
@@ -209,9 +209,9 @@ export async function start(cfg?: any): Promise<any> {
       await cis.command(msg, context);
     } else if (eventName == QUEUED_JOB_EVENT) {
       if (msg.type == FLUSH_NOTIFICATIONS_JOB_TYPE) {
-        logger.info('Processing notifications flush request...');
+        logger.info('Processing notifications flush request');
         const len = service.pendingQueue.length;
-        logger.info('Pending mail queue length:', { length: len });
+        logger.info('Pending mail queue length', { length: len });
         let failureQueue: PendingNotification[] = [];
 
         for (let i = 0; i < len; i++) {
@@ -242,7 +242,7 @@ export async function start(cfg?: any): Promise<any> {
     const topicName = kafkaCfg.topics[topicType].topic;
     const topic: Topic = await events.topic(topicName);
     const offsetValue = await offsetStore.getOffset(topicName);
-    logger.info(`subscribing to topic ${topicName} with offset value:`, offsetValue);
+    logger.info(`subscribing to topic ${topicName} with offset value`, { offset : offsetValue });
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
       for (let eventName of eventNames) {
