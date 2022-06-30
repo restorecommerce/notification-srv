@@ -1,3 +1,8 @@
+## 0.3.0 (June 30th, 2022)
+
+- up deps
+- mail server credentials - added retry mechanism for reading credentials from resource-srv if its not set up in configuration
+
 ## 0.2.12 (February 18th, 2022)
 
 - updated chassis-srv (includes fix for offset store config)
