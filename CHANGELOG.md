@@ -1,3 +1,7 @@
+## 0.3.1 (June 30th, 2022)
+
+- up deps
+
 ## 0.3.0 (June 30th, 2022)
 
 - up deps
