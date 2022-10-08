@@ -2,9 +2,13 @@ import * as fs from 'fs';
 import assert from 'assert';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events } from '@restorecommerce/kafka-client';
-import { GrpcClient } from '@restorecommerce/grpc-client';
+import { createClient, createChannel } from '@restorecommerce/grpc-client';
 import { Notification } from '../lib/notification';
 import { NotificationService, start, stop } from '../lib/service';
+import { 
+  ServiceDefinition as NotificationReqServiceDefinition,
+  ServiceClient as NotificationReqServiceClient
+} from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/notification_req';
 
 // NOTE: A running instance of Kafka and redis is needed to execute below test.
 const cfg = createServiceConfig(process.cwd() + '/test');
@@ -83,8 +87,13 @@ describe('testing: send', () => {
   });
 
   it('should send an email through grpc', async function sendEmailGRPC(): Promise<void> {
-    const client: GrpcClient = new GrpcClient(cfg.get('client:notificationReqService'), service.logger);
-    const clientService = client.notificationReqService;
+    const notificationReqCfg = cfg.get('client:notificationReqService');
+    const channel = createChannel(notificationReqCfg.address);
+    const logger = service.logger;
+    const clientService: NotificationReqServiceClient = createClient({
+      ...notificationReqCfg,
+      logger
+    }, NotificationReqServiceDefinition, channel);
     const notification = {
       email: {
         to: [emailAddr]
@@ -95,24 +104,27 @@ describe('testing: send', () => {
     };
 
     if (defaultCfg) {
-      const result = await clientService.send(notification, service.logger);
+      const result = await clientService.send(notification);
       assert(result);
     } else {
       let previousEnv = process.env.NODE_ENV;
       process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
-      const result = await clientService.send(notification, service.logger);
+      const result = await clientService.send(notification);
       assert(result);
       process.env.NODE_ENV = previousEnv;
     }
-
-    await client.close();
   });
 
   it('should queue failed emails', async function (): Promise<void> {
     let previousEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'other'; // overriding env to avoid creating email stub
-    const client: GrpcClient = new GrpcClient(cfg.get('client:notificationReqService'), service.logger);
-    const clientService = client.notificationReqService;
+    const notificationReqCfg = cfg.get('client:notificationReqService');
+    const channel = createChannel(notificationReqCfg.address);
+    const logger = service.logger;
+    const clientService: NotificationReqServiceClient = createClient({
+      ...notificationReqCfg,
+      logger
+    }, NotificationReqServiceDefinition, channel);
     const notification = {
       email: {
         to: [emailAddr]
@@ -123,7 +135,7 @@ describe('testing: send', () => {
     };
 
     if (defaultCfg) {
-      const result = await clientService.send(notification, service.logger);
+      const result = await clientService.send(notification);
       assert(result);
       assert.deepStrictEqual(service.pendingQueue.length, 1);
     } else {
@@ -133,7 +145,7 @@ describe('testing: send', () => {
       let prevHost = cfg.get('server:mailer:host');
       cfg.set('server:mailer:host', 'mail.example.com');
       service = await start(cfg);
-      const result = await clientService.send(notification, service.logger);
+      const result = await clientService.send(notification);
       assert(result);
       assert.deepStrictEqual(service.pendingQueue.length, 1);
       // restart server again with prev cfg
@@ -141,8 +153,6 @@ describe('testing: send', () => {
       cfg.set('server:mailer:host', prevHost);
       service = await start(cfg);
     }
-
-    await client.close();
     process.env.NODE_ENV = previousEnv;
   });
 

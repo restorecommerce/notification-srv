@@ -35,57 +35,9 @@
       {
         "name": "notificationReqGRPC",
         "provider": "grpc",
-        "services": {
-          "io-restorecommerce-notification-req-srv": "io.restorecommerce.notification_req.Service",
-          "io-restorecommerce-notification-req-cis": "io.restorecommerce.commandinterface.Service",
-          "io-restorecommerce-notification-req-reflection": "grpc.reflection.v1alpha.ServerReflection",
-          "grpc-health-v1": "grpc.health.v1.Health"
-        },
-        "addr": "localhost:50052",
-        "protos": [
-          "io/restorecommerce/notification_req.proto",
-          "io/restorecommerce/commandinterface.proto",
-          "grpc/reflection/v1alpha/reflection.proto",
-          "grpc/health/v1/health.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/"
+        "addr": "localhost:50052"
       }
-    ],
-    "services": {
-      "io-restorecommerce-notification-req-srv": {
-        "send": {
-          "transport": [
-            "notificationReqGRPC"
-          ]
-        }
-      },
-      "io-restorecommerce-notification-req-cis": {
-        "command": {
-          "transport": [
-            "notificationReqGRPC"
-          ]
-        }
-      },
-      "io-restorecommerce-notification-req-reflection": {
-        "serverReflectionInfo": {
-          "transport": [
-            "notificationReqGRPC"
-          ]
-        }
-      },
-      "grpc-health-v1": {
-        "check": {
-          "transport": [
-            "notificationReqGRPC"
-          ]
-        },
-        "watch": {
-          "transport": [
-            "notificationReqGRPC"
-          ]
-        }
-      }
-    }
+    ]
   },
   "serviceNames": {
     "notification_req": "io-restorecommerce-notification-req-srv",
@@ -95,17 +47,7 @@
   },
   "client": {
     "notificationReqService": {
-      "address": "localhost:50052",
-      "proto": {
-        "protoRoot": "node_modules/@restorecommerce/protos/",
-        "protoPath": "io/restorecommerce/notification_req.proto",
-        "services": {
-          "notificationReqService": {
-            "packageName": "io.restorecommerce.notification_req",
-            "serviceName": "Service"
-          }
-        }
-      }
+      "address": "localhost:50052"
     }
   },
   "events": {
@@ -121,24 +63,12 @@
       "latestOffset": true,
       "commandTopic": "io.restorecommerce.command",
       "sendEmail": {
-        "protos": [
-          "io/restorecommerce/notification_req.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.notification_req.NotificationReq"
       },
       "healthCheckCommand": {
-        "protos": [
-          "io/restorecommerce/commandinterface.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.commandinterface.HealthCheckRequest"
       },
       "healthCheckResponse": {
-        "protos": [
-          "io/restorecommerce/commandinterface.proto"
-        ],
-        "protoRoot": "node_modules/@restorecommerce/protos/",
         "messageObject": "io.restorecommerce.commandinterface.HealthCheckResponse"
       },
       "topics": {

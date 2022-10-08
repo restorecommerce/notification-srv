@@ -3,14 +3,38 @@ import * as _ from 'lodash';
 import * as chassis from '@restorecommerce/chassis-srv';
 import { createLogger } from '@restorecommerce/logger';
 import { createServiceConfig } from '@restorecommerce/service-config';
-import { Events, Topic } from '@restorecommerce/kafka-client';
-import { GrpcClient } from '@restorecommerce/grpc-client';
+import { Events, Topic, registerProtoMeta } from '@restorecommerce/kafka-client';
+import { createClient as grpcCreateClient, createChannel } from '@restorecommerce/grpc-client';
 import { Notification } from './notification';
-import { PendingNotification, NotificationTransport } from './interfaces';
+import { PendingNotification } from './interfaces';
 import { createClient, RedisClientType } from 'redis';
 import { Logger } from 'winston';
 import * as retry from 'retry';
+import {
+  ServiceDefinition as NotificationReqServiceDefinition,
+  protoMetadata as NotificationReqMeta, NotificationReq
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/notification_req';
+import { OperationStatusObj } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/status';
+import {
+  ServiceDefinition as CommandInterfaceServiceDefinition,
+  protoMetadata as CommandInterfaceMeta
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/commandinterface';
+import {
+  protoMetadata as reflectionMeta
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/grpc/reflection/v1alpha/reflection';
+import { ServerReflectionService } from 'nice-grpc-server-reflection';
+import { BindConfig } from '@restorecommerce/chassis-srv/lib/microservice/transport/provider/grpc';
+import { HealthDefinition } from '@restorecommerce/rc-grpc-clients/dist/generated-server/grpc/health/v1/health';
+import {
+  ServiceDefinition as CredentialServiceDefinition,
+  ServiceClient as CredentialServiceClient
+} from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/credential';
+import {
+  ReadRequest
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/resource_base';
 
+
+registerProtoMeta(NotificationReqMeta, CommandInterfaceMeta, reflectionMeta);
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const VERSION_CMD_EVENT = 'versionCommand';
@@ -46,10 +70,10 @@ export class NotificationService {
    * @param request contians the transport channel detail
    * @param context
    */
-  async send(request: any, context: any): Promise<any> {
-    const transport = request.request.transport;
+  async send(request: NotificationReq, context: any): Promise<OperationStatusObj> {
+    const transport = request.transport;
     if (transport === 'email' || transport === 'log') {
-      return this.sendNotification(request.request);
+      return this.sendNotification(request);
     } else {
       this.logger.error(`Transport ${transport} not implemented`);
       return {
@@ -61,18 +85,18 @@ export class NotificationService {
     }
   }
 
-  async sendNotification(data: any): Promise<any> {
-    const transport: NotificationTransport = data.transport;
+  async sendNotification(data: NotificationReq): Promise<OperationStatusObj> {
+    const transport = data.transport;
     let notification: Notification;
     if (transport == 'log') {
-      const { userId, subjectId, bodyId } = data;
+      const { log } = data;
       notification = new Notification(this.cfg, {
-        userId, subjectId, bodyId
+        log, level: log.level
       });
     } else {
-      const { body, email, subject, target, attachments, bcc, cc } = data;
+      const { body, email, subject, attachments } = data;
       notification = new Notification(this.cfg, {
-        email, target, subject, body, attachments, bcc, cc
+        email, subject, body, attachments
       });
     }
 
@@ -128,11 +152,15 @@ export async function start(cfg?: any): Promise<any> {
     return msg;
   };
   const logger = createLogger(loggerCfg);
+  const credentialServiceCfg = cfg.get('client:credentialService');
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server (if its not set up in config - server:mailer:auth:user)
   if (!cfg.get('server:mailer:auth:user') && !_.isEmpty(cfg.get('client:credentialService'))) {
-    const client: GrpcClient = new GrpcClient(cfg.get('client:credentialService'), logger);
-    const credentialService = client.credentialService;
+    const channel = createChannel(credentialServiceCfg.address);
+    const credentialService: CredentialServiceClient = grpcCreateClient({
+      ...credentialServiceCfg,
+      logger
+    }, CredentialServiceDefinition, channel);
     // retry mechanism, till the credentials are read from resource-srv
     const maxTo = cfg.get('retry:maxTimeout') || 2000;
     logger.info(`Retrying with maxTimeout:${maxTo}`);
@@ -140,7 +168,7 @@ export async function start(cfg?: any): Promise<any> {
 
     await new Promise((resolve, reject) => {
       operation.attempt(async () => {
-        const result = await credentialService.read({});
+        const result = await credentialService.read(ReadRequest.fromPartial({}));
         await new Promise((resolve, reject) => {
           if (result?.items?.length > 0) {
             const credentialsList = result.items;
@@ -189,7 +217,10 @@ export async function start(cfg?: any): Promise<any> {
   const cis = new chassis.CommandInterface(server,
     cfg, logger, events, redisClient);
   const cisName = serviceNamesCfg.cis;
-  await server.bind(cisName, cis);
+  await server.bind(cisName, {
+    service: CommandInterfaceServiceDefinition,
+    implementation: cis
+  } as BindConfig<CommandInterfaceServiceDefinition>);
 
   const notificationEventListener = async (msg: any, context: any, config: any, eventName: string): Promise<any> => {
     if (eventName === SEND_MAIL_EVENT) {
@@ -242,7 +273,7 @@ export async function start(cfg?: any): Promise<any> {
     const topicName = kafkaCfg.topics[topicType].topic;
     const topic: Topic = await events.topic(topicName);
     const offsetValue = await offsetStore.getOffset(topicName);
-    logger.info(`subscribing to topic ${topicName} with offset value`, { offset : offsetValue });
+    logger.info(`subscribing to topic ${topicName} with offset value`, { offset: offsetValue });
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
       for (let eventName of eventNames) {
@@ -252,18 +283,30 @@ export async function start(cfg?: any): Promise<any> {
     }
   }
 
-  await server.bind(serviceNamesCfg.notification_req, service);
+  await server.bind(serviceNamesCfg.notification_req, {
+    service: NotificationReqServiceDefinition,
+    implementation: service
+  } as BindConfig<NotificationReqServiceDefinition>);
 
   // Add ReflectionService
   const reflectionServiceName = serviceNamesCfg.reflection;
-  const transportName = cfg.get(`server:services:${reflectionServiceName}:serverReflectionInfo:transport:0`);
-  const transport = server.transport[transportName];
-  const reflectionService = new chassis.ServerReflection(transport.$builder, server.config);
-  await server.bind(reflectionServiceName, reflectionService);
+  const reflectionService = chassis.buildReflectionService([{
+    descriptor: NotificationReqMeta.fileDescriptor
+  }, {
+    descriptor: CommandInterfaceMeta.fileDescriptor
+  }]);
+  await server.bind(reflectionServiceName, {
+    service: ServerReflectionService,
+    implementation: reflectionService
+  });
 
-  await server.bind(serviceNamesCfg.health, new chassis.Health(cis));
+  await server.bind(serviceNamesCfg.health, {
+    service: HealthDefinition,
+    implementation: new chassis.Health(cis)
+  } as BindConfig<HealthDefinition>);
 
   await server.start();
+  logger.info('Server started successfully');
   return service;
 }
 

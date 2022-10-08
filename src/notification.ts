@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as send from './send';
-import { Email, Log } from './interfaces';
+import { Email, Log } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/notification_req';
 
 const Attrs = [
   'log',

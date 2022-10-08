@@ -1,5 +1,6 @@
 import Mailer from '@restorecommerce/mailer';
 import { Notification } from './notification';
+import * as _ from 'lodash';
 
 /**
  * log a bare notification using a chosen logging mechanism
@@ -39,7 +40,7 @@ export const email = (notification: Notification, cfg: any, logger: any): any =>
     bcc: email.bcc
   };
 
-  if (attachments && attachments !== []) {
+  if (_.isArray(attachments) && !_.isEmpty(attachments) ) {
     const list = [];
     for (const a of attachments) {
       if (a.text) a.content = a.text;
