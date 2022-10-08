@@ -6,7 +6,6 @@ import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events, Topic, registerProtoMeta } from '@restorecommerce/kafka-client';
 import { createClient as grpcCreateClient, createChannel } from '@restorecommerce/grpc-client';
 import { Notification } from './notification';
-import { PendingNotification } from './interfaces';
 import { createClient, RedisClientType } from 'redis';
 import { Logger } from 'winston';
 import * as retry from 'retry';
@@ -137,6 +136,13 @@ export class NotificationService {
     }
   }
 }
+
+interface PendingNotification {
+  notification: Notification;
+  transport: NotificationTransport;
+}
+
+type NotificationTransport = 'log' | 'email';
 
 /*
  * starting the actual server
