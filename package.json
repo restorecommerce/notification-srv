@@ -22,7 +22,6 @@
     "@restorecommerce/kafka-client": "^1.0.4",
     "@restorecommerce/logger": "^1.2.1",
     "@restorecommerce/mailer": "^1.0.1",
-    "@restorecommerce/protos": "^2.0.1",
     "@restorecommerce/rc-grpc-clients": "^2.0.1",
     "@restorecommerce/service-config": "^1.0.3",
     "lodash": "^4.17.21",
@@ -30,7 +29,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.0",
+    "@types/node": "^18.11.2",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/eslint-plugin-tslint": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
