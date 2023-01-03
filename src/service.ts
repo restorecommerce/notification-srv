@@ -115,7 +115,9 @@ export class NotificationService {
         this.logger.error('Error while sending email', { code: err.responseCode });
         // "code":"EAUTH","response":"454 4.7.0 Temporary authentication failure:
         // Connection lost to authentication server","responseCode":454
-        if ([451, 454, 550, 501, 553, 556, 552, 554].indexOf(err.responseCode) == -1) { // ignoring messages related with invalid messages or email addresses
+        // included authentication error due to login credentials 530 (to resend the email from pending queue)
+        if ([451, 454, 550, 501, 530, 553, 556, 552, 554].indexOf(err.responseCode) == -1) {
+          // ignoring messages related with invalid messages or email addresses other than the above error codes
           toQueue = false;
         }
       }
