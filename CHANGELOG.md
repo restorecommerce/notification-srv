@@ -1,3 +1,7 @@
+## 0.3.3 (June 1st, 2023)
+
+- up deps
+
 ## 0.3.2 (October 26th, 2022)
 
 - move to full typed client and server, full text search
