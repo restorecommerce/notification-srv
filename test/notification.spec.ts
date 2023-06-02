@@ -6,8 +6,8 @@ import { createClient, createChannel } from '@restorecommerce/grpc-client';
 import { Notification } from '../lib/notification';
 import { NotificationService, start, stop } from '../lib/service';
 import { 
-  ServiceDefinition as NotificationReqServiceDefinition,
-  ServiceClient as NotificationReqServiceClient
+  NotificationReqServiceDefinition,
+  NotificationReqServiceClient
 } from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/notification_req';
 
 // NOTE: A running instance of Kafka and redis is needed to execute below test.

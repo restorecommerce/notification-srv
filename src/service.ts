@@ -10,12 +10,12 @@ import { createClient, RedisClientType } from 'redis';
 import { Logger } from 'winston';
 import * as retry from 'retry';
 import {
-  ServiceDefinition as NotificationReqServiceDefinition,
+  NotificationReqServiceDefinition,
   protoMetadata as NotificationReqMeta, NotificationReq
 } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/notification_req';
 import { OperationStatusObj } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/status';
 import {
-  ServiceDefinition as CommandInterfaceServiceDefinition,
+  CommandInterfaceServiceDefinition,
   protoMetadata as CommandInterfaceMeta
 } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/commandinterface';
 import {
@@ -25,8 +25,8 @@ import { ServerReflectionService } from 'nice-grpc-server-reflection';
 import { BindConfig } from '@restorecommerce/chassis-srv/lib/microservice/transport/provider/grpc';
 import { HealthDefinition } from '@restorecommerce/rc-grpc-clients/dist/generated-server/grpc/health/v1/health';
 import {
-  ServiceDefinition as CredentialServiceDefinition,
-  ServiceClient as CredentialServiceClient
+  CredentialServiceDefinition,
+  CredentialServiceClient
 } from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/credential';
 import {
   ReadRequest
