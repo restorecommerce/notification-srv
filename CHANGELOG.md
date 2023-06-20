@@ -1,3 +1,7 @@
+## 1,0.0 (June 20th, 2023)
+
+- major version change (move to full typed client and server, full text search, up all deps)
+
 ## 0.3.4 (June 20th, 2023)
 
 - up deps
