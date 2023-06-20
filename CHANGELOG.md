@@ -1,3 +1,7 @@
+## 0.3.4 (June 20th, 2023)
+
+- up deps
+
 ## 0.3.3 (June 1st, 2023)
 
 - up deps
