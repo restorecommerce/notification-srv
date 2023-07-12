@@ -20,7 +20,7 @@
     "@restorecommerce/cluster-service": "^1.0.1",
     "@restorecommerce/grpc-client": "^2.0.1",
     "@restorecommerce/kafka-client": "^1.0.12",
-    "@restorecommerce/logger": "^1.2.1",
+    "@restorecommerce/logger": "^1.2.4",
     "@restorecommerce/mailer": "^1.0.1",
     "@restorecommerce/rc-grpc-clients": "^4.0.1",
     "@restorecommerce/service-config": "^1.0.3",
