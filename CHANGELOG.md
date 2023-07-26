@@ -1,4 +1,8 @@
-## 1,0.0 (June 20th, 2023)
+## 1.0.1 (July 26th, 2023)
+
+- updated dependencies
+
+## 1.0.0 (June 20th, 2023)
 
 - major version change (move to full typed client and server, full text search, up all deps)
 
