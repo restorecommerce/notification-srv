@@ -27,7 +27,7 @@ import { HealthDefinition } from '@restorecommerce/rc-grpc-clients/dist/generate
 import {
   CredentialServiceDefinition,
   CredentialServiceClient
-} from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/credential';
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/credential';
 import {
   ReadRequest
 } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/resource_base';
