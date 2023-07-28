@@ -1,3 +1,7 @@
+## 1.0.2 (July 28th, 2023)
+
+- use server typings
+
 ## 1.0.1 (July 26th, 2023)
 
 - updated dependencies
