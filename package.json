@@ -22,7 +22,7 @@
     "@restorecommerce/kafka-client": "^1.0.17",
     "@restorecommerce/logger": "^1.2.4",
     "@restorecommerce/mailer": "^1.0.4",
-    "@restorecommerce/rc-grpc-clients": "^5.0.1",
+    "@restorecommerce/rc-grpc-clients": "^5.0.2",
     "@restorecommerce/service-config": "^1.0.6",
     "lodash": "^4.17.21",
     "retry": "^0.13.1"
