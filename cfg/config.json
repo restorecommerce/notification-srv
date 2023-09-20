@@ -71,13 +71,13 @@
         "rejectUnauthorized": false
       },
       "queuePrefix": "restore.q",
-      "host": "mail.example.com",
-      "port": 25,
+      "host": "mail.n-fuse.co",
+      "port": 587,
       "auth": {
-        "user": "test@example.com",
-        "pass": "testPassword"
+        "user": "appserver@n-fuse.co",
+        "pass": "Appzletz@"
       },
-      "address": "'restorecommerce' <noreply@restorecommerce.io>"
+      "address": "appserver@n-fuse.co"
     },
     "transports": [
       {

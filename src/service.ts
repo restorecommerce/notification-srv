@@ -38,7 +38,7 @@ const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const VERSION_CMD_EVENT = 'versionCommand';
 const QUEUED_JOB_EVENT = 'queuedJob';
-const FLUSH_NOTIFICATIONS_JOB_TYPE = 'flushPendingNotificationsJob';
+const PROCESS_PENDING_NOTIFICATIONS = 'processPendingNotifications';
 const MAIL_SERVER_CREDENTIALS = 'mail_server_credentials';
 
 let server: chassis.Server;
@@ -87,13 +87,15 @@ export class NotificationService {
   async sendNotification(data: NotificationReq): Promise<OperationStatusObj> {
     const transport = data.transport;
     let notification: Notification;
+    let email;
     if (transport == 'log') {
       const { log } = data;
       notification = new Notification(this.cfg, {
         log, level: log.level
       });
     } else {
-      const { body, email, subject, attachments } = data;
+      const { body, subject, attachments } = data;
+      email = data.email;
       notification = new Notification(this.cfg, {
         email, subject, body, attachments
       });
@@ -101,6 +103,7 @@ export class NotificationService {
 
     try {
       const sendNotificationResp = await notification.send(transport, service.logger);
+      this.logger.info('Notification sent successfully', { email });
       if (sendNotificationResp.response) {
         return {
           operation_status: {
@@ -112,7 +115,7 @@ export class NotificationService {
     } catch (err) {
       let toQueue = !!err.responseCode || err.code == 'ECONNECTION' || err.command == 'CONN';
       if (err.responseCode) { // SMTP response codes
-        this.logger.error('Error while sending email', { code: err.responseCode });
+        this.logger.error('Error sending email', { code: err.responseCode, message: err.message, stack: err.stack });
         // "code":"EAUTH","response":"454 4.7.0 Temporary authentication failure:
         // Connection lost to authentication server","responseCode":454
         // included authentication error due to login credentials 530 (to resend the email from pending queue)
@@ -247,8 +250,8 @@ export async function start(cfg?: any): Promise<any> {
     else if (eventName === HEALTH_CHECK_CMD_EVENT || eventName === VERSION_CMD_EVENT) {
       await cis.command(msg, context);
     } else if (eventName == QUEUED_JOB_EVENT) {
-      if (msg.type == FLUSH_NOTIFICATIONS_JOB_TYPE) {
-        logger.info('Processing notifications flush request');
+      if (msg.type == PROCESS_PENDING_NOTIFICATIONS) {
+        logger.info('Processing pending notifications');
         const len = service.pendingQueue.length;
         logger.info('Pending mail queue length', { length: len });
         let failureQueue: PendingNotification[] = [];
@@ -259,8 +262,9 @@ export async function start(cfg?: any): Promise<any> {
           const notification = pendingNotif.notification;
           try {
             await notification.send(pendingNotif.transport, service.logger);
+            logger.info('Pending notifications sent successfully', { email: notification.email });
           } catch (err) {
-            service.logger.error('Failed to send pending notification; inserting message back into the queue');
+            logger.error('Failed to send pending notification; inserting message back into the queue', { code: err.code, message: err.message, stack: err.stack });
             failureQueue.push(pendingNotif);
           }
         }
