@@ -1,5 +1,6 @@
 = Notification Service
 
+https://github.com/restorecommerce/notification-srv/actions/workflows/build.yaml[image:https://img.shields.io/github/actions/workflow/status/restorecommerce/notification-srv/build.yaml?style=flat-square[Build Status]]
 https://travis-ci.org/restorecommerce/notification-srv?branch=master[image:https://img.shields.io/travis/restorecommerce/notification-srv/master.svg?style=flat-square[Build Status]]
 https://depfu.com/repos/github/restorecommerce/notification-srv?branch=master[image:https://img.shields.io/depfu/dependencies/github/restorecommerce/notification-srv?style=flat-square[Dependencies]]
 https://coveralls.io/github/restorecommerce/notification-srv?branch=master[image:https://img.shields.io/coveralls/github/restorecommerce/notification-srv/master.svg?style=flat-square[Coverage Status]]
@@ -9,6 +10,6 @@ A microservice for notifications over various channels.
 Please consult the documentation for using it:
 
 - *link:https://docs.restorecommerce.io/notification-srv/index.html[Usage]*
-- *link:https://docs.restorecommerce.io/architecture/index.html[General Architecture]*
+- *link:https://docs.restorecommerce.io/architecture/index.html[Restorecommerce Architecture]*
 
 Part of link:https://github.com/restorecommerce[Restorecommerce].
