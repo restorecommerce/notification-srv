@@ -31,14 +31,15 @@ import {
 import {
   ReadRequest
 } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/resource_base';
+import * as fs from 'fs';
+import { runWorker } from '@restorecommerce/scs-jobs';
 
 
 registerProtoMeta(NotificationReqMeta, CommandInterfaceMeta, reflectionMeta);
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const VERSION_CMD_EVENT = 'versionCommand';
-const QUEUED_JOB_EVENT = 'queuedJob';
-const PROCESS_PENDING_NOTIFICATIONS = 'processPendingNotifications';
+export const PROCESS_PENDING_NOTIFICATIONS = 'processPendingNotifications';
 const MAIL_SERVER_CREDENTIALS = 'mail_server_credentials';
 
 let server: chassis.Server;
@@ -142,7 +143,7 @@ export class NotificationService {
   }
 }
 
-interface PendingNotification {
+export interface PendingNotification {
   notification: Notification;
   transport: NotificationTransport;
 }
@@ -249,34 +250,35 @@ export async function start(cfg?: any): Promise<any> {
     }
     else if (eventName === HEALTH_CHECK_CMD_EVENT || eventName === VERSION_CMD_EVENT) {
       await cis.command(msg, context);
-    } else if (eventName == QUEUED_JOB_EVENT) {
-      if (msg.type == PROCESS_PENDING_NOTIFICATIONS) {
-        logger.info('Processing pending notifications');
-        const len = service.pendingQueue.length;
-        logger.info('Pending mail queue length', { length: len });
-        let failureQueue: PendingNotification[] = [];
-
-        for (let i = 0; i < len; i++) {
-          // flush
-          const pendingNotif = service.pendingQueue.shift();
-          const notification = pendingNotif.notification;
-          try {
-            await notification.send(pendingNotif.transport, service.logger);
-            logger.info('Pending notifications sent successfully', { email: notification.email });
-          } catch (err) {
-            logger.error('Failed to send pending notification; inserting message back into the queue', { code: err.code, message: err.message, stack: err.stack });
-            failureQueue.push(pendingNotif);
-          }
-        }
-        if (!_.isEmpty(failureQueue)) { // restoring pending queue with potentially failed notifications
-          service.pendingQueue = failureQueue;
-        }
-      }
     }
   };
 
   // finally create the service and bind to the server
   service = new NotificationService(cfg, events, server, logger);
+
+  let externalJobFiles;
+  try {
+    externalJobFiles = fs.readdirSync(process.env.EXTERNAL_JOBS_DIR || './lib/jobs');
+  } catch (err) {
+    if (err.message.includes('no such file or directory')) {
+      logger.info('No files for external job processors found');
+    } else {
+      logger.error('Error reading jobs files');
+    }
+  }
+  if (externalJobFiles && externalJobFiles.length > 0) {
+    externalJobFiles.forEach((externalFile) => {
+      if (externalFile.endsWith('.js')) {
+        let require_dir = './jobs';
+        if (process.env.EXTERNAL_JOBS_REQUIRE_DIR) {
+          require_dir = process.env.EXTERNAL_JOBS_REQUIRE_DIR;
+        }
+        (async () => require(require_dir + '/' + externalFile).default(cfg, logger, events, service, runWorker))().catch(err => {
+          logger.error(`Error scheduling job ${externalFile}`, { err: err.message });
+        });
+      }
+    });
+  }
   // Subscribe to "notification_req" topic so that
   // when a message arrives on it, to send out the notification.
   // (topic name is "notification_req" and eventName is "sendEmail")

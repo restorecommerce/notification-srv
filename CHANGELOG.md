@@ -1,4 +1,8 @@
-## 1.1.0 (October 7th, 2023)
+## 1.2.1 (October 7th, 2023)
+
+- added worker for process pending notification job
+
+## 1.2.0 (October 7th, 2023)
 
 - up node and all deps
 
