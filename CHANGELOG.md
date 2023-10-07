@@ -1,3 +1,7 @@
+## 1.1.0 (October 7th, 2023)
+
+- up node and all deps
+
 ## 1.1.0 (September 20th, 2023)
 
 - set all fields optional in proto files
