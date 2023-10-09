@@ -39,7 +39,7 @@ registerProtoMeta(NotificationReqMeta, CommandInterfaceMeta, reflectionMeta);
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const VERSION_CMD_EVENT = 'versionCommand';
-export const PROCESS_PENDING_NOTIFICATIONS = 'processPendingNotifications';
+export const PROCESS_PENDING_NOTIFICATIONS = 'process-pending-notifications-job';
 const MAIL_SERVER_CREDENTIALS = 'mail_server_credentials';
 
 let server: chassis.Server;

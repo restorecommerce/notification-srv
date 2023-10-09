@@ -1,3 +1,7 @@
+## 1.2.2 (October 9th, 2023)
+
+- up job name
+
 ## 1.2.1 (October 7th, 2023)
 
 - added worker for process pending notification job
