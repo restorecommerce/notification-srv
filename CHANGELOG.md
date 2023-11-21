@@ -1,3 +1,7 @@
+## 1.2.3 (November 21st, 2023)
+
+- up deps
+
 ## 1.2.2 (October 9th, 2023)
 
 - up job name
