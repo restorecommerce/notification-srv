@@ -4,7 +4,10 @@
     "offsetStoreInterval": 1000,
     "db-indexes": {
       "db-offsetStore": 0,
-      "db-subject": 4
+      "db-subject": 4,
+      "db-reccurTime": 7,
+      "db-repeatJobId": 8,
+      "db-jobStore": 1
     }
   },
   "client": {
@@ -38,8 +41,11 @@
       "versionResponse": {
         "messageObject": "io.restorecommerce.commandinterface.CommandResponse"
       },
-      "queuedJob": {
-        "messageObject": "io.restorecommerce.job.ScheduledJob"
+      "jobDone": {
+        "messageObject": "io.restorecommerce.job.JobDone"
+      },
+      "jobFailed": {
+        "messageObject": "io.restorecommerce.job.JobFailed"
       },
       "topics": {
         "notificationReq": {

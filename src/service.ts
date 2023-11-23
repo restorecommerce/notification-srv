@@ -33,9 +33,12 @@ import {
 } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/resource_base';
 import * as fs from 'fs';
 import { runWorker } from '@restorecommerce/scs-jobs';
+import {
+  protoMetadata as jobMeta
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/job';
 
 
-registerProtoMeta(NotificationReqMeta, CommandInterfaceMeta, reflectionMeta);
+registerProtoMeta(NotificationReqMeta, CommandInterfaceMeta, reflectionMeta, jobMeta);
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const VERSION_CMD_EVENT = 'versionCommand';
