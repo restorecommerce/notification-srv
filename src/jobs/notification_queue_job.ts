@@ -2,7 +2,7 @@ import { processPendingNotifications } from './implementation/process_pending_no
 import { PROCESS_PENDING_NOTIFICATIONS } from './../service';
 
 export default async (cfg, logger, events, service, runWorker) => {
-  await runWorker('defaultQueue', 1, cfg, logger, events, async (job) => {
+  await runWorker('notificationSrvQueue', 1, cfg, logger, events, async (job) => {
     if (job.type === PROCESS_PENDING_NOTIFICATIONS) {
       await processPendingNotifications(service, logger);
     }

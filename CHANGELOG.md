@@ -1,3 +1,7 @@
+## 1.2.4 (November 23rd, 2023)
+
+- added separate queue for processing pending notification jobs
+
 ## 1.2.3 (November 21st, 2023)
 
 - up deps
