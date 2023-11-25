@@ -1,3 +1,7 @@
+## 1.2.6 (November 25th, 2023)
+
+- updated dependencies
+
 ## 1.2.5 (November 23rd, 2023)
 
 - add redis job store and register job meta for emitting jobDone / jobFailed (for processing pending notifications job) 
