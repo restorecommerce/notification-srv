@@ -1,3 +1,7 @@
+### 1.2.7 (November 26th, 2023)
+
+- removed deprecated method in chassis-srv (collection.load)
+
 ## 1.2.6 (November 25th, 2023)
 
 - updated dependencies
