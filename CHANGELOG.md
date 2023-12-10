@@ -1,3 +1,7 @@
+### 1.2.8 (December 10th, 2023)
+
+- include error code 421 - Error: too many connections for queueing message
+
 ### 1.2.7 (November 26th, 2023)
 
 - removed deprecated method in chassis-srv (collection.load)
