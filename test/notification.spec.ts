@@ -1,14 +1,14 @@
-import * as fs from 'fs';
+import fs from 'node:fs';
 import assert from 'assert';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events } from '@restorecommerce/kafka-client';
 import { createClient, createChannel } from '@restorecommerce/grpc-client';
-import { Notification } from '../lib/notification';
-import { NotificationService, start, stop } from '../lib/service';
+import { Notification } from '../src/notification';
+import { NotificationService, start, stop } from '../src/service';
 import { 
   NotificationReqServiceDefinition,
   NotificationReqServiceClient
-} from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/notification_req';
+} from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/notification_req.js';
 
 // NOTE: A running instance of Kafka and redis is needed to execute below test.
 const cfg = createServiceConfig(process.cwd() + '/test');

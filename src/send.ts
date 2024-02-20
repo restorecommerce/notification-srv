@@ -1,6 +1,6 @@
-import Mailer from '@restorecommerce/mailer';
-import { Notification } from './notification';
-import * as _ from 'lodash';
+import Mailer from '@restorecommerce/mailer/lib/index.js';
+import { Notification } from './notification.js';
+import _ from 'lodash-es';
 
 /**
  * log a bare notification using a chosen logging mechanism
@@ -40,7 +40,7 @@ export const email = (notification: Notification, cfg: any, logger: any): any =>
     bcc: email.bcc
   };
 
-  if (_.isArray(attachments) && !_.isEmpty(attachments) ) {
+  if (_.isArray(attachments) && !_.isEmpty(attachments)) {
     const list = [];
     for (const a of attachments) {
       if (a.text) a.content = a.text;
@@ -53,7 +53,7 @@ export const email = (notification: Notification, cfg: any, logger: any): any =>
   return mailer.send(mail);
 };
 
-export const slack =  async (notification: Notification): Promise<any> => {
+export const slack = async (notification: Notification): Promise<any> => {
   return true;
 };
 

@@ -1,5 +1,5 @@
-import { processPendingNotifications } from './implementation/process_pending_notifications_job';
-import { PROCESS_PENDING_NOTIFICATIONS } from './../service';
+import { processPendingNotifications } from './implementation/process_pending_notifications_job.js';
+import { PROCESS_PENDING_NOTIFICATIONS } from '../service.js';
 
 export default async (cfg, logger, events, service, runWorker) => {
   await runWorker('notificationSrvQueue', 1, cfg, logger, events, async (job) => {

@@ -1,5 +1,5 @@
-import * as _ from 'lodash';
-import { PendingNotification } from './../../service';
+import _ from 'lodash-es';
+import { PendingNotification } from './../../service.js';
 
 export const processPendingNotifications = async (service, logger) => {
   logger.info('Processing pending notifications');

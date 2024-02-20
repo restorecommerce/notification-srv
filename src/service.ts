@@ -1,41 +1,41 @@
-import * as _ from 'lodash';
+import _ from 'lodash-es';
 // microservice
-import * as chassis from '@restorecommerce/chassis-srv';
+import { Server, OffsetStore, CommandInterface, buildReflectionService, Health } from '@restorecommerce/chassis-srv';
 import { createLogger } from '@restorecommerce/logger';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events, Topic, registerProtoMeta } from '@restorecommerce/kafka-client';
 import { createClient as grpcCreateClient, createChannel } from '@restorecommerce/grpc-client';
-import { Notification } from './notification';
+import { Notification } from './notification.js';
 import { createClient, RedisClientType } from 'redis';
 import { Logger } from 'winston';
-import * as retry from 'retry';
+import { operation as retryOperation } from 'retry';
 import {
   NotificationReqServiceDefinition,
   protoMetadata as NotificationReqMeta, NotificationReq
-} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/notification_req';
-import { OperationStatusObj } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/status';
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/notification_req.js';
+import { OperationStatusObj } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/status.js';
 import {
   CommandInterfaceServiceDefinition,
   protoMetadata as CommandInterfaceMeta
-} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/commandinterface';
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/commandinterface.js';
 import {
   protoMetadata as reflectionMeta
-} from '@restorecommerce/rc-grpc-clients/dist/generated-server/grpc/reflection/v1alpha/reflection';
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/grpc/reflection/v1alpha/reflection.js';
 import { ServerReflectionService } from 'nice-grpc-server-reflection';
-import { BindConfig } from '@restorecommerce/chassis-srv/lib/microservice/transport/provider/grpc';
-import { HealthDefinition } from '@restorecommerce/rc-grpc-clients/dist/generated-server/grpc/health/v1/health';
+import { BindConfig } from '@restorecommerce/chassis-srv/lib/microservice/transport/provider/grpc/index.js';
+import { HealthDefinition } from '@restorecommerce/rc-grpc-clients/dist/generated-server/grpc/health/v1/health.js';
 import {
   CredentialServiceDefinition,
   CredentialServiceClient
-} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/credential';
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/credential.js';
 import {
   ReadRequest
-} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/resource_base';
-import * as fs from 'fs';
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/resource_base.js';
+import * as fs from 'node:fs';
 import { runWorker } from '@restorecommerce/scs-jobs';
 import {
   protoMetadata as jobMeta
-} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/job';
+} from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/job.js';
 
 
 registerProtoMeta(NotificationReqMeta, CommandInterfaceMeta, reflectionMeta, jobMeta);
@@ -45,10 +45,10 @@ const VERSION_CMD_EVENT = 'versionCommand';
 export const PROCESS_PENDING_NOTIFICATIONS = 'process-pending-notifications-job';
 const MAIL_SERVER_CREDENTIALS = 'mail_server_credentials';
 
-let server: chassis.Server;
+let server: Server;
 let service: NotificationService;
 let events: Events;
-let offsetStore: chassis.OffsetStore;
+let offsetStore: OffsetStore;
 
 /*
  * Main API for sending notifications.
@@ -56,11 +56,11 @@ let offsetStore: chassis.OffsetStore;
  */
 export class NotificationService {
   events: Events;
-  server: chassis.Server;
+  server: Server;
   logger: Logger;
   cfg: any;
   pendingQueue: PendingNotification[];
-  constructor(cfg: any, events: Events, server: chassis.Server, logger: Logger) {
+  constructor(cfg: any, events: Events, server: Server, logger: Logger) {
     this.cfg = cfg;
     this.server = server;
     this.logger = logger;
@@ -158,16 +158,18 @@ type NotificationTransport = 'log' | 'email';
  * starting the actual server
  * @param cfg
  */
-export async function start(cfg?: any): Promise<any> {
+export async function start(cfg?: any, logger?: Logger): Promise<any> {
   if (!cfg) {
     cfg = createServiceConfig(process.cwd());
   }
-  const loggerCfg = cfg.get('logger');
-  loggerCfg.esTransformer = (msg) => {
-    msg.fields = JSON.stringify(msg.fields);
-    return msg;
-  };
-  const logger = createLogger(loggerCfg);
+  if (!logger) {
+    const loggerCfg = cfg.get('logger');
+    loggerCfg.esTransformer = (msg) => {
+      msg.fields = JSON.stringify(msg.fields);
+      return msg;
+    };
+    logger = createLogger(loggerCfg);
+  }
   const credentialServiceCfg = cfg.get('client:credentialService');
   // Make a gRPC call to resource service for credentials resource and update
   // cfg for user and pass for mail server (if its not set up in config - server:mailer:auth:user)
@@ -180,7 +182,7 @@ export async function start(cfg?: any): Promise<any> {
     // retry mechanism, till the credentials are read from resource-srv
     const maxTo = cfg.get('retry:maxTimeout') || 2000;
     logger.info(`Retrying with maxTimeout:${maxTo}`);
-    const operation = retry.operation({ forever: true, maxTimeout: maxTo });
+    const operation = retryOperation({ forever: true, maxTimeout: maxTo });
 
     await new Promise((resolve, reject) => {
       operation.attempt(async () => {
@@ -212,14 +214,14 @@ export async function start(cfg?: any): Promise<any> {
     });
   }
 
-  server = new chassis.Server(cfg.get('server'), logger);
+  server = new Server(cfg.get('server'), logger);
 
   // prepare kafka & events
   let kafkaCfg = cfg.get('events:kafka');
 
   events = new Events(kafkaCfg, logger);
   await events.start();
-  offsetStore = new chassis.OffsetStore(events, cfg, logger);
+  offsetStore = new OffsetStore(events, cfg, logger);
 
   // init redis client for subject index
   const redisConfig = cfg.get('redis');
@@ -230,7 +232,7 @@ export async function start(cfg?: any): Promise<any> {
   // exposing commands as gRPC methods through chassis
   // as 'commandinterface
   const serviceNamesCfg = cfg.get('serviceNames');
-  const cis = new chassis.CommandInterface(server,
+  const cis = new CommandInterface(server,
     cfg, logger, events, redisClient);
   const cisName = serviceNamesCfg.cis;
   await server.bind(cisName, {
@@ -277,8 +279,8 @@ export async function start(cfg?: any): Promise<any> {
         if (process.env.EXTERNAL_JOBS_REQUIRE_DIR) {
           require_dir = process.env.EXTERNAL_JOBS_REQUIRE_DIR;
         }
-        (async () => require(require_dir + '/' + externalFile).default(cfg, logger, events, service, runWorker))().catch(err => {
-          logger.error(`Error scheduling job ${externalFile}`, { err: err.message });
+        (async () => (await import(require_dir + '/' + externalFile)).default(cfg, logger, events, service, runWorker))().catch(err => {
+          logger.error(`Error scheduling job ${externalFile}`, { code: err.code, message: err.message, stack: err.stack });
         });
       }
     });
@@ -308,7 +310,7 @@ export async function start(cfg?: any): Promise<any> {
 
   // Add ReflectionService
   const reflectionServiceName = serviceNamesCfg.reflection;
-  const reflectionService = chassis.buildReflectionService([{
+  const reflectionService = buildReflectionService([{
     descriptor: NotificationReqMeta.fileDescriptor
   }, {
     descriptor: CommandInterfaceMeta.fileDescriptor
@@ -320,7 +322,7 @@ export async function start(cfg?: any): Promise<any> {
 
   await server.bind(serviceNamesCfg.health, {
     service: HealthDefinition,
-    implementation: new chassis.Health(cis)
+    implementation: new Health(cis)
   } as BindConfig<HealthDefinition>);
 
   await server.start();
@@ -333,17 +335,3 @@ export const stop = async (): Promise<any> => {
   await events.stop();
   await offsetStore.stop();
 };
-
-if (require.main === module) {
-  start().catch((err) => {
-    console.error('client error', err.stack);
-    process.exit(1);
-  });
-
-  process.on('SIGINT', () => {
-    stop().catch((err) => {
-      console.error('shutdown error', err);
-      process.exit(1);
-    });
-  });
-}

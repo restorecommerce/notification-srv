@@ -1,6 +1,6 @@
-import * as _ from 'lodash';
-import * as send from './send';
-import { Email, Log } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/notification_req';
+import _ from 'lodash-es';
+import { email, slack, sms, log } from './send.js';
+import { Email, Log } from '@restorecommerce/rc-grpc-clients/dist/generated-server/io/restorecommerce/notification_req.js';
 
 const Attrs = [
   'log',
@@ -57,14 +57,14 @@ export class Notification {
   async send(channel: any, logger: any = {}): Promise<any> {
     this.transport = !!channel ? channel : this.transport;
     if (this.transport === 'email') {
-      return send.email(this, this.cfg, logger);
+      return email(this, this.cfg, logger);
     }
     if (this.transport === 'slack') {
-      return send.slack(this);
+      return slack(this);
     }
     if (this.transport === 'sms') {
-      return send.sms(this);
+      return sms(this);
     }
-    return send.log(this, logger);
+    return log(this, logger);
   }
 }
