@@ -1,4 +1,4 @@
-import Mailer from '@restorecommerce/mailer/lib/index.js';
+import { Mailer } from '@restorecommerce/mailer';
 import { Notification } from './notification.js';
 import _ from 'lodash-es';
 
