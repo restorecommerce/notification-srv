@@ -158,7 +158,7 @@ type NotificationTransport = 'log' | 'email';
  * starting the actual server
  * @param cfg
  */
-export async function start(cfg?: any, logger?: Logger): Promise<any> {
+export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
   if (!cfg) {
     cfg = createServiceConfig(process.cwd());
   }
@@ -200,7 +200,7 @@ export async function start(cfg?: any, logger?: Logger): Promise<any> {
             resolve(true);
           } else {
             let err = 'Either resource-srv is unreachable or mail server credentials do not exist in DB';
-            this.logger.error(err);
+            logger.error(err);
             reject(err);
           }
         }).then((resp) => {
@@ -240,6 +240,9 @@ export async function start(cfg?: any, logger?: Logger): Promise<any> {
     implementation: cis
   } as BindConfig<CommandInterfaceServiceDefinition>);
 
+  // create the service and bind to the server
+  service = new NotificationService(cfg, events, server, logger);
+
   const notificationEventListener = async (msg: any, context: any, config: any, eventName: string): Promise<any> => {
     if (eventName === SEND_MAIL_EVENT) {
       const notificationObj = msg;
@@ -247,8 +250,8 @@ export async function start(cfg?: any, logger?: Logger): Promise<any> {
       try {
         await service.sendNotification(msg);
       } catch (err) {
-        this.logger.error('Error while sending notification; adding message to pending notifications');
-        this.pendingQueue.push({
+        logger.error('Error while sending notification; adding message to pending notifications');
+        service.pendingQueue.push({
           transport: 'email',
           notification
         });
@@ -258,9 +261,6 @@ export async function start(cfg?: any, logger?: Logger): Promise<any> {
       await cis.command(msg, context);
     }
   };
-
-  // finally create the service and bind to the server
-  service = new NotificationService(cfg, events, server, logger);
 
   let externalJobFiles;
   try {
@@ -273,15 +273,23 @@ export async function start(cfg?: any, logger?: Logger): Promise<any> {
     }
   }
   if (externalJobFiles && externalJobFiles.length > 0) {
-    externalJobFiles.forEach((externalFile) => {
-      if (externalFile.endsWith('.js')) {
-        let require_dir = './jobs';
+    externalJobFiles.forEach( async (externalFile) => {
+      if (externalFile.endsWith('.js') || externalFile.endsWith('.cjs') ) {
+        let require_dir = './jobs/';
         if (process.env.EXTERNAL_JOBS_REQUIRE_DIR) {
           require_dir = process.env.EXTERNAL_JOBS_REQUIRE_DIR;
         }
-        (async () => (await import(require_dir + '/' + externalFile)).default(cfg, logger, events, service, runWorker))().catch(err => {
-          logger.error(`Error scheduling job ${externalFile}`, { code: err.code, message: err.message, stack: err.stack });
-        });
+        // check for double default
+        let fileImport = await import(require_dir + externalFile);
+        if(fileImport?.default?.default) {
+          (async () => (await import(require_dir + externalFile)).default.default(cfg, logger, events, service, runWorker))().catch(err => {
+            logger.error(`Error scheduling external job ${externalFile}`, { err: err.message });
+          });
+        } else {
+          (async () => (await import(require_dir + externalFile)).default(cfg, logger, events, runWorker))().catch(err => {
+            logger.error(`Error scheduling external job ${externalFile}`, { err: err.message });
+          });
+        }
       }
     });
   }
@@ -328,7 +336,7 @@ export async function start(cfg?: any, logger?: Logger): Promise<any> {
   await server.start();
   logger.info('Server started successfully');
   return service;
-}
+};
 
 export const stop = async (): Promise<any> => {
   await server.stop();
