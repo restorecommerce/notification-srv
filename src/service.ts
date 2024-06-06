@@ -164,10 +164,6 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
   }
   if (!logger) {
     const loggerCfg = cfg.get('logger');
-    loggerCfg.esTransformer = (msg) => {
-      msg.fields = JSON.stringify(msg.fields);
-      return msg;
-    };
     logger = createLogger(loggerCfg);
   }
   const credentialServiceCfg = cfg.get('client:credentialService');

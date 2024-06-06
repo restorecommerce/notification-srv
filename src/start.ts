@@ -4,10 +4,6 @@ import { createServiceConfig } from '@restorecommerce/service-config';
 
 const cfg = createServiceConfig(process.cwd());
 const loggerCfg = cfg.get('logger');
-loggerCfg.esTransformer = (msg) => {
-  msg.fields = JSON.stringify(msg.fields);
-  return msg;
-};
 const logger = createLogger(loggerCfg);
 
 
