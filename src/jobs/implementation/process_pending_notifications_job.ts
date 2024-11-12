@@ -5,7 +5,7 @@ export const processPendingNotifications = async (service, logger) => {
   logger.info('Processing pending notifications');
   const len = service.pendingQueue.length;
   logger.info('Pending mail queue length', { length: len });
-  let failureQueue: PendingNotification[] = [];
+  const failureQueue: PendingNotification[] = [];
 
   for (let i = 0; i < len; i++) {
     // flush

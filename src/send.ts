@@ -24,7 +24,7 @@ export const log = async (notification: Notification, logger?: any): Promise<any
  */
 export const email = (notification: Notification, cfg: any, logger: any): any => {
 
-  let { email, body, subject, replyto, attachments } = notification;
+  const { email, body, subject, replyto, attachments } = notification;
 
   const mailConf = cfg.get('server:mailer');
   mailConf.logger = logger;

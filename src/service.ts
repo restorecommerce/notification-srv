@@ -186,7 +186,7 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
         await new Promise((resolve, reject) => {
           if (result?.items?.length > 0) {
             const credentialsList = result.items;
-            for (let credentialObj of credentialsList) {
+            for (const credentialObj of credentialsList) {
               if (credentialObj?.payload?.id === MAIL_SERVER_CREDENTIALS) {
                 cfg.set('server:mailer:auth:user', credentialObj.payload.user);
                 cfg.set('server:mailer:auth:pass', credentialObj.payload.pass);
@@ -195,7 +195,7 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
             }
             resolve(true);
           } else {
-            let err = 'Either resource-srv is unreachable or mail server credentials do not exist in DB';
+            const err = 'Either resource-srv is unreachable or mail server credentials do not exist in DB';
             logger.error(err);
             reject(err);
           }
@@ -213,7 +213,7 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
   server = new Server(cfg.get('server'), logger);
 
   // prepare kafka & events
-  let kafkaCfg = cfg.get('events:kafka');
+  const kafkaCfg = cfg.get('events:kafka');
 
   events = new Events(kafkaCfg, logger);
   await events.start();
@@ -276,7 +276,7 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
           require_dir = process.env.EXTERNAL_JOBS_REQUIRE_DIR;
         }
         // check for double default
-        let fileImport = await import(require_dir + externalFile);
+        const fileImport = await import(require_dir + externalFile);
         if(fileImport?.default?.default) {
           (async () => (await import(require_dir + externalFile)).default.default(cfg, logger, events, service, runWorker))().catch(err => {
             logger.error(`Error scheduling external job ${externalFile}`, { err: err.message });
@@ -293,14 +293,14 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
   // when a message arrives on it, to send out the notification.
   // (topic name is "notification_req" and eventName is "sendEmail")
   const topicTypes = _.keys(kafkaCfg.topics);
-  for (let topicType of topicTypes) {
+  for (const topicType of topicTypes) {
     const topicName = kafkaCfg.topics[topicType].topic;
     const topic: Topic = await events.topic(topicName);
     const offsetValue = await offsetStore.getOffset(topicName);
     logger.info(`subscribing to topic ${topicName} with offset value`, { offset: offsetValue });
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
-      for (let eventName of eventNames) {
+      for (const eventName of eventNames) {
         await topic.on(eventName, notificationEventListener,
           { startingOffset: offsetValue });
       }

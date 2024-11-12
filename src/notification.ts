@@ -55,7 +55,7 @@ export class Notification {
    * @param {any} logger
    */
   async send(channel: any, logger: any = {}): Promise<any> {
-    this.transport = !!channel ? channel : this.transport;
+    this.transport = channel ? channel : this.transport;
     if (this.transport === 'email') {
       return email(this, this.cfg, logger);
     }
