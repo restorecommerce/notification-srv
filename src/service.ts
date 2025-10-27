@@ -269,15 +269,15 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
     }
   }
   if (externalJobFiles && externalJobFiles.length > 0) {
-    externalJobFiles.forEach( async (externalFile) => {
-      if (externalFile.endsWith('.js') || externalFile.endsWith('.cjs') ) {
+    externalJobFiles.forEach(async (externalFile) => {
+      if (externalFile.endsWith('.js') || externalFile.endsWith('.cjs')) {
         let require_dir = './jobs/';
         if (process.env.EXTERNAL_JOBS_REQUIRE_DIR) {
           require_dir = process.env.EXTERNAL_JOBS_REQUIRE_DIR;
         }
         // check for double default
         const fileImport = await import(require_dir + externalFile);
-        if(fileImport?.default?.default) {
+        if (fileImport?.default?.default) {
           (async () => (await import(require_dir + externalFile)).default.default(cfg, logger, events, service, runWorker))().catch(err => {
             logger.error(`Error scheduling external job ${externalFile}`, { err: err.message });
           });
@@ -307,6 +307,7 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
     }
   }
 
+  logger.info('Notification server bind', { name: serviceNamesCfg.notification_req });
   await server.bind(serviceNamesCfg.notification_req, {
     service: NotificationReqServiceDefinition,
     implementation: service
@@ -319,16 +320,19 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
   }, {
     descriptor: CommandInterfaceMeta.fileDescriptor
   }]);
+  logger.info('Reflection server bind', { name: reflectionServiceName });
   await server.bind(reflectionServiceName, {
     service: ServerReflectionService,
     implementation: reflectionService
   });
 
+  logger.info('Health server bind', { name: serviceNamesCfg.health });
   await server.bind(serviceNamesCfg.health, {
     service: HealthDefinition,
     implementation: new Health(cis)
   } as BindConfig<HealthDefinition>);
 
+  logger.info('Staring server');
   await server.start();
   logger.info('Server started successfully');
   return service;
