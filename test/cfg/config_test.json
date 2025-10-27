@@ -60,19 +60,27 @@
           "localhost:29092"
         ]
       },
-      "latestOffset": true,
-      "commandTopic": "io.restorecommerce.command",
+      "latestOffset": false,
       "sendEmail": {
         "messageObject": "io.restorecommerce.notification_req.NotificationReq"
       },
       "healthCheckCommand": {
         "messageObject": "io.restorecommerce.commandinterface.CommandRequest"
       },
+      "healthCheckResponse": {
+        "messageObject": "io.restorecommerce.commandinterface.CommandResponse"
+      },
       "versionCommand": {
         "messageObject": "io.restorecommerce.commandinterface.CommandRequest"
       },
-      "healthCheckResponse": {
+      "versionResponse": {
         "messageObject": "io.restorecommerce.commandinterface.CommandResponse"
+      },
+      "jobDone": {
+        "messageObject": "io.restorecommerce.job.JobDone"
+      },
+      "jobFailed": {
+        "messageObject": "io.restorecommerce.job.JobFailed"
       },
       "topics": {
         "notificationReq": {
@@ -90,5 +98,5 @@
         }
       }
     }
-  }
+  },
 }

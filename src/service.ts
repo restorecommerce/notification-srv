@@ -301,8 +301,10 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
       for (const eventName of eventNames) {
+        logger.info('Subscribing to event', { eventName });
         await topic.on(eventName, notificationEventListener,
           { startingOffset: offsetValue });
+        logger.info('Subscribed to event', { eventName });
       }
     }
   }
