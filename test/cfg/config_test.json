@@ -53,7 +53,7 @@
   "events": {
     "kafka": {
       "provider": "kafka",
-      "groupId": "restore-notification-req-srv",
+      "groupId": "restore-notification-req-srv-test-runner",
       "kafka": {
         "clientId": "restore-notification-req-srv-test",
         "brokers": [
