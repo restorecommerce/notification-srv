@@ -14,8 +14,9 @@ export const processPendingNotifications = async (service, logger) => {
     try {
       await notification.send(pendingNotif.transport, service.logger);
       logger.info('Pending notifications sent successfully', { email: notification.email });
-    } catch (err) {
-      logger.error('Failed to send pending notification; inserting message back into the queue', { code: err.code, message: err.message, stack: err.stack });
+    } catch (err: any) {
+      const { code, message, stack } = err;
+      logger.error('Failed to send pending notification; inserting message back into the queue', { code, message, stack } );
       failureQueue.push(pendingNotif);
     }
   }

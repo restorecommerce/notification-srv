@@ -116,7 +116,7 @@ export class NotificationService {
           }
         };
       }
-    } catch (err) {
+    } catch (err: any) {
       let toQueue = !!err.responseCode || err.code == 'ECONNECTION' || err.command == 'CONN';
       if (err.responseCode) { // SMTP response codes
         this.logger.error('Error sending email', { code: err.responseCode, message: err.message, stack: err.stack });
@@ -139,7 +139,7 @@ export class NotificationService {
       }
       return {
         operation_status: {
-          code: err.code,
+          code: Number.isInteger(err.code) ? err.code : 500,
           message: err.message
         }
       };
@@ -261,8 +261,8 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
   let externalJobFiles;
   try {
     externalJobFiles = fs.readdirSync(process.env.EXTERNAL_JOBS_DIR || './lib/jobs');
-  } catch (err) {
-    if (err.message.includes('no such file or directory')) {
+  } catch (err: any) {
+    if (err.message?.includes('no such file or directory')) {
       logger.info('No files for external job processors found');
     } else {
       logger.error('Error reading jobs files');
