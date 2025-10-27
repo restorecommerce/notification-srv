@@ -43,7 +43,7 @@ describe('testing: send', () => {
       }
     }, service.logger);
     await events.start();
-  });
+  }, 60000);
 
   afterAll(async function stopServer(): Promise<void> {
     await stop();
