@@ -60,12 +60,6 @@
             "healthCheckCommand",
             "versionCommand"
           ]
-        },
-        "job": {
-          "topic": "io.restorecommerce.jobs",
-          "events": [
-            "queuedJob"
-          ]
         }
       }
     }

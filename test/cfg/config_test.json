@@ -66,10 +66,13 @@
         "messageObject": "io.restorecommerce.notification_req.NotificationReq"
       },
       "healthCheckCommand": {
-        "messageObject": "io.restorecommerce.commandinterface.HealthCheckRequest"
+        "messageObject": "io.restorecommerce.commandinterface.CommandRequest"
+      },
+      "versionCommand": {
+        "messageObject": "io.restorecommerce.commandinterface.CommandRequest"
       },
       "healthCheckResponse": {
-        "messageObject": "io.restorecommerce.commandinterface.HealthCheckResponse"
+        "messageObject": "io.restorecommerce.commandinterface.CommandResponse"
       },
       "topics": {
         "notificationReq": {
@@ -81,7 +84,8 @@
         "command": {
           "topic": "io.restorecommerce.command",
           "events": [
-            "healthCheckCommand"
+            "healthCheckCommand",
+            "versionCommand"
           ]
         }
       }
