@@ -297,7 +297,7 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
     const topicName = kafkaCfg.topics[topicType].topic;
     const topic: Topic = await events.topic(topicName);
     const offsetValue = await offsetStore.getOffset(topicName);
-    logger.info(`subscribing to topic ${topicName} with offset value`, { offset: offsetValue });
+    logger.info(`subscribing to topic ${topicName} with offset value`, { offset: Number(offsetValue) });
     if (kafkaCfg.topics[topicType].events) {
       const eventNames = kafkaCfg.topics[topicType].events;
       for (const eventName of eventNames) {

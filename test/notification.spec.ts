@@ -9,6 +9,7 @@ import {
   NotificationReqServiceDefinition,
   NotificationReqServiceClient
 } from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/notification_req.js';
+import { it, describe, beforeAll, afterAll } from 'vitest';
 
 // NOTE: A running instance of Kafka and redis is needed to execute below test.
 const cfg = createServiceConfig(process.cwd() + '/test');
@@ -31,7 +32,7 @@ if (hostCfg === 'mail.example.com') {
 }
 
 describe('testing: send', () => {
-  before(async function init(): Promise<void> {
+  beforeAll(async function init(): Promise<void> {
     service = await start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
     events = new Events({
@@ -44,7 +45,7 @@ describe('testing: send', () => {
     await events.start();
   });
 
-  after(async function stopServer(): Promise<void> {
+  afterAll(async function stopServer(): Promise<void> {
     await stop();
     await events.stop();
   });
@@ -143,14 +144,14 @@ describe('testing: send', () => {
       // so that we prevent sending an email
       await stop();
       let prevHost = cfg.get('server:mailer:host');
-      cfg.set('server:mailer:host', 'mail.example.com');
+      (cfg as any).set('server:mailer:host', 'mail.example.com');
       service = await start(cfg);
       const result = await clientService.send(notification);
       assert(result);
       assert.deepStrictEqual(service.pendingQueue.length, 1);
       // restart server again with prev cfg
       await stop();
-      cfg.set('server:mailer:host', prevHost);
+      (cfg as any).set('server:mailer:host', prevHost);
       service = await start(cfg);
     }
     process.env.NODE_ENV = previousEnv;
@@ -166,10 +167,10 @@ describe('testing: send', () => {
       transport: 'email'
     };
     const topic = await events.topic('io.restorecommerce.notification_req');
-    const offset = await topic.$offset(-1);
+    const offset = await topic.$offset(BigInt(-1));
     await topic.emit('sendEmail', notification);
-    const newOffset = await topic.$offset(-1);
-    assert.equal(offset + 1, newOffset);
+    const newOffset = await topic.$offset(BigInt(-1));
+    assert.equal(Number(offset) + 1, newOffset);
   });
 
   it('should send an email with attachments', async function sendAttachment(): Promise<void> {
