@@ -25,7 +25,7 @@
     "@restorecommerce/rc-grpc-clients": "^5.1.63",
     "@restorecommerce/scs-jobs": "^0.2.8",
     "@restorecommerce/service-config": "^1.1.7",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.18.1",
     "retry": "^0.13.1"
   },
   "devDependencies": {
