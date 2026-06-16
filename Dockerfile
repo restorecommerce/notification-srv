@@ -1,5 +1,5 @@
 ### Build
-FROM node:24.10.0-alpine as build
+FROM node:26.3-alpine3.24 as build
 ENV NO_UPDATE_NOTIFIER=true
 
 USER node
@@ -17,7 +17,7 @@ RUN npm run build
 
 
 ### Deployment
-FROM node:24.10.0-alpine as deployment
+FROM node:26.3-alpine3.24 as deployment
 
 ENV NO_UPDATE_NOTIFIER=true
 

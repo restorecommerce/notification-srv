@@ -9,6 +9,7 @@ import {
   NotificationReqServiceDefinition,
   NotificationReqServiceClient
 } from '@restorecommerce/rc-grpc-clients/dist/generated/io/restorecommerce/notification_req.js';
+import {it, describe, beforeAll, afterAll} from 'vitest';
 
 // NOTE: A running instance of Kafka and redis is needed to execute below test.
 const cfg = createServiceConfig(process.cwd() + '/test');
@@ -31,7 +32,7 @@ if (hostCfg === 'mail.example.com') {
 }
 
 describe('testing: send', () => {
-  before(async function init(): Promise<void> {
+  beforeAll(async function init(): Promise<void> {
     service = await start(cfg);
     events = new Events(cfg.get('events:kafka'), service.logger);
     events = new Events({
@@ -44,7 +45,7 @@ describe('testing: send', () => {
     await events.start();
   });
 
-  after(async function stopServer(): Promise<void> {
+  afterAll(async function stopServer(): Promise<void> {
     await stop();
     await events.stop();
   });
