@@ -2,7 +2,7 @@
   "name": "@restorecommerce/notification-srv",
   "version": "1.2.8",
   "description": "Restorecommerce notification microservice",
-  "main": "dist/start.js",
+  "main": "lib/start.js",
   "author": "n-fuse GmbH",
   "repository": {
     "type": "git",
@@ -17,14 +17,14 @@
   ],
   "type": "module",
   "dependencies": {
-    "@restorecommerce/chassis-srv": "^1.9.1",
-    "@restorecommerce/grpc-client": "^2.3.1",
-    "@restorecommerce/kafka-client": "^1.4.1",
-    "@restorecommerce/logger": "^1.4.1",
-    "@restorecommerce/mailer": "^1.1.1",
-    "@restorecommerce/rc-grpc-clients": "^5.2.1",
-    "@restorecommerce/scs-jobs": "^0.3.1",
-    "@restorecommerce/service-config": "^1.2.1",
+    "@restorecommerce/chassis-srv": "^1.10.2",
+    "@restorecommerce/grpc-client": "^2.3.3",
+    "@restorecommerce/kafka-client": "^1.4.5",
+    "@restorecommerce/logger": "^1.4.3",
+    "@restorecommerce/mailer": "^1.1.3",
+    "@restorecommerce/rc-grpc-clients": "^5.2.5",
+    "@restorecommerce/scs-jobs": "^0.3.5",
+    "@restorecommerce/service-config": "^1.2.3",
     "lodash-es": "^4.18.1",
     "redis": "^6.0.0",
     "retry": "^0.13.1"
@@ -33,7 +33,7 @@
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "@eslint/js": "^10.0.1",
-    "@restorecommerce/dev": "0.3.0",
+    "@restorecommerce/dev": "0.3.2",
     "@semantic-release-plus/docker": "^3.1.3",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^26.0.0",
@@ -56,20 +56,20 @@
     "vitest": "^4.1.9"
   },
   "scripts": {
-    "start": "node dist/start.cjs",
-    "dev": "cross-env NODE_ENV=development node --watch dist/start.cjs",
+    "start": "node lib/start.cjs",
+    "dev": "cross-env NODE_ENV=development node --watch lib/start.cjs",
     "test": "cross-env NODE_ENV=test vitest run",
     "lint": "eslint src",
     "lcov-report": "c8 report --reporter=lcov",
     "coveralls": "c8 report --reporter=text-lcov | coveralls",
     "build:es": "node esbuild.mjs",
-    "build:clean": "rimraf dist",
+    "build:clean": "rimraf lib",
     "build": "npm-run-all lint build:clean build:es",
-    "postbuild": "mkdir -p dist && cp node_modules/@platformatic/wasm-utils/dist/native.wasm dist/",
+    "postbuild": "mkdir -p lib/dist && cp node_modules/@platformatic/wasm-utils/dist/native.wasm lib/dist/",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {}\""
   },
   "engines": {
-    "node": ">= 20.8.0"
+    "node": ">= 22.0.0"
   },
   "release": {
     "branches": [
