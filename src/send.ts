@@ -50,7 +50,7 @@ export const email = (notification: Notification, cfg: any, logger: any): any =>
     mail.attachments = list;
   }
 
-  logger.log('Sending email to recipients', { to: email.to, subject, cc: email.cc, bcc: email.bcc });
+  logger.info('Sending email to recipients', { to: email.to, subject, cc: email.cc, bcc: email.bcc });
   return mailer.send(mail);
 };
 
