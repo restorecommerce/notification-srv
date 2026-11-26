@@ -32,16 +32,19 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+      
+      - name: Build
+        run: npm run build
 
       - name: Test
         run: npm run test
 
-      - uses: coverallsapp/github-action@master
+      - uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   image:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/checkout@v4
