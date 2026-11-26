@@ -1,13 +1,12 @@
 import _ from 'lodash-es';
 // microservice
 import { Server, OffsetStore, CommandInterface, buildReflectionService, Health } from '@restorecommerce/chassis-srv';
-import { createLogger } from '@restorecommerce/logger';
+import { createLogger, Logger } from '@restorecommerce/logger';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { Events, Topic, registerProtoMeta } from '@restorecommerce/kafka-client';
 import { createClient as grpcCreateClient, createChannel } from '@restorecommerce/grpc-client';
 import { Notification } from './notification.js';
 import { createClient, RedisClientType } from 'redis';
-import { Logger } from 'winston';
 import { operation as retryOperation } from 'retry';
 import {
   NotificationReqServiceDefinition,
@@ -42,7 +41,6 @@ registerProtoMeta(NotificationReqMeta, CommandInterfaceMeta, reflectionMeta, job
 const SEND_MAIL_EVENT = 'sendEmail';
 const HEALTH_CHECK_CMD_EVENT = 'healthCheckCommand';
 const VERSION_CMD_EVENT = 'versionCommand';
-export const PROCESS_PENDING_NOTIFICATIONS = 'process-pending-notifications-job';
 const MAIL_SERVER_CREDENTIALS = 'mail_server_credentials';
 
 let server: Server;
@@ -278,11 +276,11 @@ export const start = async (cfg?: any, logger?: Logger): Promise<any> => {
         // check for double default
         const fileImport = await import(require_dir + externalFile);
         if (fileImport?.default?.default) {
-          (async () => (await import(require_dir + externalFile)).default.default(cfg, logger, events, service, runWorker))().catch(err => {
+          (async () => (await import(require_dir + externalFile)).default.default(cfg, logger, events, runWorker, service))().catch(err => {
             logger.error(`Error scheduling external job ${externalFile}`, { err: err.message });
           });
         } else {
-          (async () => (await import(require_dir + externalFile)).default(cfg, logger, events, runWorker))().catch(err => {
+          (async () => (await import(require_dir + externalFile)).default(cfg, logger, events, runWorker, service))().catch(err => {
             logger.error(`Error scheduling external job ${externalFile}`, { err: err.message });
           });
         }
