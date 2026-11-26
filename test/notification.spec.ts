@@ -12,7 +12,7 @@ import {
 import {it, describe, beforeAll, afterAll} from 'vitest';
 
 // NOTE: A running instance of Kafka and redis is needed to execute below test.
-const cfg = createServiceConfig(process.cwd() + '/test');
+const cfg = createServiceConfig(process.cwd());
 const mailBody = fs.readFileSync('./test/fixtures/test.html', 'utf-8');
 
 let service: NotificationService;

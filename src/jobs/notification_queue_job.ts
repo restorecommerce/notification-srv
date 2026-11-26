@@ -28,6 +28,7 @@ const processPendingNotifications = async (service: NotificationService, logger:
 };
 
 const main: DefaultExportFunc = async (cfg, logger, events, runWorker, service) => {
+  logger.info(`Job ${PROCESS_PENDING_NOTIFICATIONS} found and loaded.`);
   await runWorker('notification-srv-queue', 1, cfg, logger, events, async (job) => {
     if (job.type === PROCESS_PENDING_NOTIFICATIONS) {
       await processPendingNotifications(service, logger);
